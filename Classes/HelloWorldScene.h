@@ -17,7 +17,14 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-    // implement the "static create()" method manually
+	void update(float dt);
+
+
+	Size playingSize;
+	
+	Sprite *bg_sprite1, *bg_sprite2;
+	bool currbg;
+	// implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 };
 

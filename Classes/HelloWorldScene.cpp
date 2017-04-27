@@ -27,14 +27,41 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
+	//this->schedule(schedule_selector(HelloWorld::update), 1.0);
+	this->scheduleUpdate();
+
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Size playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
+	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
 
+	
+	
+	
 	auto nodeItems = Node::create();
 	nodeItems->setName("nodeItems");
+
+	//bg
+	currbg = 0;
+
+	bg_sprite1 = Sprite::create("moon_b_1.png");
+	bg_sprite1->setPosition(0,-playingSize.height);
+	bg_sprite1->setAnchorPoint(Vec2::ZERO);
+	bg_sprite1->setName("bg1");
+	bg_sprite2 = Sprite::create("moon_b_1.png");
+	bg_sprite2->setAnchorPoint(Vec2::ZERO);
+	bg_sprite2->setPosition(bg_sprite1->getContentSize().width, -playingSize.height);
+	bg_sprite2->setName("bg2");
+
+	nodeItems->addChild(bg_sprite1, 0);
+	nodeItems->addChild(bg_sprite2, 0);
+
+
+	float scrollspeed =25;
+	auto spriteAction = RepeatForever::create(MoveBy::create(scrollspeed, Vec2(-playingSize.width, 0)));
+	auto spriteAction2 = RepeatForever::create(MoveBy::create(scrollspeed, Vec2(-playingSize.width, 0)));
+	bg_sprite1->runAction(spriteAction);
+	bg_sprite2->runAction(spriteAction2);
 
 	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
 
@@ -107,7 +134,7 @@ bool HelloWorld::init()
 
     /////////////////////////////
     // 3. add your codes below...
-
+	
     // add a label shows "Hello World"
     // create and initialize a label
     
@@ -129,14 +156,40 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
 	END~~ */
-    
+
     return true;
 }
+
+
+
+void HelloWorld::update(float dt)
+{
+	log("update");
+	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
+	//Vec2 pos;
+	//pos = currSprite->getPosition;
+	
+	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
+	{
+		currbg = 1;
+		bg_sprite2->setPosition(playingSize.width, -playingSize.height);
+		//bg_sprite1->setPosition(playingSize.width, -playingSize.height);
+	}
+	if (bg_sprite2->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==1)
+	{
+		//bg_sprite2->setPosition(playingSize.width, -playingSize.height);
+		bg_sprite1->setPosition(playingSize.width, -playingSize.height);
+		currbg = 0;
+	}
+}
+
+
 
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
+		log("update");
 		auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
 		auto moveEvent = MoveBy::create(0.f, Vec2(10.f, 0.f));
 		currSprite->runAction(moveEvent);
