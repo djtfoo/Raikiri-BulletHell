@@ -12,13 +12,17 @@ public:
 
     virtual bool init();
     
-	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event*); 
+    // callback functions
+	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event*);
+    virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event*);
+    virtual void onMouseDown(Event*);
+    virtual void onMouseUp(Event*);
 
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
 	void update(float dt);
-
+    //bool isKeyHeld(EventKeyboard::KeyCode keyCode);
 
 	Size playingSize;
 	

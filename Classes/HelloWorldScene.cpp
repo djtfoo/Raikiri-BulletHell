@@ -1,6 +1,8 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
+#include "Input/Input.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -34,9 +36,6 @@ bool HelloWorld::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
-
-	
-	
 	
 	auto nodeItems = Node::create();
 	nodeItems->setName("nodeItems");
@@ -95,7 +94,21 @@ bool HelloWorld::init()
 	spriteNode->addChild(mainSprite, 1);
 	this->addChild(spriteNode, 1);
 
-	//// move the psrite
+    Input::GetInstance()->Init();
+
+    // cannot use same event variable for multiple objects; use CloneBy
+    auto keyboardlistener = EventListenerKeyboard::create();
+    keyboardlistener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
+    keyboardlistener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardlistener, this);
+
+    auto mouselistener = EventListenerMouse::create();
+    mouselistener->onMouseDown = CC_CALLBACK_1(HelloWorld::onMouseDown, this);
+    mouselistener->onMouseUp = CC_CALLBACK_1(HelloWorld::onMouseUp, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouselistener, this);
+
+	//// move the sprite
 	//auto moveEvent = MoveBy::create(5, Vec2(200, 0));	// move that distance within 5 seconds; relative movement
 	////auto moveEvent = MoveTo::create(5, Vec2(200, 0));	// move to that coordinate within 5 seconds
 	////mainSprite->runAction(moveEvent);
@@ -107,11 +120,6 @@ bool HelloWorld::init()
 	//mainSprite->runAction(sequence);
 	//mainSprite->runAction(sequence->reverse());
 
-	// cannot use same event variable for multiple objects; use CloneBy
-
-	auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	/* COMMENT AWAYYY
     /////////////////////////////
@@ -160,11 +168,72 @@ bool HelloWorld::init()
     return true;
 }
 
+// Keyboard input
+void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
+{
+    if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+    {
+        Input::GetInstance()->OnKeyPressed(KEY_RIGHT);
+    }
 
+    else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
+    {
+        Input::GetInstance()->OnKeyPressed(KEY_LEFT);
+    }
+}
+
+void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
+{
+    if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+    {
+        Input::GetInstance()->OnKeyReleased(KEY_RIGHT);
+    }
+    else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
+    {
+        Input::GetInstance()->OnKeyReleased(KEY_LEFT);
+    }
+}
+
+// Mouse input
+void HelloWorld::onMouseDown(Event* event)
+{
+    EventMouse* mouseEvent = (EventMouse*)event;
+    TOUCH_TYPE mousetype;
+
+    switch (mouseEvent->getMouseButton())
+    {
+    case 0: // left mouse
+        mousetype = TOUCH_MOUSELEFT;
+        break;
+    case 1: // right mouse
+        mousetype = TOUCH_MOUSERIGHT;
+        break;
+    }
+
+    Input::GetInstance()->SetMouseState(mousetype, TOUCH_HELD);
+}
+
+void HelloWorld::onMouseUp(Event* event)
+{
+    EventMouse* mouseEvent = (EventMouse*)event;
+    TOUCH_TYPE mousetype;
+
+    switch (mouseEvent->getMouseButton())
+    {
+    case 0: // left mouse
+        mousetype = TOUCH_MOUSELEFT;
+        break;
+    case 1: // right mouse
+        mousetype = TOUCH_MOUSERIGHT;
+        break;
+    }
+
+    Input::GetInstance()->SetMouseState(mousetype, TOUCH_RELEASED);
+    Input::GetInstance()->SetMousePos(mousetype, Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY()) );
+}
 
 void HelloWorld::update(float dt)
 {
-	log("update");
 	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
@@ -181,20 +250,35 @@ void HelloWorld::update(float dt)
 		bg_sprite1->setPosition(playingSize.width, -playingSize.height);
 		currbg = 0;
 	}
+
+    Input::GetInstance()->Update(dt);
+
+    // MOVEMENT
+    if (Input::GetInstance()->IsKeyHeld(KEY_RIGHT))
+    {
+        //log("update");
+        auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+        auto moveEvent = MoveBy::create(0.f, Vec2(50.f * dt, 0.f));
+        currSprite->runAction(moveEvent);
+    }
+    if (Input::GetInstance()->IsKeyHeld(KEY_LEFT))
+    {
+        //log("update");
+        auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+        auto moveEvent = MoveBy::create(0.f, Vec2(-50.f * dt, 0.f));
+        currSprite->runAction(moveEvent);
+    }
+
+    if (Input::GetInstance()->GetTouchState(TOUCH_MOUSELEFT) == TOUCH_RELEASED)
+    {
+        auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
+        auto moveEvent = MoveTo::create(5.f, Input::GetInstance()->GetTouchPos(TOUCH_MOUSELEFT));
+        currSprite->runAction(moveEvent);
+
+        Input::GetInstance()->SetMouseState(TOUCH_MOUSELEFT, TOUCH_NIL);
+    }
 }
 
-
-
-void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
-{
-	if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
-	{
-		log("update");
-		auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-		auto moveEvent = MoveBy::create(0.f, Vec2(10.f, 0.f));
-		currSprite->runAction(moveEvent);
-	}
-}
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
