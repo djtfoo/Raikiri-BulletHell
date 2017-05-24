@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 
 #include "Input/Input.h"
+#include "AnimationHandler.h"
 
 USING_NS_CC;
 
@@ -23,20 +24,26 @@ Scene* HelloWorld::createScene()
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
+	//////////////////////////////
+	// 1. super init first
+	if (!Layer::init())
+	{
+		return false;
+	}
 	//this->schedule(schedule_selector(HelloWorld::update), 1.0);
 	this->scheduleUpdate();
-
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
 	
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
+
+
+	//sprite stuff
+	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_idle.plist");
+	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_spawn.plist");
+	AnimHandler::getInstance()->Init();
+
+
 	auto nodeItems = Node::create();
 	nodeItems->setName("nodeItems");
 
@@ -44,7 +51,7 @@ bool HelloWorld::init()
 	currbg = 0;
 
 	bg_sprite1 = Sprite::create("moon_b_1.png");
-	bg_sprite1->setPosition(0,-playingSize.height);
+	bg_sprite1->setPosition(0, -playingSize.height);
 	bg_sprite1->setAnchorPoint(Vec2::ZERO);
 	bg_sprite1->setName("bg1");
 	bg_sprite2 = Sprite::create("moon_b_1.png");
@@ -56,59 +63,47 @@ bool HelloWorld::init()
 	nodeItems->addChild(bg_sprite2, 0);
 
 
-	float scrollspeed =25;
+	float scrollspeed = 25;
 	auto spriteAction = RepeatForever::create(MoveBy::create(scrollspeed, Vec2(-playingSize.width, 0)));
 	auto spriteAction2 = RepeatForever::create(MoveBy::create(scrollspeed, Vec2(-playingSize.width, 0)));
 	bg_sprite1->runAction(spriteAction);
 	bg_sprite2->runAction(spriteAction2);
 
 	auto sprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-
-	sprite->setAnchorPoint(Vec2::ZERO);
-	sprite->setPosition(0, 0);
-
-	float spriteWidth = sprite->getContentSize().width;
-	int numOfTiles = std::ceil(visibleSize.width / spriteWidth);	// get the larger number after dividing; so there will be excess
-
-	//nodeItems->addChild(sprite, 0);
-
-	for (int i = 0; i < numOfTiles; ++i) {
-		auto tempSprite = Sprite::create("ZigzagGrass_Mud_Round.png");
-		tempSprite->setAnchorPoint(Vec2::ZERO);
-		tempSprite->setPosition(i * spriteWidth, 0);
-		nodeItems->addChild(tempSprite, 0);
-	}
+	//sprite->setAnchorPoint(Vec2::ZERO);
+	//sprite->setPosition(0, 0);
+	//float spriteWidth = sprite->getContentSize().width;
+	//int numOfTiles = std::ceil(visibleSize.width / spriteWidth);	// get the larger number after dividing; so there will be excess
+	////nodeItems->addChild(sprite, 0);
+	//for (int i = 0; i < numOfTiles; ++i) {
+	//	auto tempSprite = Sprite::create("ZigzagGrass_Mud_Round.png");
+	//	tempSprite->setAnchorPoint(Vec2::ZERO);
+	//	tempSprite->setPosition(i * spriteWidth, 0);
+	//	nodeItems->addChild(tempSprite, 0);
+	//}
 
 	nodeItems->setPosition(0, visibleSize.height / 2 - (visibleSize.height / 8));
 	this->addChild(nodeItems, 1);
 
-	// player sprite
+	// player sprites
 	auto spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 
-	auto mainSprite = Sprite::create("Blue_Front1.png");
+	//Vector<SpriteFrame*> frames = getAnimation("ship_idle%04d.png", 15);
+	auto mainSprite = Sprite::create();
+	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
+	//auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 20);//Xseconds/Yframes (Yframes per second)
+	//mainSprite->runAction(RepeatForever::create(Animate::create(animation)));
+
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(100, visibleSize.height / 2 - (visibleSize.height / 8) + sprite->getContentSize().height);
 	mainSprite->setName("mainSprite");
 
+
+
 	spriteNode->addChild(mainSprite, 1);
 	this->addChild(spriteNode, 1);
-
-    Input::GetInstance()->Init();
-
-    // cannot use same event variable for multiple objects; use CloneBy
-    auto keyboardlistener = EventListenerKeyboard::create();
-    keyboardlistener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
-    keyboardlistener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
-
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardlistener, this);
-
-    auto mouselistener = EventListenerMouse::create();
-    mouselistener->onMouseDown = CC_CALLBACK_1(HelloWorld::onMouseDown, this);
-    mouselistener->onMouseUp = CC_CALLBACK_1(HelloWorld::onMouseUp, this);
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouselistener, this);
-
-	//// move the sprite
+	//// move the psrite
 	//auto moveEvent = MoveBy::create(5, Vec2(200, 0));	// move that distance within 5 seconds; relative movement
 	////auto moveEvent = MoveTo::create(5, Vec2(200, 0));	// move to that coordinate within 5 seconds
 	////mainSprite->runAction(moveEvent);
@@ -121,51 +116,71 @@ bool HelloWorld::init()
 	//mainSprite->runAction(sequence->reverse());
 
 
+	//ship stuff(trying from spritesheet)
+	// sprite
+
+
+
+
+	// cannot use same event variable for multiple objects; use CloneBy
+
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
+	listener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
+
+	auto listener2 = EventListenerMouse::create();
+	listener2->onMouseUp = CC_CALLBACK_1(HelloWorld::onMouseUp, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, this);
+
+	//auto listener2 = EventListenerKeyboard::create();
+
+
 	/* COMMENT AWAYYY
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+	/////////////////////////////
+	// 2. add a menu item with "X" image, which is clicked to quit the program
+	//    you may modify it.
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-    
-    closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y + closeItem->getContentSize().height/2));
+	// add a "close" icon to exit the progress. it's an autorelease object
+	auto closeItem = MenuItemImage::create(
+	"CloseNormal.png",
+	"CloseSelected.png",
+	CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
+	origin.y + closeItem->getContentSize().height/2));
 
-    /////////////////////////////
-    // 3. add your codes below...
-	
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
+	// create menu, it's an autorelease object
+	auto menu = Menu::create(closeItem, NULL);
+	menu->setPosition(Vec2::ZERO);
+	this->addChild(menu, 1);
 
-    // add the label as a child to this layer
-    this->addChild(label, 1);
+	/////////////////////////////
+	// 3. add your codes below...
 
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+	// add a label shows "Hello World"
+	// create and initialize a label
 
-    // position the sprite on the center of the screen
-    sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+	auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
 
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+	// position the label on the center of the screen
+	label->setPosition(Vec2(origin.x + visibleSize.width/2,
+	origin.y + visibleSize.height - label->getContentSize().height));
+
+	// add the label as a child to this layer
+	this->addChild(label, 1);
+
+	// add "HelloWorld" splash screen"
+	auto sprite = Sprite::create("HelloWorld.png");
+
+	// position the sprite on the center of the screen
+	sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+
+	// add the sprite as a child to this layer
+	this->addChild(sprite, 0);
 	END~~ */
 
-    return true;
+	return true;
 }
 
 // Keyboard input
@@ -295,4 +310,18 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //_eventDispatcher->dispatchEvent(&customEndEvent);
     
     
+}
+
+
+Vector<cocos2d::SpriteFrame*> HelloWorld::getAnimation(const char *format, int count)
+{
+	auto spritecache = SpriteFrameCache::getInstance();
+	Vector<SpriteFrame*> animFrames;
+	char str[100];
+	for (int i = 0; i <= count; i++)
+	{
+		sprintf(str, format, i);
+		animFrames.pushBack(spritecache->getSpriteFrameByName(str));
+	}
+	return animFrames;
 }
