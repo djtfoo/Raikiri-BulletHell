@@ -16,11 +16,6 @@ void Input::Init()
     }
 }
 
-void Input::Update(float dt)
-{
-
-}
-
 // KEYBOARD CONTROLS
 void Input::OnKeyPressed(KEY_INPUT keyCode)
 {

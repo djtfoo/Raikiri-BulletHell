@@ -60,7 +60,6 @@ public:
     };
 
     void Init();
-    void Update(float dt);
 
     // called by keyboard listener
     void OnKeyPressed(KEY_INPUT keyCode);

@@ -148,6 +148,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Input\Input.cpp" />
+    <ClCompile Include="..\Classes\Player\Player.cpp" />
+    <ClCompile Include="..\Classes\WaveSpawner\WaveSpawner.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,6 +157,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\Input\Input.h" />
+    <ClInclude Include="..\Classes\Player\Player.h" />
+    <ClInclude Include="..\Classes\WaveSpawner\EnemyData.h" />
+    <ClInclude Include="..\Classes\WaveSpawner\WaveSpawner.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

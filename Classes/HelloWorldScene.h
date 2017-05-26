@@ -2,11 +2,18 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "Player/Player.h"
+#include "WaveSpawner/WaveSpawner.h"
 
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Layer
 {
+private:
+    GLProgram* proPostProcess;
+    RenderTexture* rendtex;
+    Sprite* rendtexSprite;
+
 public:
     static cocos2d::Scene* createScene();
 
@@ -26,6 +33,13 @@ public:
 
 	Size playingSize;
 	
+    // World objects
+    Player* mainPlayer;
+    Player* GetPlayer();
+
+    // Enemy stuff
+    WaveSpawner* waveSpawner;
+
 	Sprite *bg_sprite1, *bg_sprite2;
 	bool currbg;
 	// implement the "static create()" method manually

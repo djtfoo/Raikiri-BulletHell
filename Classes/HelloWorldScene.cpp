@@ -121,6 +121,50 @@ bool HelloWorld::init()
 
 
 
+    // PLAYER
+    //mainPlayer = new Player();
+    //mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
+    //
+    //auto spriteNode = Node::create();
+    //spriteNode->setName("spriteNode");
+    //
+    //spriteNode->addChild(mainPlayer->GetSprite(), 1);
+    //this->addChild(spriteNode, 1);
+
+    proPostProcess = new GLProgram();
+    proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/Grayscale.fsh");
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_POSITION);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_COLOR);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORD);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD1, GLProgram::VERTEX_ATTRIB_TEX_COORD1);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD2, GLProgram::VERTEX_ATTRIB_TEX_COORD2);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD3, GLProgram::VERTEX_ATTRIB_TEX_COORD3);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_NORMAL, GLProgram::VERTEX_ATTRIB_NORMAL);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_BLEND_WEIGHT, GLProgram::VERTEX_ATTRIB_BLEND_WEIGHT);
+    proPostProcess->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_BLEND_INDEX, GLProgram::VERTEX_ATTRIB_BLEND_INDEX);
+
+    proPostProcess->link();
+    proPostProcess->updateUniforms();
+
+    rendtex = RenderTexture::create(visibleSize.width, visibleSize.height);
+    rendtex->retain();
+
+    rendtexSprite = Sprite::createWithTexture(rendtex->getSprite()->getTexture());
+    rendtexSprite->setTextureRect(Rect(0, 0, rendtexSprite->getTexture()->getContentSize().width, rendtexSprite->getTexture()->getContentSize().height));
+    rendtexSprite->setAnchorPoint(Point::ZERO);
+    rendtexSprite->setPosition(Point::ZERO);
+    rendtexSprite->setFlippedY(true);
+    rendtexSprite->setGLProgram(proPostProcess);
+
+    this->addChild(rendtexSprite, 2);
+
+    Input::GetInstance()->Init();
+
+    // ENEMY
+    waveSpawner = new WaveSpawner();
+    waveSpawner->LoadFile("WaveData/testwave.csv");
+    waveSpawner->Init();
+
 
 	// cannot use same event variable for multiple objects; use CloneBy
 
@@ -186,27 +230,66 @@ bool HelloWorld::init()
 // Keyboard input
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-    if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+    switch (keyCode)
     {
+    case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
         Input::GetInstance()->OnKeyPressed(KEY_RIGHT);
+        mainPlayer->AnimatePlayer(KEY_RIGHT);
+        mainPlayer->SetMoveCharX(1);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+        Input::GetInstance()->OnKeyPressed(KEY_LEFT);
+        mainPlayer->AnimatePlayer(KEY_LEFT);
+        mainPlayer->SetMoveCharX(-1);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_UP_ARROW:
+        Input::GetInstance()->OnKeyPressed(KEY_UP);
+        mainPlayer->AnimatePlayer(KEY_UP);
+        mainPlayer->SetMoveCharY(1);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+        Input::GetInstance()->OnKeyPressed(KEY_DOWN);
+        mainPlayer->AnimatePlayer(KEY_DOWN);
+        mainPlayer->SetMoveCharY(-1);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_SPACE:
+        CCDirector::getInstance()->replaceScene(
+            TransitionFade::create(1.5, HelloWorld::createScene(), Color3B(0, 255, 255)));
+        //TransitionCrossFade::create(1.5, HelloWorld::createScene()));
+        break;
     }
 
-    else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-    {
-        Input::GetInstance()->OnKeyPressed(KEY_LEFT);
-    }
 }
 
 void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-    if (keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
+    switch (keyCode)
     {
+    case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
         Input::GetInstance()->OnKeyReleased(KEY_RIGHT);
-    }
-    else if (keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
-    {
+        mainPlayer->SetMoveCharX(0);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
         Input::GetInstance()->OnKeyReleased(KEY_LEFT);
+        mainPlayer->SetMoveCharX(0);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_UP_ARROW:
+        Input::GetInstance()->OnKeyReleased(KEY_UP);
+        mainPlayer->SetMoveCharY(0);
+        break;
+
+    case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+        Input::GetInstance()->OnKeyReleased(KEY_DOWN);
+        mainPlayer->SetMoveCharY(0);
+        break;
     }
+
 }
 
 // Mouse input
@@ -244,8 +327,9 @@ void HelloWorld::onMouseUp(Event* event)
     }
 
     Input::GetInstance()->SetMouseState(mousetype, TOUCH_RELEASED);
-    Input::GetInstance()->SetMousePos(mousetype, Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY()) );
+    Input::GetInstance()->SetMousePos(mousetype, Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY()));
 }
+
 
 void HelloWorld::update(float dt)
 {
@@ -266,32 +350,14 @@ void HelloWorld::update(float dt)
 		currbg = 0;
 	}
 
-    Input::GetInstance()->Update(dt);
+    //Input::GetInstance()->Update(dt);
 
-    // MOVEMENT
-    if (Input::GetInstance()->IsKeyHeld(KEY_RIGHT))
-    {
-        //log("update");
-        auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-        auto moveEvent = MoveBy::create(0.f, Vec2(50.f * dt, 0.f));
-        currSprite->runAction(moveEvent);
-    }
-    if (Input::GetInstance()->IsKeyHeld(KEY_LEFT))
-    {
-        //log("update");
-        auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-        auto moveEvent = MoveBy::create(0.f, Vec2(-50.f * dt, 0.f));
-        currSprite->runAction(moveEvent);
-    }
-
-    if (Input::GetInstance()->GetTouchState(TOUCH_MOUSELEFT) == TOUCH_RELEASED)
-    {
-        auto currSprite = this->getChildByName("spriteNode")->getChildByName("mainSprite");
-        auto moveEvent = MoveTo::create(5.f, Input::GetInstance()->GetTouchPos(TOUCH_MOUSELEFT));
-        currSprite->runAction(moveEvent);
-
-        Input::GetInstance()->SetMouseState(TOUCH_MOUSELEFT, TOUCH_NIL);
-    }
+    // post processing shader
+    rendtex->beginWithClear(.0f, .0f, .0f, .0f);
+    this->visit();
+    rendtex->end();
+    rendtexSprite->setTexture(rendtex->getSprite()->getTexture());
+    rendtexSprite->setGLProgram(proPostProcess);
 }
 
 
