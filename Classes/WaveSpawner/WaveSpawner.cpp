@@ -1,6 +1,7 @@
 #include "WaveSpawner.h"
+#include "Scenes/HelloWorldScene.h"
 #include <fstream>
-#include "HelloWorldScene.h"
+
 
 WaveSpawner::WaveSpawner()
 {
