@@ -101,8 +101,9 @@ bool HelloWorld::init()
 
 
 
+	//spriteNode->addChild(mainSprite, 1);
+	this->addChild(spriteNode, 1);
 	spriteNode->addChild(mainSprite, 1);
-	//this->addChild(spriteNode, 1);
 	//// move the psrite
 	//auto moveEvent = MoveBy::create(5, Vec2(200, 0));	// move that distance within 5 seconds; relative movement
 	////auto moveEvent = MoveTo::create(5, Vec2(200, 0));	// move to that coordinate within 5 seconds
@@ -121,15 +122,15 @@ bool HelloWorld::init()
 
 
 
-     //PLAYER
-    mainPlayer = new Player();
-    mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
+    // PLAYER
+    //mainPlayer = new Player();
+    //mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
     //
-   // auto spriteNode = Node::create();
+    //auto spriteNode = Node::create();
     //spriteNode->setName("spriteNode");
     //
-    spriteNode->addChild(mainPlayer->GetSprite(), 1);
-    this->addChild(spriteNode, 1);
+    //spriteNode->addChild(mainPlayer->GetSprite(), 1);
+    //this->addChild(spriteNode, 1);
 
     proPostProcess = new GLProgram();
     proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/Grayscale.fsh");
@@ -161,9 +162,16 @@ bool HelloWorld::init()
     GameInputManager::GetInstance()->Init();
 
     // ENEMY
+
+	// enemy sprites
+	auto enemynode = Node::create();
+	enemynode->setName("eNode");
+	this->addChild(enemynode, 1);
+
     waveSpawner = new WaveSpawner();
     waveSpawner->LoadFile("WaveData/testwave.csv");
     waveSpawner->Init();
+	waveSpawner->SeteNode(enemynode);
 
 
 	// cannot use same event variable for multiple objects; use CloneBy
@@ -282,7 +290,7 @@ void HelloWorld::update(float dt)
 	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
-	mainPlayer->Update(dt);
+	waveSpawner->Run(dt);
 
 	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
 	{
