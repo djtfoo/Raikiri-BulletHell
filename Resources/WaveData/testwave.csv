@@ -1,5 +1,5 @@
 #first line data: Timer,,,,
-8,,,,
+5,3,6,7,
 #content here,,,,
 #WaveNum,Sprite,SpawnPos,Destination aft Spawn,Exit Destination
 1,Blue1,(0|3.5),(-35|12),(25|12)

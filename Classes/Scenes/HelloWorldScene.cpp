@@ -1,7 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 
-#include "Input/Input.h"
+#include "Input/GameInputManager.h"
 #include "AnimationHandler.h"
 
 USING_NS_CC;
@@ -15,7 +15,7 @@ Scene* HelloWorld::createScene()
     auto layer = HelloWorld::create();
 
     // add layer as a child to scene
-    scene->addChild(layer);
+    scene->addChild(layer, 0, 999);
 
     // return the scene
     return scene;
@@ -158,7 +158,7 @@ bool HelloWorld::init()
 
     this->addChild(rendtexSprite, 2);
 
-    Input::GetInstance()->Init();
+    GameInputManager::GetInstance()->Init();
 
     // ENEMY
     waveSpawner = new WaveSpawner();
@@ -230,81 +230,12 @@ bool HelloWorld::init()
 // Keyboard input
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-    switch (keyCode)
-    {
-    case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-        Input::GetInstance()->OnKeyPressed(KEY_RIGHT);
-        mainPlayer->AnimatePlayer(KEY_RIGHT);
-        mainPlayer->SetMoveCharX(1);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-        Input::GetInstance()->OnKeyPressed(KEY_LEFT);
-        mainPlayer->AnimatePlayer(KEY_LEFT);
-        mainPlayer->SetMoveCharX(-1);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_UP_ARROW:
-        Input::GetInstance()->OnKeyPressed(KEY_UP);
-        mainPlayer->AnimatePlayer(KEY_UP);
-        mainPlayer->SetMoveCharY(1);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-        Input::GetInstance()->OnKeyPressed(KEY_DOWN);
-        mainPlayer->AnimatePlayer(KEY_DOWN);
-        mainPlayer->SetMoveCharY(-1);
-        break;
-
-    case EventKeyboard::KeyCode::KEY_SPACE:
-        CCDirector::getInstance()->replaceScene(
-            TransitionFade::create(1.5, HelloWorld::createScene(), Color3B(0, 255, 255)));
-        //TransitionCrossFade::create(1.5, HelloWorld::createScene()));
-        break;
-    }
-
+    GameInputManager::GetInstance()->WhenKeyPressed(Input::EventKeyboardToKeycode(keyCode), mainPlayer);
 }
 
 void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-	switch (keyCode)
-	{
-	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		Input::GetInstance()->OnKeyReleased(KEY_RIGHT);
-		if (Input::GetInstance()->IsKeyHeld(KEY_LEFT))
-			mainPlayer->SetMoveCharX(-1);
-		else
-			mainPlayer->SetMoveCharX(0);
-		//	mainPlayer->setLeftOrRight(1, false);
-		//RightPressed = false;
-		break;
-
-	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		Input::GetInstance()->OnKeyReleased(KEY_LEFT);
-		if (Input::GetInstance()->IsKeyHeld(KEY_RIGHT))
-			mainPlayer->SetMoveCharX(1);
-		else
-			mainPlayer->SetMoveCharX(0);
-		//	mainPlayer->setLeftOrRight(-1, false);//LeftPressed = false;
-		break;
-
-	case EventKeyboard::KeyCode::KEY_UP_ARROW:
-		Input::GetInstance()->OnKeyReleased(KEY_UP);
-		if (Input::GetInstance()->IsKeyHeld(KEY_DOWN))
-			mainPlayer->SetMoveCharY(-1);
-		else
-			mainPlayer->SetMoveCharY(0);
-		//mainPlayer->setUpOrDown(1, false);
-		break;
-
-	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		if (Input::GetInstance()->IsKeyHeld(KEY_UP))
-			mainPlayer->SetMoveCharY(1);
-		else
-			mainPlayer->SetMoveCharY(0);
-		//mainPlayer->setUpOrDown(-1, false);
-		break;
-	}
+    GameInputManager::GetInstance()->WhenKeyReleased(Input::EventKeyboardToKeycode(keyCode), mainPlayer);
 }
 
 // Mouse input
@@ -323,7 +254,7 @@ void HelloWorld::onMouseDown(Event* event)
         break;
     }
 
-    Input::GetInstance()->SetMouseState(mousetype, TOUCH_HELD);
+    Input::SetMouseState(mousetype, TOUCH_HELD);
 }
 
 void HelloWorld::onMouseUp(Event* event)
@@ -341,8 +272,8 @@ void HelloWorld::onMouseUp(Event* event)
         break;
     }
 
-    Input::GetInstance()->SetMouseState(mousetype, TOUCH_RELEASED);
-    Input::GetInstance()->SetMousePos(mousetype, Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY()));
+    Input::SetMouseState(mousetype, TOUCH_RELEASED);
+    Input::SetMousePos(mousetype, Vec2(mouseEvent->getCursorX(), mouseEvent->getCursorY()));
 }
 
 

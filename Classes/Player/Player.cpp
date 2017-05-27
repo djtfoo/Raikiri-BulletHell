@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "HelloWorldScene.h"
+#include "Scenes/HelloWorldScene.h"
 
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y)
 {
@@ -53,7 +53,7 @@ void Player::Update(float dt)
 	state->setUniformVec2("loc", mLoc);*/
 }
 
-void Player::AnimatePlayer(KEY_INPUT key)
+void Player::AnimatePlayer(KEYCODE key)
 {
 	mainSprite->stopAllActions();
 
@@ -123,11 +123,20 @@ void Player::StopAnimation()
 void Player::SetMoveCharX(int dirX)
 {
 	intDirX = dirX;
+    if (dirX == -1)
+        AnimatePlayer(KEY_LEFT);
+    else if (dirX == 1)
+        AnimatePlayer(KEY_RIGHT);
+
 }
 
 void Player::SetMoveCharY(int dirY)
 {
 	intDirY = dirY;
+    if (dirY == -1)
+        AnimatePlayer(KEY_DOWN);
+    else if (dirY == 1)
+        AnimatePlayer(KEY_UP);
 }
 
 void Player::MoveCharByCoord(float X, float Y)

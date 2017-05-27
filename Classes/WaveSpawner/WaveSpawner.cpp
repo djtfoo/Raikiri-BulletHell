@@ -73,10 +73,10 @@ bool WaveSpawner::LoadFile(const char* file_path)
 		std::string data;
 		if (firstLine)
 		{
-			// first data is generic enemy lifetime
-			std::getline(dataStream, data, ',');
-			enemyLifetime = std::stof(data);
-
+            for (std::getline(dataStream, data, ','); data != "\r";) {
+                waveTimer.push_back(std::stof(data));
+                std::getline(dataStream, data, ',');
+            }
 			firstLine = false;
 			continue;
 		}

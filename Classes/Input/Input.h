@@ -14,12 +14,14 @@ Accessible information regarding keyboard, mouse and touch input from the user
 
 using namespace cocos2d;
 
-enum KEY_INPUT
+enum KEYCODE
 {
     KEY_RIGHT = 0,
     KEY_LEFT,
     KEY_UP,
     KEY_DOWN,
+    KEY_SPACE,
+    KEY_R,
 
     KEYS_TOTAL
 };
@@ -42,38 +44,36 @@ enum TOUCH_STATE
 class Input : public cocos2d::Layer
 {
 private:
+
+protected:
     Input() {}
-    ~Input() {}
 
     // keyboard
-    bool keys[KEYS_TOTAL];
+    static bool keys[KEYS_TOTAL];
 
     // Mouse
-    TOUCH_STATE mouseState[MOUSE_TOTAL];
-    Vec2 mousePos[MOUSE_TOTAL];
-
-public:
-    static Input* GetInstance()
-    {
-        static Input input;
-        return &input;
-    };
+    static TOUCH_STATE mouseState[MOUSE_TOTAL];
+    static Vec2 mousePos[MOUSE_TOTAL];
 
     void Init();
 
+public:
+    virtual ~Input() {}
+
     // called by keyboard listener
-    void OnKeyPressed(KEY_INPUT keyCode);
-    void OnKeyReleased(KEY_INPUT keyCode);
+    static void OnKeyPressed(KEYCODE keyCode);
+    static void OnKeyReleased(KEYCODE keyCode);
 
     // called by mouse listener
-    void SetMouseState(TOUCH_TYPE type, TOUCH_STATE state);
-    void SetMousePos(TOUCH_TYPE type, Vec2 pos);
+    static void SetMouseState(TOUCH_TYPE type, TOUCH_STATE state);
+    static void SetMousePos(TOUCH_TYPE type, Vec2 pos);
 
-    TOUCH_STATE GetTouchState(TOUCH_TYPE type);
-    Vec2 GetTouchPos(TOUCH_TYPE type);
+    static TOUCH_STATE GetTouchState(TOUCH_TYPE type);
+    static Vec2 GetTouchPos(TOUCH_TYPE type);
 
     // user functions
-    bool IsKeyHeld(KEY_INPUT keyCode);
+    static KEYCODE EventKeyboardToKeycode(EventKeyboard::KeyCode keyCode);
+    static bool IsKeyHeld(KEYCODE keyCode);
 };
 
 #endif

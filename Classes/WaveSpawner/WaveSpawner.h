@@ -5,7 +5,7 @@
 
 class WaveSpawner
 {
-	float enemyLifetime;	// how long an enemy will stay in game before it starts to leave
+	std::vector<float> waveTimer;   // how each wave of enemies will stay in game
 	std::vector<EnemyData> waveData;
 
 public:

@@ -25,7 +25,7 @@ private:
 public:
 	void Init(const char* imgSource, const char* playerName, float X, float Y);
 	void Update(float dt);
-	void AnimatePlayer(KEY_INPUT key);	// KEY_INPUT for direction
+	void AnimatePlayer(KEYCODE key);	// KEY_INPUT for direction
 	void StopAnimation();
 
 	void SetMoveCharX(int dirX);	// keyboard

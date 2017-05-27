@@ -19,15 +19,18 @@
     <Filter Include="src\WaveSpawner">
       <UniqueIdentifier>{99900e1e-c788-4149-80bd-739c37b20d4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Scenes">
+      <UniqueIdentifier>{0320cdd8-26c3-4b0c-ba69-ea8bc5afcf7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\LightEffect">
+      <UniqueIdentifier>{c6a6abb0-1434-4323-a30e-9639fba6eef5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Input\Input.cpp">
@@ -42,15 +45,33 @@
     <ClCompile Include="..\Classes\Player\Player.cpp">
       <Filter>src\Player</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Input\GameInputManager.cpp">
+      <Filter>src\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scenes\HelloWorldScene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scenes\MainMenuScene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scenes\SceneManager.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LightEffect\Effect.cpp">
+      <Filter>src\LightEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LightEffect\EffectSprite.cpp">
+      <Filter>src\LightEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\LightEffect\LightEffect.cpp">
+      <Filter>src\LightEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Input\Input.h">
@@ -67,6 +88,27 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Player\Player.h">
       <Filter>src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Input\GameInputManager.h">
+      <Filter>src\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scenes\HelloWorldScene.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scenes\MainMenuScene.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scenes\SceneManager.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LightEffect\Effect.h">
+      <Filter>src\LightEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LightEffect\EffectSprite.h">
+      <Filter>src\LightEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LightEffect\LightEffect.h">
+      <Filter>src\LightEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
