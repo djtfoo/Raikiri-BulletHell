@@ -93,7 +93,7 @@ bool HelloWorld::init()
 	auto mainSprite = Sprite::create();
 	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
 	//auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 20);//Xseconds/Yframes (Yframes per second)
-	//mainSprite->runAction(RepeatForever::create(Animate::create(animation)));
+//	mainSprite->runAction(RepeatForever::create(Animate::create(animation)));
 
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(100, visibleSize.height / 2 - (visibleSize.height / 8) + sprite->getContentSize().height);
@@ -102,7 +102,7 @@ bool HelloWorld::init()
 
 
 	spriteNode->addChild(mainSprite, 1);
-	this->addChild(spriteNode, 1);
+	//this->addChild(spriteNode, 1);
 	//// move the psrite
 	//auto moveEvent = MoveBy::create(5, Vec2(200, 0));	// move that distance within 5 seconds; relative movement
 	////auto moveEvent = MoveTo::create(5, Vec2(200, 0));	// move to that coordinate within 5 seconds
@@ -121,15 +121,15 @@ bool HelloWorld::init()
 
 
 
-    // PLAYER
-    //mainPlayer = new Player();
-    //mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
+     //PLAYER
+    mainPlayer = new Player();
+    mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
     //
-    //auto spriteNode = Node::create();
+   // auto spriteNode = Node::create();
     //spriteNode->setName("spriteNode");
     //
-    //spriteNode->addChild(mainPlayer->GetSprite(), 1);
-    //this->addChild(spriteNode, 1);
+    spriteNode->addChild(mainPlayer->GetSprite(), 1);
+    this->addChild(spriteNode, 1);
 
     proPostProcess = new GLProgram();
     proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/Grayscale.fsh");
@@ -267,29 +267,44 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 
 void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
-    switch (keyCode)
-    {
-    case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-        Input::GetInstance()->OnKeyReleased(KEY_RIGHT);
-        mainPlayer->SetMoveCharX(0);
-        break;
+	switch (keyCode)
+	{
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		Input::GetInstance()->OnKeyReleased(KEY_RIGHT);
+		if (Input::GetInstance()->IsKeyHeld(KEY_LEFT))
+			mainPlayer->SetMoveCharX(-1);
+		else
+			mainPlayer->SetMoveCharX(0);
+		//	mainPlayer->setLeftOrRight(1, false);
+		//RightPressed = false;
+		break;
 
-    case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-        Input::GetInstance()->OnKeyReleased(KEY_LEFT);
-        mainPlayer->SetMoveCharX(0);
-        break;
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		Input::GetInstance()->OnKeyReleased(KEY_LEFT);
+		if (Input::GetInstance()->IsKeyHeld(KEY_RIGHT))
+			mainPlayer->SetMoveCharX(1);
+		else
+			mainPlayer->SetMoveCharX(0);
+		//	mainPlayer->setLeftOrRight(-1, false);//LeftPressed = false;
+		break;
 
-    case EventKeyboard::KeyCode::KEY_UP_ARROW:
-        Input::GetInstance()->OnKeyReleased(KEY_UP);
-        mainPlayer->SetMoveCharY(0);
-        break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+		Input::GetInstance()->OnKeyReleased(KEY_UP);
+		if (Input::GetInstance()->IsKeyHeld(KEY_DOWN))
+			mainPlayer->SetMoveCharY(-1);
+		else
+			mainPlayer->SetMoveCharY(0);
+		//mainPlayer->setUpOrDown(1, false);
+		break;
 
-    case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-        Input::GetInstance()->OnKeyReleased(KEY_DOWN);
-        mainPlayer->SetMoveCharY(0);
-        break;
-    }
-
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		if (Input::GetInstance()->IsKeyHeld(KEY_UP))
+			mainPlayer->SetMoveCharY(1);
+		else
+			mainPlayer->SetMoveCharY(0);
+		//mainPlayer->setUpOrDown(-1, false);
+		break;
+	}
 }
 
 // Mouse input
@@ -336,7 +351,8 @@ void HelloWorld::update(float dt)
 	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
-	
+	mainPlayer->Update(dt);
+
 	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
 	{
 		currbg = 1;

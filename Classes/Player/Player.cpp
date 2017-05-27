@@ -26,6 +26,9 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 
 	charEffect->link();
 	charEffect->updateUniforms();
+
+	this->intDirX = 0;
+	this->intDirY = 0;
 }
 
 void Player::Update(float dt)
@@ -44,10 +47,10 @@ void Player::Update(float dt)
 		StopAnimation();
 	}
 
-	GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
+	/*GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
 	mainSprite->setGLProgram(charEffect);
 	mainSprite->setGLProgramState(state);
-	state->setUniformVec2("loc", mLoc);
+	state->setUniformVec2("loc", mLoc);*/
 }
 
 void Player::AnimatePlayer(KEY_INPUT key)
