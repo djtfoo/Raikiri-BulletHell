@@ -10,6 +10,7 @@ class Player
 {
 private:
 	int lives;
+	int score;
 	bool b_shooting;
 	//int score;
 
@@ -37,6 +38,11 @@ public:
 	void FireLaser();
 	void StopFiringLaser();
 
+	int getLives();
+	void setLives(int lives);
+
+	int getScore();
+	void setScore(int score);
 	Sprite* GetSprite(void)
 	{
 		return mainSprite;

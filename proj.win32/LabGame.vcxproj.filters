@@ -28,6 +28,9 @@
     <Filter Include="src\Attack">
       <UniqueIdentifier>{cffd2af0-5ae2-476e-a865-db5db3f5f13a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GUI">
+      <UniqueIdentifier>{f983c3f4-c87b-4b0b-be5b-41839f12dea2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -77,6 +80,10 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Attack\Projectile.cpp">
       <Filter>src\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Audio\AudioManager.cpp" />
+    <ClCompile Include="..\Classes\GUI\GUI.cpp">
+      <Filter>src\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +137,10 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Attack\Projectile.h">
       <Filter>src\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Audio\AudioManager.h" />
+    <ClInclude Include="..\Classes\GUI\GUI.h">
+      <Filter>src\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

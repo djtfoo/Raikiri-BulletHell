@@ -8,8 +8,8 @@ Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition,float B
 	Sprite* Projectile = Sprite::create(BulletImg);
 	Projectile->setAnchorPoint(Vec2::ZERO);
 	Projectile->setPosition(SpawnPosition.x,SpawnPosition.y);
-	//Projectile->setScaleX(10.0f);
-
+	Projectile->setScaleY(8.0f);
+	Projectile->setScaleX(8.0f);
 	ProjectileSpeed = BulletSpeed;
 	auto moveEvent = MoveBy::create(LifeTime, 1 * Vec2(1.f, 0.f) * ProjectileSpeed);
 	Projectile->runAction(moveEvent);
@@ -36,7 +36,7 @@ Sprite*  Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
 	Projectile->setAnchorPoint(Vec2(0, 0));
 	Projectile->setPosition(SpawnPosition.x, SpawnPosition.y);
 	Projectile->setScaleX(0.f);
-
+	Projectile->setScaleY(8.0f);
 
 
 	auto scene = Director::getInstance()->getRunningScene();

@@ -14,7 +14,7 @@ private:
     RenderTexture* rendtex;
     Sprite* rendtexSprite;
 	Node* spriteNode;
-
+	//auto GUILayer;
 public:
     static cocos2d::Scene* createScene();
 

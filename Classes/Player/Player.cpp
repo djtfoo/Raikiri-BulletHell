@@ -34,10 +34,18 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	this->intDirX = 0;
 	this->intDirY = 0;
 
-
+	lives = 1;
+	score = 200;
 	AttackSystems = new Attack();
 }
-
+int Player::getScore()
+{
+	return score;
+}
+void Player::setScore(int score)
+{
+	this->score = score;
+}
 void Player::Update(float dt)
 {
 	if (intDirX != 0) {
@@ -53,7 +61,7 @@ void Player::Update(float dt)
 	{
 		//StopAnimation();
 	}
-	AttackSystems->LaserUpdate(dt, 0.1f, mainSprite->getPosition() );
+	AttackSystems->LaserUpdate(dt, 0.5f, mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
 	/*GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
 	mainSprite->setGLProgram(charEffect);
 	mainSprite->setGLProgramState(state);
@@ -112,11 +120,11 @@ void Player::AnimatePlayer(KEYCODE key)
 }
 void Player::FireBasicBullet()
 {
-	AttackSystems->FireBasicBullet("Blue_Front1.png", mainSprite->getPosition(), 5000,25);
+	AttackSystems->FireBasicBullet("Projectiles/Laser.png", mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0), 10000,25);
 }
 void Player::FireLaser()
 {
-	AttackSystems->FireLaserBullet("Blue_Front1.png", mainSprite->getPosition() , 10);
+	AttackSystems->FireLaserBullet("Projectiles/Laser.png", mainSprite->getPosition() + Vec2(mainSprite->getScaleX() * 50, 0), 10);
 }
 void Player::StopFiringLaser()
 {
@@ -163,7 +171,14 @@ void Player::SetMoveCharY(int dirY)
     else if (dirY == 1)
         AnimatePlayer(KEY_UP);
 }
-
+int Player::getLives()
+{
+	return lives;
+}
+void Player::setLives(int lives)
+{
+	this->lives = lives;
+}
 void Player::MoveCharByCoord(float X, float Y)
 {
 	mainSprite->stopAllActions();

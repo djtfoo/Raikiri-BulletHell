@@ -3,7 +3,7 @@
 
 #include "Input/GameInputManager.h"
 #include "AnimationHandler.h"
-
+#include "GUI\GUI.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -15,6 +15,7 @@ Scene* HelloWorld::createScene()
     auto layer = HelloWorld::create();
 
     // add layer as a child to scene
+	//scene->addChild(GUILayer,0, 997);
     scene->addChild(layer, 0, 999);
 
     // return the scene
@@ -33,6 +34,10 @@ bool HelloWorld::init()
 	//this->schedule(schedule_selector(HelloWorld::update), 1.0);
 	this->scheduleUpdate();
 	
+	//GUI
+	//auto GUIlayer = this->getChildByTag(997);
+	
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
@@ -41,8 +46,6 @@ bool HelloWorld::init()
 	//sprite stuff
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_idle.plist");
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_spawn.plist");
-
-
 
 	auto nodeItems = Node::create();
 	nodeItems->setName("nodeItems");
@@ -227,6 +230,8 @@ bool HelloWorld::init()
 	this->addChild(sprite, 0);
 	END~~ */
 
+	GUI* playerGui = GUI::createPlayerGUI(mainPlayer);
+	this->addChild(playerGui, 2);
 	return true;
 }
 

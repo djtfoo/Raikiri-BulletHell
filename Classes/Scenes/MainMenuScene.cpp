@@ -62,7 +62,7 @@ bool MainMenu::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    auto label = Label::createWithTTF("RAIKIRI: Lightning Cutter", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("RAIKIRI: Lightning Cutter", "fonts/Batman.ttf", 24);
 
     // position the label on the center of the screen
     label->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -73,7 +73,7 @@ bool MainMenu::init()
 
 
     // add a label that says "Press Space to begin"
-    auto label2 = Label::createWithTTF("Press SPACE to begin", "fonts/Marker Felt.ttf", 24);
+    auto label2 = Label::createWithTTF("Press SPACE to begin", "fonts/Batman.ttf", 24);
 
     // position the label on the center of the screen
     label2->setPosition(Vec2(origin.x + visibleSize.width / 2,
