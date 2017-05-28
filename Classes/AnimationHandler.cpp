@@ -21,10 +21,9 @@ void AnimHandler::Init()
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_idle.plist");
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_spawn.plist");
 	animSpeed = 30;
-
-	addAnimation("ship_idle.plist", "ship_idle%04d.png", 15, SHIP_IDLE);
+	addAnimation("ship.plist", "ship_idle%04d.png", 15, SHIP_IDLE);
 	addAnimation("ship_spawn.plist", "ship_spawn%04d.png", 50, SHIP_SPAWN);
-	addAnimation("ship_back.plist", "ship_back%04d.png", 15, SHIP_BACK);
+	addAnimation("ship.plist", "ship_back%04d.png", 15, SHIP_BACK);
 
 	addAnimation("capule.plist", "capule_spawn%04d.png", 40, CAPULE_SPAWN);
 	addAnimation("capule.plist", "capule_active%04d.png", 15, CAPULE_ACTIVE);
@@ -59,12 +58,19 @@ void AnimHandler::setAnimation(Sprite* sprite, ANIMATION_TYPE  name, bool loop)
 
 	//Vector<SpriteFrame*> frames = getAnimation(animName, 15);
 	//auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 20);//Xseconds/Yframes (Yframes per second
+
+
 	if (loop)
 	sprite->runAction(RepeatForever::create(Animate::create(animList[name])));
 	else
 		sprite->runAction(Animate::create(animList[name]));
 
 
+}
+
+Animation* AnimHandler::getAnimAction(ANIMATION_TYPE name)
+{
+		return animList[name];
 }
 
 Vector<cocos2d::SpriteFrame*> AnimHandler::getAnimation(const char *format, int count)
@@ -83,7 +89,9 @@ Vector<cocos2d::SpriteFrame*> AnimHandler::getAnimation(const char *format, int 
 AnimHandler* AnimHandler::getInstance()
 {
 	if (!s_instance)
+	{
 		s_instance = new AnimHandler;
-
+	}
+	s_instance->Init();
 	return s_instance;
 }

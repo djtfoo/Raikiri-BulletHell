@@ -89,19 +89,19 @@ bool HelloWorld::init()
 	//auto spriteNode = Node::create();
 	spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
-
-	//Vector<SpriteFrame*> frames = getAnimation("ship_idle%04d.png", 15);
-	auto mainSprite = Sprite::create();
-	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
-	//auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 20);//Xseconds/Yframes (Yframes per second)
-//	mainSprite->runAction(RepeatForever::create(Animate::create(animation)));
-
-	mainSprite->setAnchorPoint(Vec2::ZERO);
-	mainSprite->setPosition(100, visibleSize.height / 2 - (visibleSize.height / 8) + sprite->getContentSize().height);
-	mainSprite->setName("mainSprite");
-
 	this->addChild(spriteNode, 1);
-	spriteNode->addChild(mainSprite, 1);
+	//Vector<SpriteFrame*> frames = getAnimation("ship_idle%04d.png", 15);
+//	auto mainSprite = Sprite::create();
+//	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
+//	//auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 20);//Xseconds/Yframes (Yframes per second)
+//	mainSprite->runAction(RepeatForever::create(Animate::create(animation)));
+//
+//	mainSprite->setAnchorPoint(Vec2::ZERO);
+//	mainSprite->setPosition(100, visibleSize.height / 2 - (visibleSize.height / 8) + sprite->getContentSize().height);
+//	mainSprite->setName("mainSprite");
+
+	//this->addChild(spriteNode, 1);
+	//spriteNode->addChild(mainSprite, 1);
 	//// move the psrite
 	//auto moveEvent = MoveBy::create(5, Vec2(200, 0));	// move that distance within 5 seconds; relative movement
 	////auto moveEvent = MoveTo::create(5, Vec2(200, 0));	// move to that coordinate within 5 seconds
@@ -123,10 +123,7 @@ bool HelloWorld::init()
     // PLAYER
     mainPlayer = new Player();
     mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
-    
-    //auto spriteNode = Node::create();
-    //spriteNode->setName("spriteNode");
-    //
+	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
     spriteNode->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);
 

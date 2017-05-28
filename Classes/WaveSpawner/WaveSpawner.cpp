@@ -48,6 +48,11 @@ void WaveSpawner::Run(float dt)
 		wavetimer = 0;
 		return;
 	}
+	if (currentwave > waveTimer.size() - 1)
+		return;
+
+
+
 	if (!isspawned)
 		SpawnCurrentWave();
 	

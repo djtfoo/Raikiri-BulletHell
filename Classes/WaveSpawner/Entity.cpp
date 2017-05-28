@@ -29,7 +29,7 @@ void Entity::SetEntity(EnemyData data)
 		_type = NUM_TYPE; break;
 
 	}
-
+	//_eSprite->setAnchorPoint(Vec2::ZERO);
 	//SetActive();
 }
 
@@ -51,13 +51,14 @@ void Entity::SettoSpawn()
 {	
 	_eSprite->setAnchorPoint(Vec2::ZERO);
 	_eSprite->setPosition(_spawnPos.x, _spawnPos.y);
-	//switch (_type)
-	//{
-	//	case(CAPULE) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_SPAWN, false);
-	//	break;
-	//	case(PLATONIC) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_SPAWN, false);
-	//	break;
-	//}
+	//AnimHandler::getInstance()->setAnimation(this_eSprite, AnimHandler::CAPULE_SPAWN, true);
+	switch (_type)
+	{
+		case(CAPULE) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_SPAWN, false);
+		break;
+		case(PLATONIC) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_SPAWN, false);
+		break;
+	}
 	auto moveTo = MoveTo::create(1,_destination);
 	_eSprite->runAction(moveTo);//simple moveto
 	//auto setactive = CallFunc::create([this](){SettoAttack();});
@@ -66,13 +67,13 @@ void Entity::SettoSpawn()
 
 void Entity::SettoAttack()
 {
-	//switch (_type)
-	//{
-	//case(CAPULE) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_ACTIVE, true);
-	//	break;
-	//case(PLATONIC) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_ACTIVE, true);
-	//	break;
-	//}
+	switch (_type)
+	{
+	case(CAPULE) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_ACTIVE, true);
+		break;
+	case(PLATONIC) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_ACTIVE, true);
+		break;
+	}
 
 	//do sum attack code here
 
