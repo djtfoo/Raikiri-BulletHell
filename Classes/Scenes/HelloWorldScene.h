@@ -13,6 +13,7 @@ private:
     GLProgram* proPostProcess;
     RenderTexture* rendtex;
     Sprite* rendtexSprite;
+	Node* spriteNode;
 
 public:
     static cocos2d::Scene* createScene();
@@ -36,6 +37,8 @@ public:
     // World objects
     Player* mainPlayer;
     Player* GetPlayer();
+
+	Node* getSpriteNode();
 
     // Enemy stuff
     WaveSpawner* waveSpawner;

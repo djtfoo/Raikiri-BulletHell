@@ -86,7 +86,8 @@ bool HelloWorld::init()
 	this->addChild(nodeItems, 1);
 
 	// player sprites
-	auto spriteNode = Node::create();
+	//auto spriteNode = Node::create();
+	spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 
 	//Vector<SpriteFrame*> frames = getAnimation("ship_idle%04d.png", 15);
@@ -120,13 +121,13 @@ bool HelloWorld::init()
 
 
     // PLAYER
-    //mainPlayer = new Player();
-    //mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
-    //
+    mainPlayer = new Player();
+    mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
+    
     //auto spriteNode = Node::create();
     //spriteNode->setName("spriteNode");
     //
-    //spriteNode->addChild(mainPlayer->GetSprite(), 1);
+    spriteNode->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);
 
     proPostProcess = new GLProgram();
@@ -237,7 +238,10 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
     GameInputManager::GetInstance()->WhenKeyPressed(Input::EventKeyboardToKeycode(keyCode), mainPlayer);
 }
-
+Node* HelloWorld::getSpriteNode()
+{
+	return spriteNode;
+}
 void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
     GameInputManager::GetInstance()->WhenKeyReleased(Input::EventKeyboardToKeycode(keyCode), mainPlayer);
@@ -288,7 +292,7 @@ void HelloWorld::update(float dt)
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
 	waveSpawner->Run(dt);
-
+	mainPlayer->Update(dt);
 	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
 	{
 		currbg = 1;

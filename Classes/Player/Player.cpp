@@ -7,7 +7,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
-
+	
 	fSpeed = 200.f;
 
 	AnimatePlayer(KEY_DOWN);
@@ -29,6 +29,9 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 
 	this->intDirX = 0;
 	this->intDirY = 0;
+
+
+	AttackSystems = new Attack();
 }
 
 void Player::Update(float dt)
@@ -46,7 +49,7 @@ void Player::Update(float dt)
 	{
 		StopAnimation();
 	}
-
+	AttackSystems->LaserUpdate(dt, 0.1f, mainSprite->getPosition() );
 	/*GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
 	mainSprite->setGLProgram(charEffect);
 	mainSprite->setGLProgramState(state);
@@ -98,7 +101,18 @@ void Player::AnimatePlayer(KEYCODE key)
 	// run it and repeat it forever
 	mainSprite->runAction(RepeatForever::create(animateIdle));
 }
-
+void Player::FireBasicBullet()
+{
+	AttackSystems->FireBasicBullet("Blue_Front1.png", mainSprite->getPosition(), 5000,25);
+}
+void Player::FireLaser()
+{
+	AttackSystems->FireLaserBullet("Blue_Front1.png", mainSprite->getPosition() , 10);
+}
+void Player::StopFiringLaser()
+{
+	AttackSystems->StopFiringLaser(5000, 25);
+}
 void Player::StopAnimation()
 {
 	mainSprite->stopAllActions();

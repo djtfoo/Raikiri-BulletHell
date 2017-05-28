@@ -3,7 +3,7 @@
 
 #include "../Input/Input.h"
 #include "cocos2d.h"
-
+#include "Attack\Attack.h"
 using namespace cocos2d;
 
 class Player
@@ -21,6 +21,7 @@ private:
 	Sprite* mainSprite;
 	int intDirX, intDirY;	// direction just to determine +ve or -ve movement
 	float fSpeed;
+	Attack* AttackSystems;
 
 public:
 	void Init(const char* imgSource, const char* playerName, float X, float Y);
@@ -31,6 +32,10 @@ public:
 	void SetMoveCharX(int dirX);	// keyboard
 	void SetMoveCharY(int dirY);	// keyboard
 	void MoveCharByCoord(float X, float Y);		// mouse
+
+	void FireBasicBullet();
+	void FireLaser();
+	void StopFiringLaser();
 
 	Sprite* GetSprite(void)
 	{

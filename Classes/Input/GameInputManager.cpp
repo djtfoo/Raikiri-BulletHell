@@ -11,6 +11,7 @@ void GameInputManager::Init()
     keyControls.insert(std::pair<string, KEYCODE>("MoveDown", KEY_DOWN));
     keyControls.insert(std::pair<string, KEYCODE>("Shoot", KEY_SPACE));
     keyControls.insert(std::pair<string, KEYCODE>("ResetScene", KEY_R));
+	keyControls.insert(std::pair<string, KEYCODE>("FireLaser", KEY_ALT));
 }
 
 void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
@@ -36,6 +37,10 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
     else if (keyCode == keyControls["Shoot"]) {
         // player shoot here
     }
+	else if (keyCode == keyControls["FireLaser"]) {
+		// player shoot here
+		player->FireLaser();
+	}
     else if (keyCode == keyControls["ResetScene"]) {
         Input::OnKeyPressed(KEY_R);
         //SceneManager::GetInstance()->ChangeScene("HelloWorld");
@@ -78,7 +83,13 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
     }
     else if (keyCode == keyControls["Shoot"]) {
         // player shoot here
+		player->FireBasicBullet();
     }
+
+	else if (keyCode == keyControls["FireLaser"]) {
+		// player shoot here
+		player->StopFiringLaser();
+	}
     else if (keyCode == keyControls["ResetScene"]) {
         SceneManager::GetInstance()->ChangeScene("HelloWorld");
     }

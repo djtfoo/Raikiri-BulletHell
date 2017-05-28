@@ -25,6 +25,9 @@
     <Filter Include="src\LightEffect">
       <UniqueIdentifier>{c6a6abb0-1434-4323-a30e-9639fba6eef5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Attack">
+      <UniqueIdentifier>{cffd2af0-5ae2-476e-a865-db5db3f5f13a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,6 +71,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\WaveSpawner\Entity.cpp">
       <Filter>src\WaveSpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Attack\Attack.cpp">
+      <Filter>src\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Attack\Projectile.cpp">
+      <Filter>src\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\WaveSpawner\Entity.h">
       <Filter>src\WaveSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Attack\Attack.h">
+      <Filter>src\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Attack\Projectile.h">
+      <Filter>src\Attack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

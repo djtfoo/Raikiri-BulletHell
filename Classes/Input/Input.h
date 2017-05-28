@@ -21,6 +21,7 @@ enum KEYCODE
     KEY_UP,
     KEY_DOWN,
     KEY_SPACE,
+	KEY_ALT,
     KEY_R,
 
     KEYS_TOTAL
