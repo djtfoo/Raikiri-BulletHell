@@ -7,6 +7,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	//remove imagesource for now
 	mainSprite = Sprite::create();
 	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+	mainSprite->setScale(0.6);
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);

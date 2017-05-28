@@ -48,8 +48,8 @@ void WaveSpawner::Run(float dt)
 		wavetimer = 0;
 		return;
 	}
-	if (currentwave > waveTimer.size() - 1)
-		return;
+	if (currentwave > waveTimer.size())//is this the finaal wave?
+		return;//staart the boss event
 
 
 
@@ -100,6 +100,7 @@ void WaveSpawner::DespawnEnemies()
 
 void WaveSpawner::SpawnCurrentWave()
 {
+	log(currentwave);
 	wavetimer = 0;
 	for (EnemyData e : waveData)
 	{

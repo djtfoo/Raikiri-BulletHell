@@ -3,6 +3,7 @@
 Entity::Entity()
 {
 	_eSprite = Sprite::create("Blue_Front1.png");
+	_eSprite->setScale(0.5);
 
 }
 
