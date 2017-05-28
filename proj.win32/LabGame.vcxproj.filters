@@ -66,6 +66,9 @@
     <ClCompile Include="..\Classes\LightEffect\LightEffect.cpp">
       <Filter>src\LightEffect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\WaveSpawner\Entity.cpp">
+      <Filter>src\WaveSpawner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\LightEffect\LightEffect.h">
       <Filter>src\LightEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\WaveSpawner\Entity.h">
+      <Filter>src\WaveSpawner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

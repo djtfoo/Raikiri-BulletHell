@@ -21,18 +21,21 @@ public:
 	
 	enum ANIMATION_TYPE
 	{
+		//0
 		SHIP_SPAWN,
 		SHIP_IDLE,
 		SHIP_BACK,
 		
+		//1
 		CAPULE_SPAWN,
 		CAPULE_ACTIVE,
 		
+		//2
 		PLATONIC_SPAWN,
 		PLATONIC_ACTIVE,
 
 
-		//1st boss(construct)
+		//?? [1st boss(construct)]
 		CONSTRUCTFUNNEL_SPAWN,
 		CONSTRUCTFUNNEL_ACTIVE,
 		CONSTRUCT_ACTIVE,

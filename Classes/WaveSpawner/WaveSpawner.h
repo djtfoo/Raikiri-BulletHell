@@ -1,13 +1,16 @@
 #pragma once
-
-#include "EnemyData.h"
+#include "Entity.h"
 #include <vector>
 
 class WaveSpawner
 {
 	std::vector<float> waveTimer;   // how each wave of enemies will stay in game
 	std::vector<EnemyData> waveData;
-	std::vector<Sprite*> enemy_list;
+	std::vector<Entity*> enemy_list;//need to implement recycling for this
+
+
+
+
 public:
 	WaveSpawner();
 	~WaveSpawner();

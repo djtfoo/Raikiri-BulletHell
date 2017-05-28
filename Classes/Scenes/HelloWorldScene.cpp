@@ -36,12 +36,12 @@ bool HelloWorld::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
-
+	AnimHandler::getInstance()->Init();
 
 	//sprite stuff
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_idle.plist");
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_spawn.plist");
-	AnimHandler::getInstance()->Init();
+
 
 
 	auto nodeItems = Node::create();
@@ -99,9 +99,6 @@ bool HelloWorld::init()
 	mainSprite->setPosition(100, visibleSize.height / 2 - (visibleSize.height / 8) + sprite->getContentSize().height);
 	mainSprite->setName("mainSprite");
 
-
-
-	//spriteNode->addChild(mainSprite, 1);
 	this->addChild(spriteNode, 1);
 	spriteNode->addChild(mainSprite, 1);
 	//// move the psrite
