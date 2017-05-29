@@ -44,7 +44,7 @@ bool HelloWorld::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
-	AnimHandler::getInstance()->Init();
+	AnimHandler::GetInstance()->Init();
 
 	//sprite stuff
 	//SpriteFrameCache::getInstance()->addSpriteFramesWithFile("ship_idle.plist");
@@ -128,7 +128,7 @@ bool HelloWorld::init()
 
     // PLAYER
     mainPlayer = new Player();
-    mainPlayer->Init("Blue_Front1.png", "Player", 100, 100);
+    mainPlayer->Init("Blue_Front1.png", "Player", -100, 100);
 	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
     spriteNode->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);

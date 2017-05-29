@@ -7,16 +7,17 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 {
 	//remove imagesource for now
 	mainSprite = Sprite::create();
-	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+	AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, false);
 	mainSprite->setScale(0.6);
 	mainSprite->setAnchorPoint(Vec2::ZERO);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
-	
+    auto spawnpos = MoveTo::create(1, Vec2(150, 100));
+    mainSprite->runAction(spawnpos);
 	fSpeed = 200.f;
 
-	AnimatePlayer(KEY_DOWN);
-	StopAnimation();
+	//AnimatePlayer(KEY_DOWN);
+	//StopAnimation();
 
 
 	// shader stuff
@@ -28,7 +29,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
 	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
 	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-	AnimHandler::getInstance()->Init();
+	AnimHandler::GetInstance()->Init();
 	charEffect->link();
 	charEffect->updateUniforms();
 
@@ -85,7 +86,7 @@ void Player::AnimatePlayer(KEYCODE key)
 		//animFrames.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Right3.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
-		AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 
 		break;
 
@@ -94,7 +95,7 @@ void Player::AnimatePlayer(KEYCODE key)
 		//animFrames.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Left3.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
-		AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_BACK, true);
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_BACK, true);
 		break;
 
 	case KEY_UP:
@@ -102,7 +103,7 @@ void Player::AnimatePlayer(KEYCODE key)
 		//animFrames.pushBack(SpriteFrame::create("Blue_Back1.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Back3.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Back1.png", Rect(0, 0, 65, 81)));
-		AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 		break;
 
 	case KEY_DOWN:
@@ -110,7 +111,7 @@ void Player::AnimatePlayer(KEYCODE key)
 		//animFrames.pushBack(SpriteFrame::create("Blue_Front1.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Front3.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Front1.png", Rect(0, 0, 65, 81)));
-		AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 		break;
 	}
 
@@ -158,7 +159,7 @@ void Player::StopAnimation()
 	//Animation* animation = Animation::createWithSpriteFrames(animFrames, 0.5f);
 	//Animate* animateIdle = Animate::create(animation);
 
-	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+	//AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 
 	// run it and repeat it forever
 	//mainSprite->runAction(RepeatForever::create(animateIdle));

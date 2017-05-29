@@ -3,12 +3,8 @@
 USING_NS_CC;
 
 //setting s_instance to nothing to trigger new animhandler in getinstance
-AnimHandler *AnimHandler::s_instance = 0;
+//AnimHandler *AnimHandler::s_instance = 0;
 
-AnimHandler::AnimHandler()
-{
-
-}
 
 AnimHandler::~AnimHandler()
 {
@@ -86,12 +82,3 @@ Vector<cocos2d::SpriteFrame*> AnimHandler::getAnimation(const char *format, int 
 	return animFrames;
 }
 
-AnimHandler* AnimHandler::getInstance()
-{
-	if (!s_instance)
-	{
-		s_instance = new AnimHandler;
-	}
-	s_instance->Init();
-	return s_instance;
-}

@@ -55,9 +55,9 @@ void Entity::SettoSpawn()
 	//AnimHandler::getInstance()->setAnimation(this_eSprite, AnimHandler::CAPULE_SPAWN, true);
 	switch (_type)
 	{
-		case(CAPULE) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_SPAWN, false);
+		case(CAPULE) : AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_SPAWN, false);
 		break;
-		case(PLATONIC) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_SPAWN, false);
+		case(PLATONIC) : AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_SPAWN, false);
 		break;
 	}
 	auto moveTo = MoveTo::create(1,_destination);
@@ -70,9 +70,9 @@ void Entity::SettoAttack()
 {
 	switch (_type)
 	{
-	case(CAPULE) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_ACTIVE, true);
+	case(CAPULE) : AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::CAPULE_ACTIVE, true);
 		break;
-	case(PLATONIC) : AnimHandler::getInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_ACTIVE, true);
+	case(PLATONIC) : AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_ACTIVE, true);
 		break;
 	}
 

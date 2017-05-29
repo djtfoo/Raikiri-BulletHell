@@ -11,9 +11,9 @@ class AnimHandler : public cocos2d::Layer
 
 
 private:
-	static AnimHandler *s_instance;
+	//static AnimHandler *s_instance;
 	float animSpeed;
-	AnimHandler();
+	//AnimHandler();
 	~AnimHandler();
 
 
@@ -56,7 +56,17 @@ public:
 	Animation* getAnimAction(ANIMATION_TYPE  name);
 	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char *format, int count);
 
-	static AnimHandler* getInstance();
+	//static AnimHandler* getInstance();
+    static AnimHandler* GetInstance()
+    {
+        
+        static AnimHandler s_instance;
+        s_instance.Init();
+        return &s_instance;
+        
+    };
+
+
 
 };
 
