@@ -3,6 +3,7 @@
 #include "SimpleAudioEngine.h"
 
 #include "SceneManager.h"
+#include "Audio/AudioManager.h"
 //#include "AnimationHandler.h"
 
 USING_NS_CC;
@@ -129,6 +130,8 @@ bool MainMenu::init()
     //listener2->onMouseUp = CC_CALLBACK_1(MainMenu::onMouseUp, this);
     //_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     //_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, this);
+
+    AudioManager::GetInstance()->PlayBackgroundMusic("MainMenu");
 
     return true;
 }

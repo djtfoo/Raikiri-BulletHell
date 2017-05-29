@@ -14,7 +14,7 @@ using std::map;
 class SceneManager
 {
 private:
-    map<string, Scene*> listOfScenes;
+    map<string, cocos2d::Scene*> listOfScenes;
 
     SceneManager() {}
 

@@ -88,6 +88,10 @@ KEYCODE Input::EventKeyboardToKeycode(EventKeyboard::KeyCode keyCode)
 
 	case EventKeyboard::KeyCode::KEY_ALT:
 		return KEY_ALT;
+
+    case EventKeyboard::KeyCode::KEY_SHIFT:
+        return KEY_SHIFT;
+
     default:
         return KEYS_TOTAL;
     }

@@ -1,0 +1,7 @@
+# Audio files to load - 0 for BGM, 1 for SFX
+# audio type, reference name, relative file path to Resources/Audio/
+0,MainMenu,BGM_mainmenu.wav,
+0,Game,BGM_game.mp3,
+0,Boss,BGM_boss.mp3,
+1,Laser,SFX_laser.wav,
+1,Bullet,SFX_bullet.wav,

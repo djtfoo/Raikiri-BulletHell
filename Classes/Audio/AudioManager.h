@@ -1,33 +1,42 @@
 #ifndef AUDIOMANAGER_H_
 #define AUDIOMANAGER_H_
 
-#include "cocos2d.h"
+#include "SimpleAudioEngine.h"
 #include <map>
 #include <string>
 
-using namespace cocos2d;
 using std::map;
 using std::string;
 
 class AudioManager
 {
 private:
-	map<string, string>* SoundList;
+    CocosDenshion::SimpleAudioEngine* audioEngine;
+    map<string, string> SFXList;
+    map<string, string> BGMList;
+
+    bool LoadFile(const char* file_path);
+    void PreloadAudio(int fileType, string audioName, string fileName);
 
 public:
-	~AudioManager(){}
+    ~AudioManager(){}
 
-	static AudioManager* GetInstance()
-	{
-		static AudioManager am;
-		return &am;
-	};
+    static AudioManager* GetInstance()
+    {
+        static AudioManager am;
+        return &am;
+    };
 
-	void Init();
-	void PlaySoundEffect(string SoundName, bool loop);
-	void PlayBackGroundMusic(string MusicName, bool loop);
-	void PreloadAudio(string SoundName, string FileName);
-	
+    void Init();
+    void PlaySoundEffect(string soundName, bool loop = false);
+    void PlayBackgroundMusic(string musicName, bool loop = true);
+
+    void PauseBackgroundMusic();
+    void ResumeBackgroundMusic();
+    void StopBackgroundMusic();
+
+    void ApplicationDidEnterBackground();
+    void ApplicationWillEnterForeground();
 };
 
 

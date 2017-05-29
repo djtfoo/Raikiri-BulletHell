@@ -22,6 +22,7 @@ enum KEYCODE
     KEY_DOWN,
     KEY_SPACE,
 	KEY_ALT,
+    KEY_SHIFT,
     KEY_R,
 
     KEYS_TOTAL
@@ -56,10 +57,10 @@ protected:
     static TOUCH_STATE mouseState[MOUSE_TOTAL];
     static Vec2 mousePos[MOUSE_TOTAL];
 
-    void Init();
-
 public:
     virtual ~Input() {}
+
+    static void Init();
 
     // called by keyboard listener
     static void OnKeyPressed(KEYCODE keyCode);

@@ -1,10 +1,9 @@
 #include "GameInputManager.h"
 #include "Scenes/SceneManager.h"
+#include "Scenes/HelloWorldScene.h"
 
 void GameInputManager::Init()
 {
-    Input::Init();
-
     keyControls.insert(std::pair<string, KEYCODE>("MoveRight", KEY_RIGHT));
     keyControls.insert(std::pair<string, KEYCODE>("MoveLeft", KEY_LEFT));
     keyControls.insert(std::pair<string, KEYCODE>("MoveUp", KEY_UP));
@@ -12,10 +11,14 @@ void GameInputManager::Init()
     keyControls.insert(std::pair<string, KEYCODE>("Shoot", KEY_SPACE));
     keyControls.insert(std::pair<string, KEYCODE>("ResetScene", KEY_R));
 	keyControls.insert(std::pair<string, KEYCODE>("FireLaser", KEY_ALT));
+    keyControls.insert(std::pair<string, KEYCODE>("FreezeTime", KEY_SHIFT));
 }
 
 void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
 {
+    if (keyCode == KEYS_TOTAL)
+        return;
+
     Input::OnKeyPressed(keyCode);
 
     if (keyCode == keyControls["MoveRight"]) {
@@ -45,11 +48,22 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
         Input::OnKeyPressed(KEY_R);
         //SceneManager::GetInstance()->ChangeScene("HelloWorld");
     }
+    else if (keyCode == keyControls["FreezeTime"]) {
+        Input::OnKeyPressed(KEY_SHIFT);
+        auto scene = Director::getInstance()->getRunningScene();
+        auto layer = scene->getChildByTag(999);
+        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+        helloLayer->FreezeTime();
+        //SceneManager::GetInstance()->ChangeScene("HelloWorld");
+    }
 
 }
 
 void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
 {
+    if (keyCode == KEYS_TOTAL)
+        return;
+
     Input::OnKeyReleased(keyCode);
 
     if (keyCode == keyControls["MoveRight"]) {
@@ -82,7 +96,6 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
         //mainPlayer->setUpOrDown(-1, false);
     }
     else if (keyCode == keyControls["Shoot"]) {
-        // player shoot here
 		player->FireBasicBullet();
     }
 
@@ -92,6 +105,9 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
 	}
     else if (keyCode == keyControls["ResetScene"]) {
         SceneManager::GetInstance()->ChangeScene("HelloWorld");
+    }
+    else if (keyCode == keyControls["FreezeTime"]) {
+
     }
 
 }

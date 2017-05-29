@@ -1,5 +1,7 @@
 #include "AppDelegate.h"
 #include "Scenes/SceneManager.h"
+#include "Input/Input.h"
+#include "Audio/AudioManager.h"
 
 USING_NS_CC;
 
@@ -79,6 +81,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     //// run
     //director->runWithScene(scene);
 
+    // generic Inits
+    Input::Init();
+    AudioManager::GetInstance()->Init();
     SceneManager::GetInstance()->Init();
 
     return true;
@@ -87,6 +92,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 // This function will be called when the app is inactive. Note, when receiving a phone call it is invoked.
 void AppDelegate::applicationDidEnterBackground() {
     Director::getInstance()->stopAnimation();
+    AudioManager::GetInstance()->ApplicationDidEnterBackground();
 
     // if you use SimpleAudioEngine, it must be paused
     // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
@@ -95,6 +101,7 @@ void AppDelegate::applicationDidEnterBackground() {
 // this function will be called when the app is active again
 void AppDelegate::applicationWillEnterForeground() {
     Director::getInstance()->startAnimation();
+    AudioManager::GetInstance()->ApplicationWillEnterForeground();
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();

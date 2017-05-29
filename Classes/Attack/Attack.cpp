@@ -36,9 +36,11 @@ void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition, float LaserSc
 }
 void  Attack::StopFiringLaser(float LaserSpeed,float LifeTime)
 {
-	this->InitLaser = false;
-	auto moveEvent = MoveBy::create(LifeTime, 1 * Vec2(1.f, 0.f) * LaserSpeed);
-	LaserSprite->runAction(moveEvent);
+    if (this->InitLaser) {
+        this->InitLaser = false;
+        auto moveEvent = MoveBy::create(LifeTime, Vec2(1.f, 0.f) * LaserSpeed);
+        LaserSprite->runAction(moveEvent);
+    }
 
 }
 void Attack::LaserUpdate(float dt, float LaserScaleX,Vec2 PlayerPosition)

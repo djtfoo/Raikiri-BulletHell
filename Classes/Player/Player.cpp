@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Scenes/HelloWorldScene.h"
 #include "AnimationHandler.h"
+#include "Audio/AudioManager.h"
 
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y)
 {
@@ -61,7 +62,9 @@ void Player::Update(float dt)
 	{
 		//StopAnimation();
 	}
-	AttackSystems->LaserUpdate(dt, 0.5f, mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
+    AttackSystems->LaserUpdate(dt, 0.5f,
+        mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
+    //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
 	/*GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
 	mainSprite->setGLProgram(charEffect);
 	mainSprite->setGLProgramState(state);
@@ -120,11 +123,19 @@ void Player::AnimatePlayer(KEYCODE key)
 }
 void Player::FireBasicBullet()
 {
-	AttackSystems->FireBasicBullet("Projectiles/Laser.png", mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0), 10000,25);
+	AttackSystems->FireBasicBullet("Projectiles/Bullet.png",
+        mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f),
+        //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
+        10000,25);
+    AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void Player::FireLaser()
 {
-	AttackSystems->FireLaserBullet("Projectiles/Laser.png", mainSprite->getPosition() + Vec2(mainSprite->getScaleX() * 50, 0), 10);
+	AttackSystems->FireLaserBullet("Projectiles/Laser.png",
+        mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f),
+        //mainSprite->getPosition() + Vec2(mainSprite->getScaleX() * 50, 0),
+        10);
+    AudioManager::GetInstance()->PlaySoundEffect("Laser");
 }
 void Player::StopFiringLaser()
 {

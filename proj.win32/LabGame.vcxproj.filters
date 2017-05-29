@@ -31,6 +31,9 @@
     <Filter Include="src\GUI">
       <UniqueIdentifier>{f983c3f4-c87b-4b0b-be5b-41839f12dea2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Audio">
+      <UniqueIdentifier>{f17716ba-11c0-41a2-b5f0-ecb371c0f34a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,9 +84,11 @@
     <ClCompile Include="..\Classes\Attack\Projectile.cpp">
       <Filter>src\Attack</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Audio\AudioManager.cpp" />
     <ClCompile Include="..\Classes\GUI\GUI.cpp">
       <Filter>src\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Audio\AudioManager.cpp">
+      <Filter>src\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,9 +143,11 @@
     <ClInclude Include="..\Classes\Attack\Projectile.h">
       <Filter>src\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Audio\AudioManager.h" />
     <ClInclude Include="..\Classes\GUI\GUI.h">
       <Filter>src\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Audio\AudioManager.h">
+      <Filter>src\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

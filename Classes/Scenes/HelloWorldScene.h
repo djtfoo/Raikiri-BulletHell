@@ -14,7 +14,9 @@ private:
     RenderTexture* rendtex;
     Sprite* rendtexSprite;
 	Node* spriteNode;
-	//auto GUILayer;
+
+    bool timeStopped;
+
 public:
     static cocos2d::Scene* createScene();
 
@@ -30,6 +32,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
 	void update(float dt);
+    void FreezeTime();
     //bool isKeyHeld(EventKeyboard::KeyCode keyCode);
 
 	Size playingSize;
