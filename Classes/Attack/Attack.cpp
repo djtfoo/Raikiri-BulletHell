@@ -21,7 +21,7 @@ void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletS
 	Projectile* projectile = new Projectile();
 	/*Sprite* ProjectileSprite =*/ projectile->InitBasicBullet(BulletImg, SpawnPosition,BulletSpeed,LifeTime);
 }
-void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition, float LaserScaleX)
+void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition)
 {
 	if (!InitLaser)
 	{

@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "Player/Player.h"
 #include "WaveSpawner/WaveSpawner.h"
+#include "LightEffect/LightEffect.h"
 
 using namespace cocos2d;
 
@@ -14,8 +15,17 @@ private:
     RenderTexture* rendtex;
     Sprite* rendtexSprite;
 	Node* spriteNode;
+    Node* projectieNode;
+	LightEffect* lightEffect;
 
     bool timeStopped;
+	bool freezeAnimationChange;
+    Vec2 screenMin, screenMax;
+    float xPos, yPos;
+    float widthX, heightY;
+    //float minX, maxX, minY, maxY;
+
+    void UpdateFreezeAnimation(float dt);
 
 public:
     static cocos2d::Scene* createScene();
@@ -42,7 +52,7 @@ public:
     Player* GetPlayer();
 
 	Node* getSpriteNode();
-
+    Node* getProjectileNode();
     // Enemy stuff
     WaveSpawner* waveSpawner;
 

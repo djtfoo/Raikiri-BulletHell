@@ -13,6 +13,10 @@ GUI* GUI::createPlayerGUI(Player* player)
 	gui->initOptions("Score: " + std::to_string(player->getScore()), cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 150));
 	return gui;
 }
+void GUI::Update(float dt)
+{
+    //gui->initOptions("Lives Left: " + std::to_string(player->getLives()), cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 100));
+}
 void GUI::initOptions(std::string& _message, Vec2 Position)
 {
 	auto _messageLabel = Label::createWithTTF( _message.c_str(),"fonts/Batman.ttf", 24);

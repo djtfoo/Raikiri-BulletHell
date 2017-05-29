@@ -37,9 +37,6 @@ bool HelloWorld::init()
 	
 	//GUI
 	//auto GUIlayer = this->getChildByTag(997);
-	
-    timeStopped = false;
-
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -96,6 +93,10 @@ bool HelloWorld::init()
 	spriteNode = Node::create();
 	spriteNode->setName("spriteNode");
 	this->addChild(spriteNode, 1);
+
+    projectieNode = Node::create();
+    projectieNode->setName("projectileNode");
+    this->addChild(projectieNode, 2);
 	//Vector<SpriteFrame*> frames = getAnimation("ship_idle%04d.png", 15);
 //	auto mainSprite = Sprite::create();
 //	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
@@ -124,11 +125,19 @@ bool HelloWorld::init()
 	//ship stuff(trying from spritesheet)
 	// sprite
 
+	// Lighting
+	lightEffect = LightEffect::create();
+	lightEffect->retain();
 
+	Vec3 lightPos(visibleSize.width * 0.5f, visibleSize.height * 0.5f, 100.f);
+	lightEffect->setLightPos(lightPos);
+	lightEffect->setLightCutoffRadius(1000.f);
+	lightEffect->setBrightness(2.f);
 
     // PLAYER
     mainPlayer = new Player();
-    mainPlayer->Init("Blue_Front1.png", "Player", -100, 100);
+    mainPlayer->SetLightEffect(lightEffect);
+    mainPlayer->Init("Blue_Front1.png", "Player", -100, 100, playingSize);
 	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
     spriteNode->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);
@@ -177,6 +186,7 @@ bool HelloWorld::init()
 
 	// cannot use same event variable for multiple objects; use CloneBy
 
+    // Listeners
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
 	listener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
@@ -186,10 +196,20 @@ bool HelloWorld::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, this);
 
+    // GUI
 	GUI* playerGui = GUI::createPlayerGUI(mainPlayer);
 	this->addChild(playerGui, 2);
 
+    // Audio
     AudioManager::GetInstance()->PlayBackgroundMusic("Game");
+
+    // Freeze Time Post-Processing
+    timeStopped = false;
+    freezeAnimationChange = false;
+    screenMin.setZero();
+    screenMax.set(visibleSize.width, visibleSize.height);
+    xPos = yPos = 0.f;
+    widthX = heightY = 0.f;
 
 	return true;
 }
@@ -270,6 +290,9 @@ void HelloWorld::update(float dt)
     //Input::GetInstance()->Update(dt);
 
     // post processing shader
+    if (freezeAnimationChange) {
+        UpdateFreezeAnimation(dt);
+    }
     rendtex->beginWithClear(.0f, .0f, .0f, .0f);
     this->visit();
     rendtex->end();
@@ -313,5 +336,93 @@ Vector<cocos2d::SpriteFrame*> HelloWorld::getAnimation(const char *format, int c
 
 void HelloWorld::FreezeTime()
 {
-    timeStopped = !timeStopped;
+	if (!freezeAnimationChange) {
+        freezeAnimationChange = true;
+		//timeStopped = !timeStopped;
+        if (!timeStopped)
+        {
+            timeStopped = true;
+            xPos = mainPlayer->GetSprite()->getPosition().x;
+            yPos = mainPlayer->GetSprite()->getPosition().y;
+            widthX = 0.f;
+            heightY = 0.f;
+        }
+        else
+        {
+            timeStopped = false;
+            //xPos = mainPlayer->GetSprite()->getPosition().x;
+            //yPos = mainPlayer->GetSprite()->getPosition().y;
+        }
+	}
+}
+
+void HelloWorld::UpdateFreezeAnimation(float dt)
+{
+    float deltaChange = 600.f * dt;
+    bool doneFreezing = true;
+
+    if (timeStopped) {
+        if (xPos > screenMin.x) {
+            xPos -= deltaChange;
+            doneFreezing = false;
+        }
+        else {
+            xPos = screenMin.x;
+        }
+
+        if (yPos > screenMin.y) {
+            yPos -= deltaChange;
+            doneFreezing = false;
+        }
+        else {
+            yPos = screenMin.y;
+        }
+
+        if (widthX < screenMax.x) {
+            widthX += deltaChange;
+            doneFreezing = false;
+        }
+        else {
+            widthX = screenMax.x;
+        }
+
+        if (heightY < screenMax.y) {
+            heightY += deltaChange;
+            doneFreezing = false;
+        }
+        else {
+            heightY = screenMax.y;
+        }
+    }
+    else {
+        //if (minX < mainPlayer->GetSprite()->getPosition().x)
+        //    minX -= deltaChange;
+        //else if (minX > mainPlayer->GetSprite()->getPosition().x)
+        //    minX = mainPlayer->GetSprite()->getPosition().x;
+        //
+        //if (minY > mainPlayer->GetSprite()->getPosition().y)
+        //    minY -= deltaChange;
+        //else if (minY > mainPlayer->GetSprite()->getPosition().y)
+        //    minY = mainPlayer->GetSprite()->getPosition().y;
+        //+
+        //if (maxX > mainPlayer->GetSprite()->getPosition().x)
+        //    maxX += deltaChange;
+        //else if (maxX < mainPlayer->GetSprite()->getPosition().x)
+        //    maxX = mainPlayer->GetSprite()->getPosition().x;
+        //
+        //if (maxY > mainPlayer->GetSprite()->getPosition().y)
+        //    maxY += deltaChange;
+        //else if (maxY < mainPlayer->GetSprite()->getPosition().y)
+        //    maxY = mainPlayer->GetSprite()->getPosition().y;
+    }
+
+    //rendtexSprite->setTextureRect(Rect(0, 0, rendtexSprite->getTexture()->getContentSize().width, rendtexSprite->getTexture()->getContentSize().height));
+    rendtexSprite->setTextureRect(Rect(xPos, yPos, widthX, heightY));
+
+    if (doneFreezing)
+        freezeAnimationChange = false;
+}
+Node* HelloWorld::getProjectileNode()
+{
+    return projectieNode;
 }

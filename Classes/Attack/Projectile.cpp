@@ -12,7 +12,7 @@ Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition,float B
 	Projectile->setScaleY(2.0f);
 	Projectile->setScaleX(2.0f);
 	ProjectileSpeed = BulletSpeed;
-	auto moveEvent = MoveBy::create(LifeTime, 1 * Vec2(1.f, 0.f) * ProjectileSpeed);
+	auto moveEvent = MoveBy::create(LifeTime, Vec2(5.f, 0.f) * ProjectileSpeed);
 	Projectile->runAction(moveEvent);
 
 	auto scene = Director::getInstance()->getRunningScene();
@@ -34,8 +34,9 @@ void  Projectile::setProjectileSprite(Sprite* ProjectileSprite)
 Sprite*  Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
 {
 	Sprite* Projectile = Sprite::create(LaserImg);
-	Projectile->setAnchorPoint(Vec2(0, 0));
+	Projectile->setAnchorPoint(Vec2::ZERO);
     //Projectile->setPosition(SpawnPosition.x,SpawnPosition.y);
+    //Projectile->setPosition(SpawnPosition.x, SpawnPosition.y);
     Projectile->setPosition(SpawnPosition.x - Projectile->getContentSize().width, SpawnPosition.y - Projectile->getContentSize().height);
 	Projectile->setScaleX(0.f);
 	Projectile->setScaleY(4.0f);
@@ -44,7 +45,7 @@ Sprite*  Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
 	auto scene = Director::getInstance()->getRunningScene();
 	auto layer = scene->getChildByTag(999);
 	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-	Node* SpriteNode = helloLayer->getSpriteNode();
-	SpriteNode->addChild(Projectile, -1);
+	Node* SpriteNode = helloLayer->getProjectileNode();
+	SpriteNode->addChild(Projectile, 1);
 	return Projectile;
 }

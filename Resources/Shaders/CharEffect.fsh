@@ -11,5 +11,5 @@ void main()
 	// v_texCoord is the current location. Get the distance to the "loc" uniform we have defined
 	float coeff = 1.0 - 1.5 * distance(v_texCoord, loc);
 	coeff = clamp(coeff, 0.0, 1.0);
-	gl_fragColor = vec4(coeff * v_orColor.r, coeff * v_orColor.g, coeff * v_orColor.b, v_orColor.a);
+	gl_FragColor = vec4(coeff * v_orColor.r, coeff * v_orColor.g, coeff * v_orColor.b, v_orColor.a);
 }

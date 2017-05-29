@@ -15,6 +15,7 @@ public:
 	//~GUI();
 	static GUI* createPlayerGUI(Player* player); //std::string& _message);
 	void initOptions( std::string& _message,Vec2 Position);
+    void Update(float dt);
 	//virtual bool init();
 
 

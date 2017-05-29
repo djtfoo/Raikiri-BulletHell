@@ -24,7 +24,7 @@ public:
 
 
 	void FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime);
-	void FireLaserBullet(string LaserImg, Vec2 SpawnPosition,float LaserScaleX);
+	void FireLaserBullet(string LaserImg, Vec2 SpawnPosition);
 	void StopFiringLaser(float LaserSpeed, float LifeTime);
 	void LaserUpdate(float dt, float LaserScaleX, Vec2 PlayerPosition);
 	bool GetInitLaser();
