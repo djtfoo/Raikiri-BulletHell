@@ -50,7 +50,6 @@ void Entity::SetActive()
 
 void Entity::SettoSpawn()
 {	
-	_eSprite->setAnchorPoint(Vec2::ZERO);
 	_eSprite->setPosition(_spawnPos.x, _spawnPos.y);
 	//AnimHandler::getInstance()->setAnimation(this_eSprite, AnimHandler::CAPULE_SPAWN, true);
 	switch (_type)

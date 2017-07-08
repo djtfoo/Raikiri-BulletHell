@@ -137,10 +137,13 @@ bool HelloWorld::init()
     // PLAYER
     mainPlayer = new Player();
     mainPlayer->SetLightEffect(lightEffect);
-    mainPlayer->Init("Blue_Front1.png", "Player", -100, 100, playingSize);
+    mainPlayer->Init("Blue_Front1.png", "Player", 300, 300, playingSize);
 	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
-    spriteNode->addChild(mainPlayer->GetSprite(), 1);
+    this->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);
+	auto mainSprite = Sprite::create("LightBlue_Front1.png");
+	mainSprite->setName("bluefucker");
+	this->addChild(mainSprite, 1);
 
     proPostProcess = new GLProgram();
     proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/Grayscale.fsh");
@@ -272,6 +275,9 @@ void HelloWorld::update(float dt)
 	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
+	auto currSprite = this->getChildByName("bluefucker");
+	currSprite->setPosition(mainPlayer->mainSprite->getPositionX(), mainPlayer->mainSprite->getPositionY());
+
 	waveSpawner->Run(dt);
 	mainPlayer->Update(dt);
 	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)

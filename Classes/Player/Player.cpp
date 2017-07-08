@@ -6,14 +6,12 @@
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y, Size playingSize)
 {
 	//remove imagesource for now
-	mainSprite = Sprite::create();
-	AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, false);
-	mainSprite->setAnchorPoint(Vec2::ZERO);
-    mainSprite->setScale(0.6f);
+	mainSprite = Sprite::create("Blue_Front1.png");
+    //mainSprite->setScale(0.6f);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
-    auto spawnpos = MoveTo::create(1, Vec2(150, 100));
-    mainSprite->runAction(spawnpos);
+   // auto spawnpos = MoveTo::create(1, Vec2(150, 100));
+    //mainSprite->runAction(spawnpos);
 	fSpeed = 200.f;
 
 	//AnimatePlayer(KEY_DOWN);
@@ -56,8 +54,8 @@ void Player::Update(float dt)
         Vec2 playerPos = mainSprite->getPosition();
         Vec2 destination = playerPos + intDirX * Vec2(1.f, 0.f) * fSpeed * dt + intDirY * Vec2(0.f, 1.f) * fSpeed * dt;
 
-        destination.x = clampf(destination.x, 1.f, screenWidth - mainSprite->getContentSize().width - 1.f);
-        destination.y = clampf(destination.y, 1.f, screenHeight - mainSprite->getContentSize().height * 0.55f - 1.f);
+        //destination.x = clampf(destination.x, 1.f, screenWidth - mainSprite->getContentSize().width - 1.f);
+       // destination.y = clampf(destination.y, 1.f, screenHeight - mainSprite->getContentSize().height * 0.55f - 1.f);
 
         //auto moveEvent = MoveBy::create(0.f, intDirX * Vec2(1.f, 0.f) * fSpeed * dt);
         //mainSprite->runAction(moveEvent);
@@ -70,9 +68,15 @@ void Player::Update(float dt)
         //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
     //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
 	
-	GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
-	mainSprite->setGLProgram(charEffect);
-	mainSprite->setGLProgramState(state);
+	
+	
+	//GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
+	//this offests the player sprite for some reason
+	//mainSprite->setGLProgram(charEffect);
+	//mainSprite->setGLProgramState(state);
+	
+	
+	
 	//state->setUniformVec2("loc", mLoc);
 
 	//charEffect->
@@ -103,7 +107,7 @@ void Player::AnimatePlayer(KEYCODE key)
 		//animFrames.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Right3.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
-		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		//AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 		break;
 
 	case KEY_LEFT:
@@ -111,7 +115,7 @@ void Player::AnimatePlayer(KEYCODE key)
 		//animFrames.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Left3.png", Rect(0, 0, 65, 81)));
 		//animFrames.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
-		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_BACK, true);
+		//AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_BACK, true);
         return;
 	}
     //AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);

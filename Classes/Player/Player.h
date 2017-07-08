@@ -21,13 +21,14 @@ private:
 	GLProgram* charEffect;
 	LightEffect* lightEffect;
 	
-	Sprite* mainSprite;
+	//Sprite* mainSprite;
 	int intDirX, intDirY;	// direction just to determine +ve or -ve movement
     float screenWidth, screenHeight;
 	float fSpeed;
 	Attack* AttackSystems;
 
 public:
+	Sprite* mainSprite;
 	void Init(const char* imgSource, const char* playerName, float X, float Y, Size playingSize);
 	void Update(float dt);
 	void AnimatePlayer(KEYCODE key);	// KEY_INPUT for direction
