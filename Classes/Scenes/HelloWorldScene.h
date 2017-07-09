@@ -37,7 +37,10 @@ public:
     virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event*);
     virtual void onMouseDown(Event*);
     virtual void onMouseUp(Event*);
-
+	virtual bool onContactBegin(PhysicsContact& );
+	virtual bool onContactPreSolve(PhysicsContact& contact);
+	virtual bool onContactPostSolve(PhysicsContact& contact);
+	virtual bool onContactSeparate(PhysicsContact& contact);
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     

@@ -4,7 +4,18 @@ Entity::Entity()
 {
 	_eSprite = Sprite::create("Blue_Front1.png");
 	_eSprite->setScale(0.5);
+
 	_active = false;
+
+	auto physicsBody = PhysicsBody::createBox(
+		Size(_eSprite->getContentSize().width, _eSprite->getContentSize().height),
+		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	physicsBody->setDynamic(false);
+	physicsBody->setCategoryBitmask(0x02);
+	physicsBody->setCollisionBitmask(0x01);
+	physicsBody->setPositionOffset(Vec2(_eSprite->getContentSize().width, _eSprite->getContentSize().height*2));
+	_eSprite->addComponent(physicsBody);
+
 }
 
 Entity::~Entity()

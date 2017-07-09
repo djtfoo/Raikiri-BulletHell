@@ -35,7 +35,7 @@
       <UniqueIdentifier>{f17716ba-11c0-41a2-b5f0-ecb371c0f34a}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Enemy">
-      <UniqueIdentifier>{8ebfb20c-c89b-4f0e-bb6c-94c12c3c0277}</UniqueIdentifier>
+      <UniqueIdentifier>{a0d7230f-d5f3-47e4-a995-3e4f81ff86e3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

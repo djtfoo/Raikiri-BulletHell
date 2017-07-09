@@ -10,8 +10,8 @@ USING_NS_CC;
 Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
-    auto scene = Scene::create();
-    
+    auto scene = Scene::createWithPhysics();
+	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
 
@@ -37,7 +37,7 @@ bool HelloWorld::init()
 	
 	//GUI
 	//auto GUIlayer = this->getChildByTag(997);
-
+	
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
@@ -133,7 +133,13 @@ bool HelloWorld::init()
 	lightEffect->setLightPos(lightPos);
 	lightEffect->setLightCutoffRadius(1000.f);
 	lightEffect->setBrightness(2.f);
-
+	//Entity* entity = new Entity;
+	//entity->SettoSpawn();
+	//temp player
+	Player* tempplayer = new Player();
+	tempplayer->SetLightEffect(lightEffect);
+	tempplayer->Init("Blue_Front1.png", "Player", 600, 300, playingSize);
+	this->addChild(tempplayer->GetSprite(), 1);
     // PLAYER
     mainPlayer = new Player();
     mainPlayer->SetLightEffect(lightEffect);
@@ -197,6 +203,14 @@ bool HelloWorld::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, this);
 
+	auto collisionListener = EventListenerPhysicsContact::create();
+	//collisionListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+	collisionListener->onContactPreSolve = CC_CALLBACK_1(HelloWorld::onContactPreSolve, this);
+	//collisionListener->onContactPostSolve = CC_CALLBACK_3(HelloWorld::onContactPostSolve, this);
+	//collisionListener->onContactSeparate = CC_CALLBACK_3(HelloWorld::onContactSeparate, this);
+
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(collisionListener,this);
+
     // GUI
 	GUI* playerGui = GUI::createPlayerGUI(mainPlayer);
 	this->addChild(playerGui, 2);
@@ -225,11 +239,40 @@ Node* HelloWorld::getSpriteNode()
 	return spriteNode;
 }
 void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
-{
+ {
     GameInputManager::GetInstance()->WhenKeyReleased(Input::EventKeyboardToKeycode(keyCode), mainPlayer);
 }
 
 // Mouse input
+bool HelloWorld::onContactBegin(PhysicsContact& contact)
+{
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+
+	/*bodyA->getNode()->removeFromParentAndCleanup(true);
+	bodyB->getOwner()->removeFromParentAndCleanup(true);*/
+	/*bodyA->getNode()->release();
+	bodyB->getNode()->release();*/
+	return true;
+}
+bool HelloWorld::onContactPreSolve(PhysicsContact& contact)
+{
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+	return true;
+}
+bool HelloWorld::onContactPostSolve(PhysicsContact& contact)
+{
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+	return true;
+}
+bool HelloWorld::onContactSeparate(PhysicsContact& contact)
+{
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+	return true;
+}
 void HelloWorld::onMouseDown(Event* event)
 {
     EventMouse* mouseEvent = (EventMouse*)event;

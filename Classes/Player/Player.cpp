@@ -10,7 +10,18 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
     //mainSprite->setScale(0.6f);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
+
 	mainSprite->setScale(0.5);
+
+	auto physicsBody = PhysicsBody::createBox(
+		Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
+		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	physicsBody->setCategoryBitmask(0x02);
+	physicsBody->setCollisionBitmask(0x01);
+	physicsBody->setDynamic(true);
+	physicsBody->setGravityEnable(false);
+	mainSprite->addComponent(physicsBody);
+
 
    // auto spawnpos = MoveTo::create(1, Vec2(150, 100));
     //mainSprite->runAction(spawnpos);
@@ -129,15 +140,15 @@ void Player::AnimatePlayer(KEYCODE key)
 void Player::FireBasicBullet()
 {
 	AttackSystems->FireBasicBullet("Projectiles/Bullet.png",
-        mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f),
+        mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
         //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
-        10000.f,25);
+        100.f,25);
     AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void Player::FireLaser()
 {
     AttackSystems->FireLaserBullet("Projectiles/Laser.png",
-        mainSprite->getPosition());
+		mainSprite->getPosition() - Vec2(0, -mainSprite->getContentSize().height*100));
         //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
         //mainSprite->getPosition() + Vec2(mainSprite->getScaleX() * 50, 0),
         //1000);

@@ -6,12 +6,37 @@
 Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition,float BulletSpeed,float LifeTime)
 {
 	Sprite* Projectile = Sprite::create(BulletImg);
+
 	//Projectile->setPosition(SpawnPosition.x,SpawnPosition.y);
     Projectile->setPosition(SpawnPosition.x, SpawnPosition.y);
 
 	ProjectileSpeed = BulletSpeed;
 	auto moveEvent = MoveBy::create(LifeTime, Vec2(5.f, 0.f) * ProjectileSpeed);
 	Projectile->runAction(moveEvent);
+
+	ProjectileSpeed = BulletSpeed;
+	Projectile->setAnchorPoint(Vec2::ZERO);
+	auto physicsBody = PhysicsBody::createBox(
+		Size(Projectile->getContentSize().width, Projectile->getContentSize().height),
+		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	physicsBody->setDynamic(true);
+	physicsBody->setCategoryBitmask(0x01);
+	physicsBody->setCollisionBitmask(0x02);
+	
+	physicsBody->setVelocity(Vec2(1.f, 0.f) * ProjectileSpeed);
+	physicsBody->setGravityEnable(false);
+	Projectile->addComponent(physicsBody);
+	
+
+
+
+    Projectile->setPosition(SpawnPosition.x - Projectile->getContentSize().width, SpawnPosition.y - Projectile->getContentSize().height);
+	Projectile->setScaleY(2.0f);
+	Projectile->setScaleX(2.0f);
+	
+	//auto moveEvent = MoveBy::create(LifeTime, Vec2(5.f, 0.f) * ProjectileSpeed);
+	//Projectile->runAction(moveEvent);
+
 
 	auto scene = Director::getInstance()->getRunningScene();
 	auto layer = scene->getChildByTag(999);
