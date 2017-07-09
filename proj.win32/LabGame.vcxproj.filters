@@ -34,6 +34,9 @@
     <Filter Include="src\Audio">
       <UniqueIdentifier>{f17716ba-11c0-41a2-b5f0-ecb371c0f34a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Enemy">
+      <UniqueIdentifier>{8ebfb20c-c89b-4f0e-bb6c-94c12c3c0277}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Audio\AudioManager.cpp">
       <Filter>src\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Enemy\Capule.cpp">
+      <Filter>src\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Enemy\Platonic.cpp">
+      <Filter>src\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +157,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Audio\AudioManager.h">
       <Filter>src\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Enemy\Capule.h">
+      <Filter>src\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Enemy\Platonic.h">
+      <Filter>src\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

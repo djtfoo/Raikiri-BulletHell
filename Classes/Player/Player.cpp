@@ -10,6 +10,8 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
     //mainSprite->setScale(0.6f);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
+	mainSprite->setScale(0.5);
+
    // auto spawnpos = MoveTo::create(1, Vec2(150, 100));
     //mainSprite->runAction(spawnpos);
 	fSpeed = 200.f;
@@ -25,6 +27,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
 
 	AnimHandler::GetInstance()->Init();
+	AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, true);
 
 	charEffect->link();
 	charEffect->updateUniforms();
@@ -101,21 +104,17 @@ void Player::AnimatePlayer(KEYCODE key)
 	switch (key)
 	{
 	case KEY_RIGHT:
-    case KEY_UP:
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		break;
+	case KEY_UP:
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		break;
     case KEY_DOWN:
-		//animFrames.pushBack(SpriteFrame::create("Blue_Right2.png", Rect(0, 0, 65, 81)));
-		//animFrames.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
-		//animFrames.pushBack(SpriteFrame::create("Blue_Right3.png", Rect(0, 0, 65, 81)));
-		//animFrames.pushBack(SpriteFrame::create("Blue_Right1.png", Rect(0, 0, 65, 81)));
-		//AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 		break;
 
 	case KEY_LEFT:
-		//animFrames.pushBack(SpriteFrame::create("Blue_Left2.png", Rect(0, 0, 65, 81)));
-		//animFrames.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
-		//animFrames.pushBack(SpriteFrame::create("Blue_Left3.png", Rect(0, 0, 65, 81)));
-		//animFrames.pushBack(SpriteFrame::create("Blue_Left1.png", Rect(0, 0, 65, 81)));
-		//AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_BACK, true);
+		AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_BACK, true);
         return;
 	}
     //AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);

@@ -13,7 +13,8 @@ private:
 public:
 
 	Sprite* InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime);
-	
+	Sprite* InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed,Vec2 direction);
+
 	Sprite* InitLaserBullet(string LaserImg, Vec2 SpawnPosition);
 
 	Sprite* getProjectileSprite();

@@ -141,9 +141,7 @@ bool HelloWorld::init()
 	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
     this->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);
-	auto mainSprite = Sprite::create("LightBlue_Front1.png");
-	mainSprite->setName("bluefucker");
-	this->addChild(mainSprite, 1);
+
 
     proPostProcess = new GLProgram();
     proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/Grayscale.fsh");
@@ -275,8 +273,6 @@ void HelloWorld::update(float dt)
 	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
-	auto currSprite = this->getChildByName("bluefucker");
-	currSprite->setPosition(mainPlayer->mainSprite->getPositionX(), mainPlayer->mainSprite->getPositionY());
 
 	waveSpawner->Run(dt);
 	mainPlayer->Update(dt);

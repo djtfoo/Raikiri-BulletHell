@@ -4,7 +4,7 @@ Entity::Entity()
 {
 	_eSprite = Sprite::create("Blue_Front1.png");
 	_eSprite->setScale(0.5);
-
+	_active = false;
 }
 
 Entity::~Entity()
@@ -60,9 +60,9 @@ void Entity::SettoSpawn()
 		break;
 	}
 	auto moveTo = MoveTo::create(1,_destination);
-	_eSprite->runAction(moveTo);//simple moveto
-	//auto setactive = CallFunc::create([this](){SettoAttack();});
-	//_eSprite->runAction(CCSequence::create(moveTo,setactive));//this is for the attack state
+	//_eSprite->runAction(moveTo);//simple moveto
+	auto setactive = CallFunc::create([this](){SettoAttack();});
+	_eSprite->runAction(CCSequence::create(moveTo, CallFunc::create(CC_CALLBACK_0(Entity::SettoAttack, this)), NULL));//this is for the attack state
 }
 
 void Entity::SettoAttack()
@@ -74,6 +74,7 @@ void Entity::SettoAttack()
 	case(PLATONIC) : AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::PLATONIC_ACTIVE, true);
 		break;
 	}
+	_active = true;
 
 	//do sum attack code here
 
@@ -84,6 +85,12 @@ void Entity::SettoDespawn()
 {
 	auto moveTo = MoveTo::create(2, _exitDestination);
 	_eSprite->runAction(moveTo);//simple moveto
+	_active = false;
 	//auto deactivate = CallFunc::create([this](){SetInactive(); });
 	//_eSprite->runAction(CCSequence::create(moveTo,deactivate));//this is for the attack state
+}
+
+void Entity::DoAttack(float dt)
+{
+
 }

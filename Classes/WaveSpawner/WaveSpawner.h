@@ -1,5 +1,7 @@
 #pragma once
 #include "Entity.h"
+#include "Enemy\Capule.h"
+#include "Enemy\Platonic.h"
 #include <vector>
 
 class WaveSpawner

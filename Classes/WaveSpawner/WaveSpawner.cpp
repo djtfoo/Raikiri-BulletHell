@@ -26,12 +26,43 @@ void WaveSpawner::SeteNode(Node* node)
 
 void WaveSpawner::SpawnEnemy(EnemyData enemy)
 {
-	Entity* entity = new Entity;
-	entity->SetEntity(enemy);
-	//entity->SetActive();
-	entity->SettoSpawn();
-	enemy_list.push_back(entity);
-	eNode->addChild(entity->_eSprite, 1);
+	switch (enemy._type)
+	{
+	case (1) ://capule
+	{
+				  Capule* capule = new Capule;
+				  capule->SetEntity(enemy);
+				  capule->SettoSpawn();
+				  enemy_list.push_back(capule);
+				  eNode->addChild(capule->_eSprite, 1);
+				  
+	}break;
+	case (2) ://platonic
+	{
+				  Platonic* platonic = new Platonic;
+				  platonic->SetEntity(enemy);
+				  platonic->SettoSpawn();
+				  enemy_list.push_back(platonic);
+				  eNode->addChild(platonic->_eSprite, 1);
+
+	}break;
+	default:
+	{
+			   Entity* entity = new Entity;
+			   entity->SetEntity(enemy);
+			   //entity->SetActive();
+			   entity->SettoSpawn();
+			   enemy_list.push_back(entity);
+			   eNode->addChild(entity->_eSprite, 1);
+			   
+	}break;
+	}
+
+
+
+
+
+
 	//auto entity = Sprite::create(enemy._spriteFile);//single frame sprites for testing
 	//	
 	//this would be the ideaal way to set the animation/sprite but there is currently no string->animation conversion from the csv file
@@ -61,12 +92,15 @@ void WaveSpawner::Run(float dt)
 		DespawnEnemies();
 	}
 
+	for (Entity* e : enemy_list)
+	{
+		//if (!e->_active)//this should work when implemented
+		//	continue;
 
+		if (e->_waveNum == currentwave && e->_active)
+			e->DoAttack(dt);
+	}
 	//we need to add stuff to check if wave is dead later
-
-
-
-
 
 }
 

@@ -39,6 +39,7 @@ public:
 	void SetEntity(EnemyData data);
 	void SetInactive();
 	void SetActive();
+	virtual void DoAttack(float dt);
 
 	//game related vairables
 	int _waveNum;
