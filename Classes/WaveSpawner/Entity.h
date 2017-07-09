@@ -10,10 +10,20 @@ using namespace cocos2d;
 class Entity
 {
 private:
+
+	
+
+	
+
+	
+	//bullet type
+public:
 	enum ENEMY_TYPE
 	{
 		CAPULE,
 		PLATONIC,
+		BCONSTRUCT,
+		BCONSTRUCTFUNNEL,
 		NUM_TYPE
 	};
 
@@ -22,21 +32,14 @@ private:
 	Vec2 _spawnPos;
 	Vec2 _destination;
 	Vec2 _exitDestination;
-	
-
-	
-
-	
-	//bullet type
-public:
 	Entity();
 	~Entity();
 
-	void SettoSpawn();
+	virtual void SettoSpawn();
 	void SettoDespawn();
-	void SettoAttack();
+	virtual void SettoAttack();
 
-	void SetEntity(EnemyData data);
+	virtual void SetEntity(EnemyData data);
 	void SetInactive();
 	void SetActive();
 	virtual void DoAttack(float dt);

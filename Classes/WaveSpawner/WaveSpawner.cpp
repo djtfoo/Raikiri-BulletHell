@@ -14,9 +14,10 @@ WaveSpawner::~WaveSpawner()
 void WaveSpawner::Init()
 {
 	wavetimer = 0;
-	currentwave = 1;
+	currentwave = 8;
 	wavetimer = 0;
 	isspawned = false;
+	isboss = false;
 }
 
 void WaveSpawner::SeteNode(Node* node)
@@ -73,34 +74,43 @@ void WaveSpawner::SpawnEnemy(EnemyData enemy)
 void WaveSpawner::Run(float dt)
 {
 	wavetimer += dt;
-	if (currentwave == 0 && wavetimer >2)//level just started
+
+
+
+
+	if (!isboss)
 	{
-		currentwave = 1;
-		wavetimer = 0;
-		return;
+		if (currentwave > waveTimer.size())//is this the finaal wave?
+		{
+			SpawnBoss();
+			return;
+		}
+
+		if (!isspawned)
+			SpawnCurrentWave();
+
+		if (wavetimer > waveTimer.at(currentwave - 1))
+		{
+			DespawnEnemies();
+		}
+		for (Entity* e : enemy_list)
+		{
+			//if (!e->_active)//this should work when implemented
+			//	continue;
+
+			if (e->_waveNum == currentwave && e->_active)
+				e->DoAttack(dt);
+		}
+		//we need to add stuff to check if wave is dead later
 	}
-	if (currentwave > waveTimer.size())//is this the finaal wave?
-		return;//staart the boss event
-
-
-
-	if (!isspawned)
-		SpawnCurrentWave();
-	
-	if (wavetimer > waveTimer.at(currentwave-1))
+	else
 	{
-		DespawnEnemies();
+		for (Entity* e : enemy_list)
+		{
+			if (e->_active)
+				e->DoAttack(dt);
+		}
 	}
-
-	for (Entity* e : enemy_list)
-	{
-		//if (!e->_active)//this should work when implemented
-		//	continue;
-
-		if (e->_waveNum == currentwave && e->_active)
-			e->DoAttack(dt);
-	}
-	//we need to add stuff to check if wave is dead later
 
 }
 
@@ -244,3 +254,12 @@ bool WaveSpawner::LoadFile(const char* file_path)
 	return true;
 }
 
+void WaveSpawner::SpawnBoss()
+{
+	isboss = true;
+	BConstruct* boss = new BConstruct;
+	boss->SetData();
+	boss->SettoSpawn();
+	enemy_list.push_back(boss);
+	eNode->addChild(boss->_eSprite, 1);
+}
