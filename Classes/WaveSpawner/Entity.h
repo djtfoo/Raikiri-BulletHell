@@ -10,12 +10,6 @@ using namespace cocos2d;
 class Entity
 {
 private:
-
-	
-
-	
-
-	
 	//bullet type
 public:
 	enum ENEMY_TYPE
@@ -23,7 +17,7 @@ public:
 		CAPULE,
 		PLATONIC,
 		BCONSTRUCT,
-		BCONSTRUCTFUNNEL,
+		BFUNNEL,
 		NUM_TYPE
 	};
 

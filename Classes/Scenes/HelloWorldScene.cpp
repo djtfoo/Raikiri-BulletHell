@@ -136,10 +136,6 @@ bool HelloWorld::init()
 	//Entity* entity = new Entity;
 	//entity->SettoSpawn();
 	//temp player
-	Player* tempplayer = new Player();
-	tempplayer->SetLightEffect(lightEffect);
-	tempplayer->Init("Blue_Front1.png", "Player", 600, 300, playingSize);
-	this->addChild(tempplayer->GetSprite(), 1);
     // PLAYER
     mainPlayer = new Player();
     mainPlayer->SetLightEffect(lightEffect);

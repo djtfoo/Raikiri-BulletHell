@@ -52,16 +52,17 @@ void AnimHandler::addAnimation(const char* plist, const char* format, int framec
 void AnimHandler::setAnimation(Sprite* sprite, ANIMATION_TYPE  name, bool loop)
 {
 
-	//Vector<SpriteFrame*> frames = getAnimation(animName, 15);
-	//auto animation = Animation::createWithSpriteFrames(frames, 1.0f / 20);//Xseconds/Yframes (Yframes per second
-
-
 	if (loop)
 	sprite->runAction(RepeatForever::create(Animate::create(animList[name])));
 	else
 		sprite->runAction(Animate::create(animList[name]));
 
 
+}
+
+void AnimHandler::setCCAnimation(Sprite* sprite, ANIMATION_TYPE  name,CallFunc* callback)
+{
+	sprite->runAction(CCSequence::create(Animate::create(animList[name]), callback, NULL));
 }
 
 Animation* AnimHandler::getAnimAction(ANIMATION_TYPE name)

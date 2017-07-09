@@ -12,9 +12,9 @@ Entity::Entity()
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
 	physicsBody->setDynamic(false);
 	physicsBody->setCategoryBitmask(0x02);
-	physicsBody->setCollisionBitmask(0x01);
+	physicsBody->setCollisionBitmask(0x03);
 	physicsBody->setPositionOffset(Vec2(_eSprite->getContentSize().width, _eSprite->getContentSize().height*2));
-	_eSprite->addComponent(physicsBody);
+	//_eSprite->addComponent(physicsBody);
 
 }
 
@@ -47,15 +47,15 @@ void Entity::SetEntity(EnemyData data)
 
 void Entity::SetInactive()
 {
-	_eSprite->pause();
-	_eSprite->setVisible(false);
+	//_eSprite->pause();
+	//_eSprite->setVisible(false);
 	_active = false;
 }
 
 void Entity::SetActive()
 {
-	_eSprite->resume();
-	_eSprite->setVisible(true);
+	//_eSprite->resume();
+	//_eSprite->setVisible(true);
 	_active = true;
 }
 

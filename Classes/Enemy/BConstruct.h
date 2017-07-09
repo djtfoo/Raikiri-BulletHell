@@ -1,4 +1,5 @@
-#include "WaveSpawner/Entity.h"
+#include "WaveSpawner\Entity.h"
+#include "WaveSpawner\WaveSpawner.h"
 using namespace cocos2d;
 
 class BConstruct : public Entity
@@ -10,11 +11,17 @@ public:
 	void SettoSpawn();
 	void SettoAttack();
 	void SpawnFunnels();
+	WaveSpawner* spawner;
 
 protected:
-	float timer;
+	float timer,prevt,spawntimer;
+	bool islooped,finished;
+	int counter;
+	unsigned phase;
 	void DoAttack(float deltaatime);
-	
+	void ToggleWaypoint();
+	void FirstAttack(float dt);
+	void SecondAttack(float dt);
 
 };
 

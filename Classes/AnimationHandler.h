@@ -52,6 +52,7 @@ public:
 	void Init();
 	void Update(float dt);
 	void setAnimation(Sprite* sprite, ANIMATION_TYPE  name, bool loop = false);
+	void setCCAnimation(Sprite* sprite, ANIMATION_TYPE  name,CallFunc* cfunction);
 	void addAnimation(const char* plist,const char* format, int framecount ,ANIMATION_TYPE  name);
 	Animation* getAnimAction(ANIMATION_TYPE  name);
 	cocos2d::Vector<cocos2d::SpriteFrame*> getAnimation(const char *format, int count);

@@ -102,6 +102,9 @@
     <ClCompile Include="..\Classes\Enemy\BConstruct.cpp">
       <Filter>src\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Enemy\BFunnel.cpp">
+      <Filter>src\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -168,6 +171,9 @@
       <Filter>src\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Enemy\BConstruct.h">
+      <Filter>src\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Enemy\BFunnel.h">
       <Filter>src\Enemy</Filter>
     </ClInclude>
   </ItemGroup>

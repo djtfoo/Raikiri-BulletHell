@@ -1,4 +1,5 @@
 #include "WaveSpawner.h"
+#include "Enemy\BConstruct.h"
 #include "Scenes/HelloWorldScene.h"
 #include <fstream>
 using std::string;
@@ -14,7 +15,7 @@ WaveSpawner::~WaveSpawner()
 void WaveSpawner::Init()
 {
 	wavetimer = 0;
-	currentwave = 8;
+	currentwave = 1;
 	wavetimer = 0;
 	isspawned = false;
 	isboss = false;
@@ -69,6 +70,12 @@ void WaveSpawner::SpawnEnemy(EnemyData enemy)
 	//this would be the ideaal way to set the animation/sprite but there is currently no string->animation conversion from the csv file
 	//auto entity = Sprite::create();
 	//AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
+}
+
+void WaveSpawner::SpawnInEnemy(Entity* enemy)
+{
+	//enemy_list.push_back(enemy);
+	eNode->addChild(enemy->_eSprite, 1);
 }
 
 void WaveSpawner::Run(float dt)
@@ -258,6 +265,7 @@ void WaveSpawner::SpawnBoss()
 {
 	isboss = true;
 	BConstruct* boss = new BConstruct;
+	boss->spawner = this;
 	boss->SetData();
 	boss->SettoSpawn();
 	enemy_list.push_back(boss);

@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Enemy\Capule.h"
 #include "Enemy\Platonic.h"
-#include "Enemy\BConstruct.h"
+
 #include <vector>
 
 class WaveSpawner
@@ -22,6 +22,7 @@ public:
 	void SpawnBoss();
 	void SpawnCurrentWave();
 	void SpawnEnemy(EnemyData enemy);
+	void SpawnInEnemy(Entity* enemy);
 	void DespawnEnemies();
 	void Run(float dt);
 
