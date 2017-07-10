@@ -7,6 +7,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 {
 	//remove imagesource for now
 	mainSprite = Sprite::create("Blue_Front1.png");
+	mainSprite->setOpacity(255.f);
     //mainSprite->setScale(0.6f);
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
@@ -16,13 +17,19 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	auto physicsBody = PhysicsBody::createBox(
 		Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setCategoryBitmask(0x02);
-	physicsBody->setCollisionBitmask(0x01);
-	physicsBody->setDynamic(true);
+	physicsBody->setCategoryBitmask(2);
+	physicsBody->setContactTestBitmask(1);
+	physicsBody->setTag(0);
+	physicsBody->setDynamic(false);
 	physicsBody->setGravityEnable(false);
+	physicsBody->setPositionOffset(Vec2(mainSprite->getContentSize().width, mainSprite->getContentSize().height));
 	mainSprite->addComponent(physicsBody);
 
-
+	iFrameTimer = 2.f;
+	iFrameTempTimer = 0;
+	iFrameRenderTimer=0.1f;
+	iFrameRenderTempTimer = 0;
+	iFrameEnabled = true;
    // auto spawnpos = MoveTo::create(1, Vec2(150, 100));
     //mainSprite->runAction(spawnpos);
 	fSpeed = 200.f;
@@ -76,7 +83,10 @@ void Player::Update(float dt)
         auto moveEvent = MoveTo::create(0.f, destination);
         mainSprite->runAction(moveEvent);
     }
-
+	if (iFrameEnabled)
+	{
+		iFrameUpdate(dt);
+	}
     AttackSystems->LaserUpdate(dt, 10.f,
         mainSprite->getPosition());
         //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
@@ -142,7 +152,7 @@ void Player::FireBasicBullet()
 	AttackSystems->FireBasicBullet("Projectiles/Bullet.png",
         mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
         //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
-        100.f,25);
+        300.f,25,false);
     AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void Player::FireLaser()
@@ -208,6 +218,37 @@ int Player::getLives()
 void Player::setLives(int lives)
 {
 	this->lives = lives;
+}
+void Player::iFrameUpdate(float dt)
+{
+	mainSprite->getPhysicsBody()->setCollisionBitmask(0x10);
+	iFrameTempTimer += dt;
+	if (iFrameTempTimer <= iFrameTimer)
+	{
+		iFrameRenderTempTimer += dt;
+		if (iFrameRenderTempTimer > iFrameRenderTimer)
+		{
+
+			if (mainSprite->getOpacity() == 0)
+			{
+				mainSprite->setOpacity(255);
+				iFrameRenderTempTimer = 0;
+			}
+			else
+			{
+				mainSprite->setOpacity(0);
+				iFrameRenderTempTimer = 0;
+			}
+
+		}
+	}
+	else
+	{
+		mainSprite->setOpacity(255);
+		iFrameTempTimer = 0;
+		iFrameRenderTempTimer = 0;
+		iFrameEnabled = false;
+	}
 }
 void Player::MoveCharByCoord(float X, float Y)
 {

@@ -15,6 +15,11 @@ private:
 	int lives;
 	int score;
 	bool b_shooting;
+	float iFrameTimer;
+	float iFrameTempTimer;
+	float iFrameRenderTimer;
+	float iFrameRenderTempTimer;
+	bool iFrameEnabled;
 	//int score;
 
 	// shader stuff
@@ -34,6 +39,7 @@ public:
 	void AnimatePlayer(KEYCODE key);	// KEY_INPUT for direction
 	void StopAnimation();
 
+	void iFrameUpdate(float dt);
 	void SetMoveCharX(int dirX);	// keyboard
 	void SetMoveCharY(int dirY);	// keyboard
 	void MoveCharByCoord(float X, float Y);		// mouse

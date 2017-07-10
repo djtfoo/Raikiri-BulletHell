@@ -36,6 +36,7 @@ public:
 	virtual void SetEntity(EnemyData data);
 	void SetInactive();
 	void SetActive();
+	Sprite* GetSprite();
 	virtual void DoAttack(float dt);
 
 	//game related vairables

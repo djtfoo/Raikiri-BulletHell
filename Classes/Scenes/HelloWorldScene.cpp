@@ -94,9 +94,9 @@ bool HelloWorld::init()
 	spriteNode->setName("spriteNode");
 	this->addChild(spriteNode, 1);
 
-    projectieNode = Node::create();
+  /*  projectieNode = Node::create();
     projectieNode->setName("projectileNode");
-    this->addChild(projectieNode, 2);
+    this->addChild(projectieNode, 2);*/
 	//Vector<SpriteFrame*> frames = getAnimation("ship_idle%04d.png", 15);
 //	auto mainSprite = Sprite::create();
 //	AnimHandler::getInstance()->setAnimation(mainSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
@@ -136,6 +136,7 @@ bool HelloWorld::init()
 	//Entity* entity = new Entity;
 	//entity->SettoSpawn();
 	//temp player
+
     // PLAYER
     mainPlayer = new Player();
     mainPlayer->SetLightEffect(lightEffect);
@@ -200,13 +201,14 @@ bool HelloWorld::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener2, this);
 
 	auto collisionListener = EventListenerPhysicsContact::create();
-	//collisionListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
-	collisionListener->onContactPreSolve = CC_CALLBACK_1(HelloWorld::onContactPreSolve, this);
+	collisionListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+
+	//collisionListener->onContactPreSolve = CC_CALLBACK_1(HelloWorld::onContactPreSolve, this);
 	//collisionListener->onContactPostSolve = CC_CALLBACK_3(HelloWorld::onContactPostSolve, this);
 	//collisionListener->onContactSeparate = CC_CALLBACK_3(HelloWorld::onContactSeparate, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(collisionListener,this);
-
+	//schedule(CC_SCHEDULE_SELECTOR(HelloWorld::tick), 0.3f);
     // GUI
 	GUI* playerGui = GUI::createPlayerGUI(mainPlayer);
 	this->addChild(playerGui, 2);
@@ -240,35 +242,117 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 }
 
 // Mouse input
+//void HelloWorld::tick(float dt)
+//{
+//	auto sprite1 = addSpriteAtPosition(Vec2(s_centre.x + cocos2d::random(-300, 300),
+//		s_centre.y + cocos2d::random(-300, 300)));
+//	auto physicsBody = sprite1->getPhysicsBody();
+//	physicsBody->setVelocity(Vec2(cocos2d::random(-500, 500), cocos2d::random(-500, 500)));
+//	physicsBody->setContactTestBitmask(0xFFFFFFFF);
+//}
 bool HelloWorld::onContactBegin(PhysicsContact& contact)
 {
-	auto bodyA = contact.getShapeA()->getBody();
+ 	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
-
-	/*bodyA->getNode()->removeFromParentAndCleanup(true);
-	bodyB->getOwner()->removeFromParentAndCleanup(true);*/
-	/*bodyA->getNode()->release();
-	bodyB->getNode()->release();*/
+//	bodyA->getNode()->getcom
+	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
+	{
+			waveSpawner->DestroyEnemy(bodyA->getNode());
+		bodyA->getNode()->removeFromParentAndCleanup(true);
+		bodyB->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
+	{waveSpawner->DestroyEnemy(bodyB->getNode());
+		bodyA->getNode()->removeFromParentAndCleanup(true);
+		bodyB->getNode()->removeFromParentAndCleanup(true);
+		
+	}
+	else if (bodyB->getTag() == PLAYERPROJ &&  bodyA->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == PLAYERPROJ &&  bodyB->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == ENEMYPROJ &&  bodyA->getTag() == ENEMYPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == ENEMYPROJ &&  bodyA->getTag() == ENEMYPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == ENEMYPROJ &&  bodyA->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == ENEMYPROJ &&  bodyB->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMYPROJ)
+	{
+		bodyB->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMYPROJ)
+	{
+		bodyA->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (bodyA->getTag() == ENEMY && bodyB->getTag() == ENEMY)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == ENEMY && bodyA->getTag() == ENEMY)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == ENEMY && bodyB->getTag() == ENEMYPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == ENEMY && bodyA->getTag() == ENEMYPROJ)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMY)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMY)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == PLAYERPROJ)
+	{ 
+		return false;
+	}
+	
+	
 	return true;
 }
-bool HelloWorld::onContactPreSolve(PhysicsContact& contact)
-{
-	auto bodyA = contact.getShapeA()->getBody();
-	auto bodyB = contact.getShapeB()->getBody();
-	return true;
-}
-bool HelloWorld::onContactPostSolve(PhysicsContact& contact)
-{
-	auto bodyA = contact.getShapeA()->getBody();
-	auto bodyB = contact.getShapeB()->getBody();
-	return true;
-}
-bool HelloWorld::onContactSeparate(PhysicsContact& contact)
-{
-	auto bodyA = contact.getShapeA()->getBody();
-	auto bodyB = contact.getShapeB()->getBody();
-	return true;
-}
+//bool HelloWorld::onContactPreSolve(PhysicsContact& contact)
+//{
+//	auto bodyA = contact.getShapeA()->getBody();
+//	auto bodyB = contact.getShapeB()->getBody();
+//	return true;
+//}
+//bool HelloWorld::onContactPostSolve(PhysicsContact& contact)
+//{
+//	auto bodyA = contact.getShapeA()->getBody();
+//	auto bodyB = contact.getShapeB()->getBody();
+//	return true;
+//}
+//bool HelloWorld::onContactSeparate(PhysicsContact& contact)
+//{
+//	auto bodyA = contact.getShapeA()->getBody();
+//	auto bodyB = contact.getShapeB()->getBody();
+//	return true;
+//}
 void HelloWorld::onMouseDown(Event* event)
 {
     EventMouse* mouseEvent = (EventMouse*)event;

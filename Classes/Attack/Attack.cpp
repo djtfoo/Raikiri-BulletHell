@@ -16,10 +16,10 @@ Attack::~Attack()
 
 
 }
-void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime)
+void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime,bool isEnemy)
 {
 	Projectile* projectile = new Projectile();
-	/*Sprite* ProjectileSprite =*/ projectile->InitBasicBullet(BulletImg, SpawnPosition,BulletSpeed,LifeTime);
+	/*Sprite* ProjectileSprite =*/ projectile->InitBasicBullet(BulletImg, SpawnPosition, BulletSpeed, LifeTime, isEnemy);
 }
 void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition)
 {

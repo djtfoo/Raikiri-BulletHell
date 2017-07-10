@@ -23,7 +23,7 @@ public:
 	~Attack();
 
 
-	void FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime);
+	void FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime,bool isEnemy);
 	void FireLaserBullet(string LaserImg, Vec2 SpawnPosition);
 	void StopFiringLaser(float LaserSpeed, float LifeTime);
 	void LaserUpdate(float dt, float LaserScaleX, Vec2 PlayerPosition);

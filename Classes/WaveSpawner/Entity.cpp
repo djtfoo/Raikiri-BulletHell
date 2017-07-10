@@ -4,17 +4,22 @@ Entity::Entity()
 {
 	_eSprite = Sprite::create("Blue_Front1.png");
 	_eSprite->setScale(0.5);
-
+	
 	_active = false;
 
 	auto physicsBody = PhysicsBody::createBox(
 		Size(_eSprite->getContentSize().width, _eSprite->getContentSize().height),
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
 	physicsBody->setDynamic(false);
-	physicsBody->setCategoryBitmask(0x02);
-	physicsBody->setCollisionBitmask(0x03);
-	physicsBody->setPositionOffset(Vec2(_eSprite->getContentSize().width, _eSprite->getContentSize().height*2));
-	//_eSprite->addComponent(physicsBody);
+
+	physicsBody->setGravityEnable(false);
+	physicsBody->setCategoryBitmask(2);
+	physicsBody->setContactTestBitmask(1);
+	physicsBody->setTag(2);
+
+	physicsBody->setPositionOffset(Vec2(_eSprite->getContentSize().width, _eSprite->getContentSize().height));
+	_eSprite->addComponent(physicsBody);
+
 
 }
 
@@ -22,7 +27,10 @@ Entity::~Entity()
 {
 
 }
-
+Sprite* Entity::GetSprite()
+{
+	return _eSprite;
+}
 void Entity::SetEntity(EnemyData data)
 {
 	_waveNum = data._waveNum;
@@ -95,6 +103,7 @@ void Entity::SettoAttack()
 void Entity::SettoDespawn()
 {
 	auto moveTo = MoveTo::create(2, _exitDestination);
+
 	_eSprite->runAction(moveTo);//simple moveto
 	_active = false;
 	//auto deactivate = CallFunc::create([this](){SetInactive(); });

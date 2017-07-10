@@ -20,7 +20,7 @@ void Platonic::DoAttack(float dt)
 			Vec2 dir(-3, -1);
 			dir.y += i;
 			Projectile* projectile = new Projectile();
-			projectile->InitBasicBullet("Projectiles/enemy_bullet.png", _eSprite->getPosition(), 300, dir.getNormalized());
+			projectile->InitBasicBullet("Projectiles/enemy_bullet.png", _eSprite->getPosition(), 300, dir.getNormalized(),true);
 		}
 		timer = 0;
 	}

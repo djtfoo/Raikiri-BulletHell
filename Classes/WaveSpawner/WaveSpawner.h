@@ -25,7 +25,7 @@ public:
 	void SpawnInEnemy(Entity* enemy);
 	void DespawnEnemies();
 	void Run(float dt);
-
+	void DestroyEnemy(Node* node);
 
 	void Init();
 	bool LoadFile(const char* filepath);

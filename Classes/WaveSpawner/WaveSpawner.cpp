@@ -1,17 +1,31 @@
 #include "WaveSpawner.h"
 #include "Enemy\BConstruct.h"
 #include "Scenes/HelloWorldScene.h"
-#include <fstream>
+#include <fstream>	
 using std::string;
 
 WaveSpawner::WaveSpawner()
 {
+
 }
 
 WaveSpawner::~WaveSpawner()
 {
 }
-
+void WaveSpawner::DestroyEnemy(Node* node)
+{
+	int a = 0;
+	for (auto enemyNode : enemy_list)
+	{
+		if (node == enemyNode->GetSprite())
+		{
+			enemy_list.erase(enemy_list.begin()+a);
+			
+			break;
+		}
+		a++;
+	}
+}
 void WaveSpawner::Init()
 {
 	wavetimer = 0;
@@ -82,9 +96,6 @@ void WaveSpawner::Run(float dt)
 {
 	wavetimer += dt;
 
-
-
-
 	if (!isboss)
 	{
 		if (currentwave > waveTimer.size())//is this the finaal wave?
@@ -96,7 +107,7 @@ void WaveSpawner::Run(float dt)
 		if (!isspawned)
 			SpawnCurrentWave();
 
-		if (wavetimer > waveTimer.at(currentwave - 1))
+		if (wavetimer > waveTimer.at(currentwave-1 ))
 		{
 			DespawnEnemies();
 		}

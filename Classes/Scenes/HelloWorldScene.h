@@ -28,6 +28,13 @@ private:
     void UpdateFreezeAnimation(float dt);
 
 public:
+	enum GO_TYPE
+	{
+		PLAYER=0,
+		PLAYERPROJ=1,
+		ENEMY=2,
+		ENEMYPROJ=3,
+	};
     static cocos2d::Scene* createScene();
 
     virtual bool init();
@@ -37,10 +44,11 @@ public:
     virtual void onKeyReleased(EventKeyboard::KeyCode keyCode, Event*);
     virtual void onMouseDown(Event*);
     virtual void onMouseUp(Event*);
-	virtual bool onContactBegin(PhysicsContact& );
-	virtual bool onContactPreSolve(PhysicsContact& contact);
+	virtual bool onContactBegin(PhysicsContact& contact);
+	/*virtual bool onContactPreSolve(PhysicsContact& contact);
 	virtual bool onContactPostSolve(PhysicsContact& contact);
-	virtual bool onContactSeparate(PhysicsContact& contact);
+	virtual bool onContactSeparate(PhysicsContact& contact); */
+	//virtual void  tick(float dt);
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     

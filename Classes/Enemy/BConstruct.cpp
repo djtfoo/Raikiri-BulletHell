@@ -139,9 +139,9 @@ void BConstruct::FirstAttack(float dt)
 		Vec2 pos = _eSprite->getPosition();
 		
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+i, pos.y-i*i), 300, Vec2(-1, 0).getNormalized());
+		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+i, pos.y-i*i), 300, Vec2(-1, 0).getNormalized(),true);
 		Projectile* projectile2 = new Projectile();
-		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, -pos.y - i*i), 300, Vec2(-1, 0).getNormalized());
+		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, -pos.y - i*i), 300, Vec2(-1, 0).getNormalized(),true);
 		//Projectile* projectile3 = new Projectile();
 		//projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", -pos, 100, Vec2(-1, 0));
 		if (counter > 10)
@@ -163,13 +163,13 @@ void BConstruct::SecondAttack(float dt)
 
 		Vec2 pos = _eSprite->getPosition();
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x-120, pos.y-120+i), 300, Vec2(-1, i*0.1).getNormalized());
+		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x-120, pos.y-120+i), 300, Vec2(-1, i*0.1).getNormalized(),true);
 		Projectile* projectile2 = new Projectile();
-		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+120, pos.y-120+i), 300, Vec2(-1, i*0.1).getNormalized());
+		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+120, pos.y-120+i), 300, Vec2(-1, i*0.1).getNormalized(),true);
 		Projectile* projectile3 = new Projectile();
-		projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - 120+i, pos.y + 120), 300, Vec2(-1, i*0.1).getNormalized());
+		projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - 120+i, pos.y + 120), 300, Vec2(-1, i*0.1).getNormalized(),true);
 		Projectile* projectile4 = new Projectile();
-		projectile4->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x -120+ i, pos.y - 120), 300, Vec2(-1, i*0.1).getNormalized());
+		projectile4->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x -120+ i, pos.y - 120), 300, Vec2(-1, i*0.1).getNormalized(),true);
 	
 		if (counter > 10)
 			counter = 1;
