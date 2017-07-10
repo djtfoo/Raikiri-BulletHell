@@ -19,8 +19,10 @@ void WaveSpawner::DestroyEnemy(Node* node)
 	{
 		if (node == enemyNode->GetSprite())
 		{
+			Entity* entity = enemy_list[a];
 			enemy_list.erase(enemy_list.begin()+a);
-			
+
+			delete entity;
 			break;
 		}
 		a++;

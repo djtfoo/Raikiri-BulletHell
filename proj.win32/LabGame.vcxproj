@@ -160,6 +160,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\LightEffect\EffectSprite.cpp" />
     <ClCompile Include="..\Classes\LightEffect\LightEffect.cpp" />
     <ClCompile Include="..\Classes\Player\Player.cpp" />
+    <ClCompile Include="..\Classes\Powerup\Powerup.cpp" />
     <ClCompile Include="..\Classes\Scenes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Scenes\MainMenuScene.cpp" />
     <ClCompile Include="..\Classes\Scenes\SceneManager.cpp" />
@@ -184,6 +185,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\LightEffect\EffectSprite.h" />
     <ClInclude Include="..\Classes\LightEffect\LightEffect.h" />
     <ClInclude Include="..\Classes\Player\Player.h" />
+    <ClInclude Include="..\Classes\Powerup\Powerup.h" />
     <ClInclude Include="..\Classes\Scenes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\Scenes\MainMenuScene.h" />
     <ClInclude Include="..\Classes\Scenes\SceneManager.h" />

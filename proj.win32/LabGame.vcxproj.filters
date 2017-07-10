@@ -37,6 +37,9 @@
     <Filter Include="src\Enemy">
       <UniqueIdentifier>{a0d7230f-d5f3-47e4-a995-3e4f81ff86e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Powerups">
+      <UniqueIdentifier>{d995da21-dd80-427d-b8fe-1fb6eae1da7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -104,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Enemy\BFunnel.cpp">
       <Filter>src\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Powerup\Powerup.cpp">
+      <Filter>src\Powerups</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Enemy\BFunnel.h">
       <Filter>src\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Powerup\Powerup.h">
+      <Filter>src\Powerups</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	auto physicsBody = PhysicsBody::createBox(
 		Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setCategoryBitmask(2);
+	physicsBody->setCategoryBitmask(1);
 	physicsBody->setContactTestBitmask(1);
 	physicsBody->setTag(0);
 	physicsBody->setDynamic(false);

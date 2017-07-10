@@ -4,7 +4,9 @@
 #include "Input/GameInputManager.h"
 #include "Audio/AudioManager.h"
 #include "AnimationHandler.h"
-#include "GUI\GUI.h"
+
+#include "Powerup/Powerup.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -210,7 +212,7 @@ bool HelloWorld::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(collisionListener,this);
 	//schedule(CC_SCHEDULE_SELECTOR(HelloWorld::tick), 0.3f);
     // GUI
-	GUI* playerGui = GUI::createPlayerGUI(mainPlayer);
+	playerGui = GUI::createPlayerGUI(mainPlayer);
 	this->addChild(playerGui, 2);
 
     // Audio
@@ -257,15 +259,25 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 //	bodyA->getNode()->getcom
 	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
 	{
-			waveSpawner->DestroyEnemy(bodyA->getNode());
+		Powerup::SetToSpawnPowerup(true);
+		Powerup::SetSpawnPos(bodyA->getPosition());
+
+		waveSpawner->DestroyEnemy(bodyA->getNode());
 		bodyA->getNode()->removeFromParentAndCleanup(true);
 		bodyB->getNode()->removeFromParentAndCleanup(true);
+
+		return true;
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
-	{waveSpawner->DestroyEnemy(bodyB->getNode());
+	{
+		Powerup::SetToSpawnPowerup(true);
+		Powerup::SetSpawnPos(bodyA->getPosition());
+
+		waveSpawner->DestroyEnemy(bodyB->getNode());
 		bodyA->getNode()->removeFromParentAndCleanup(true);
 		bodyB->getNode()->removeFromParentAndCleanup(true);
-		
+
+		return true;
 	}
 	else if (bodyB->getTag() == PLAYERPROJ &&  bodyA->getTag() == PLAYERPROJ)
 	{
@@ -294,10 +306,12 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMYPROJ)
 	{
 		bodyB->getNode()->removeFromParentAndCleanup(true);
+		return true;
 	}
 	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMYPROJ)
 	{
 		bodyA->getNode()->removeFromParentAndCleanup(true);
+		return true;
 	}
 	else if (bodyA->getTag() == ENEMY && bodyB->getTag() == ENEMY)
 	{
@@ -331,7 +345,44 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{ 
 		return false;
 	}
-	
+
+	// POWERUP
+	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == POWERUP)
+	{
+ 		return false;
+	}
+	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYER)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == ENEMY)
+	{
+		return false;
+	}
+	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == ENEMYPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == PLAYERPROJ)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == PLAYER)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == ENEMY)
+	{
+		return false;
+	}
+	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == ENEMYPROJ)
+	{
+		return false;
+	}
 	
 	return true;
 }
@@ -410,6 +461,15 @@ void HelloWorld::update(float dt)
 		//bg_sprite2->setPosition(playingSize.width, -playingSize.height);
 		bg_sprite1->setPosition(playingSize.width, -playingSize.height);
 		currbg = 0;
+	}
+
+	// Spawn Power-up
+	if (Powerup::ToSpawnPowerup())
+	{
+		if (Powerup::CheckSpawnPowerup())
+			Powerup::RandomSpawnPowerup();
+
+		Powerup::SetToSpawnPowerup(false);
 	}
 
     //Input::GetInstance()->Update(dt);

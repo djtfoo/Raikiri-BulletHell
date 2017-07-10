@@ -5,6 +5,7 @@
 #include "Player/Player.h"
 #include "WaveSpawner/WaveSpawner.h"
 #include "LightEffect/LightEffect.h"
+#include "GUI\GUI.h"
 
 using namespace cocos2d;
 
@@ -17,6 +18,8 @@ private:
 	Node* spriteNode;
     Node* projectieNode;
 	LightEffect* lightEffect;
+
+	GUI* playerGui;
 
     bool timeStopped;
 	bool freezeAnimationChange;
@@ -34,6 +37,7 @@ public:
 		PLAYERPROJ=1,
 		ENEMY=2,
 		ENEMYPROJ=3,
+		POWERUP=4,
 	};
     static cocos2d::Scene* createScene();
 

@@ -13,7 +13,7 @@ Entity::Entity()
 	physicsBody->setDynamic(false);
 
 	physicsBody->setGravityEnable(false);
-	physicsBody->setCategoryBitmask(2);
+	physicsBody->setCategoryBitmask(1);
 	physicsBody->setContactTestBitmask(1);
 	physicsBody->setTag(2);
 
