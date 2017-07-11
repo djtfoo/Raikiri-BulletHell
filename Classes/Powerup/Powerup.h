@@ -5,6 +5,7 @@
 #include <string>
 using std::string;
 using namespace cocos2d;
+
 class Powerup
 {
 public:
@@ -14,6 +15,7 @@ public:
 		POWERUP_BULLETS,
 		POWERUP_MISSILE,
 		POWERUP_SHIELD,
+		POWERUP_LASER,
 		POWERUPS_TOTAL
 	};
 
@@ -22,15 +24,19 @@ private:
 	Sprite* powerupSprite;
 	POWERUP_TYPE powerupType;
 
-	void InitPowerup(POWERUP_TYPE type, Vec2 SpawnPosition);
+	bool toBeDestroyed;	// to be destroyed because picked up
+
+	void InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition);
 
 	static bool toSpawnPowerup;
 	static Vec2 spawnPosition;
 
+	static bool toDestroy;	// there is a Powerup to destroy
+
 public:
 
 	//static std::vector<Powerup> powerups;
-	static std::map<int, Powerup*> powerupsList;
+	static std::vector<Powerup*> powerupsList;
 	static int powerupSpawnCount;
 
 	Sprite* GetPowerupSprite();
@@ -43,11 +49,16 @@ public:
 	static bool ToSpawnPowerup() { return toSpawnPowerup; }
 	static Vec2 GetSpawnPos() { return spawnPosition; }
 	static void SetToSpawnPowerup(bool toSpawn) { toSpawnPowerup = toSpawn; }
-	static void SetSpawnPos(Vec2 spawnPos) { spawnPosition = spawnPos; }
+	static void SetSpawnPos(const Vec2& spawnPos) { spawnPosition = spawnPos; }
 
-	void Pickup();	// apply effect and play SFX
+	// functions to handle magnetism & pickup
+	static void FindAndBeginPickup(Node* node, const Vec2& pos);
+	void BeginPickup(const Vec2& pos);
+	void ApplyPowerupEffect();	// apply effect and play SFX
 
-	// functions to begin & handle magnetism
+	// static functions handling destruction of picked up powerups
+	static void DestroyPickedups();
+	static bool IsToDestroy();
 };
 
 #endif

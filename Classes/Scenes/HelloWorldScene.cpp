@@ -271,7 +271,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
 	{
 		Powerup::SetToSpawnPowerup(true);
-		Powerup::SetSpawnPos(bodyA->getPosition());
+		Powerup::SetSpawnPos(bodyB->getPosition());
 
 		waveSpawner->DestroyEnemy(bodyB->getNode());
 		bodyA->getNode()->removeFromParentAndCleanup(true);
@@ -357,7 +357,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	}
 	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYER)
 	{
-		return false;
+		Powerup::FindAndBeginPickup(bodyA->getNode(), bodyA->getPosition() + 0.25f * bodyB->getNode()->getContentSize());
+		return true;
 	}
 	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == ENEMY)
 	{
@@ -373,7 +374,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	}
 	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == PLAYER)
 	{
-		return false;
+		Powerup::FindAndBeginPickup(bodyB->getNode(), bodyA->getPosition() + 0.25f * bodyA->getNode()->getContentSize());
+		return true;
 	}
 	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == ENEMY)
 	{
@@ -470,6 +472,11 @@ void HelloWorld::update(float dt)
 			Powerup::RandomSpawnPowerup();
 
 		Powerup::SetToSpawnPowerup(false);
+	}
+	// Destroy Power-up
+	if (Powerup::IsToDestroy())
+	{
+		Powerup::DestroyPickedups();
 	}
 
     //Input::GetInstance()->Update(dt);
