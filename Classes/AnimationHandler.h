@@ -44,6 +44,17 @@ public:
 
 
 
+
+
+		//powerups
+		POWERUP_BULLET,
+		POWERUP_LASER,
+		POWERUP_LIVES,
+		POWERUP_MISSILE,
+		POWERUP_SHIELD,
+
+
+
 		NUM_ANIM,
 
 	};

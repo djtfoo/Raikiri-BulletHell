@@ -1,5 +1,6 @@
 #include "Powerup.h"
 #include "Scenes\HelloWorldScene.h"
+#include "AnimationHandler.h"
 
 std::map<int, Powerup*> Powerup::powerupsList;
 int Powerup::powerupSpawnCount = 0;
@@ -8,32 +9,34 @@ Vec2 Powerup::spawnPosition = Vec2(300.f, 300.f);
 
 void Powerup::InitPowerup(POWERUP_TYPE type, Vec2 SpawnPosition)
 {
-	string spriteDirectory = "Powerups/";
+	//string spriteDirectory = "Powerups/";
+
+	powerupSprite = Sprite::create();
 	switch (type)
 	{
 	case POWERUP_LIVES:
-		spriteDirectory += "powerup_lives.png";
+		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_LIVES,true);
 		break;
 
 	case POWERUP_BULLETS:
-		spriteDirectory += "powerup_bullets.png";
+		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_BULLET, true);
 		break;
 
 	case POWERUP_MISSILE:
-		spriteDirectory += "powerup_missile.png";
+		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_MISSILE, true);
 		break;
 
 	case POWERUP_SHIELD:
-		spriteDirectory += "powerup_shield.png";
+		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_SHIELD, true);
 		break;
 
 	default:
-		spriteDirectory += "powerup_bullets.png";
+		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_BULLET, true);
 		break;
 	}
 
-	powerupSprite = Sprite::create(spriteDirectory);
-
+	
+	powerupSprite->setScale(0.5);
 	powerupSprite->setPosition(SpawnPosition.x + powerupSprite->getContentSize().width, SpawnPosition.y + powerupSprite->getContentSize().height);
 
 	auto physicsBody = PhysicsBody::createBox(

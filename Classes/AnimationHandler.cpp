@@ -32,6 +32,12 @@ void AnimHandler::Init()
 	addAnimation("construct_active.plist", "construct_active%04d.png", 30, CONSTRUCT_ACTIVE);
 	addAnimation("construct_activep2.plist", "construct_activep2_%04d.png", 30, CONSTRUCT_ACTIVEP2);
 	addAnimation("construct_tphase.plist", "construct_tphase2_%04d.png", 30, CONSTRUCT_TPHASE);
+
+	addAnimation("powerup.plist", "powerup_bullet%04d.png", 15, POWERUP_BULLET);
+	addAnimation("powerup.plist", "powerup_laser%04d.png", 15, POWERUP_LASER);
+	addAnimation("powerup.plist", "powerup_lives%04d.png", 15, POWERUP_LIVES);
+	addAnimation("powerup.plist", "powerup_missile%04d.png", 15, POWERUP_MISSILE);
+	addAnimation("powerup.plist", "powerup_shield%04d.png", 15, POWERUP_SHIELD);
 }
 
 void AnimHandler::Update(float dt)
