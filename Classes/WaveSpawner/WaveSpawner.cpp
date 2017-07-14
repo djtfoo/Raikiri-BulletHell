@@ -12,6 +12,22 @@ WaveSpawner::WaveSpawner()
 WaveSpawner::~WaveSpawner()
 {
 }
+
+Entity* WaveSpawner::GetEntity(Node* node)
+{
+    int a = 0;
+    for (auto enemyNode : enemy_list)
+    {
+        if (node == enemyNode->GetSprite())
+        {
+            return enemy_list[a];
+        }
+        a++;
+    }
+
+    return NULL;
+}
+
 void WaveSpawner::DestroyEnemy(Node* node)
 {
 	int a = 0;

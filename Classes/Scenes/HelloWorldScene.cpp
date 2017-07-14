@@ -6,6 +6,7 @@
 #include "AnimationHandler.h"
 
 #include "Powerup/Powerup.h"
+#include "Attack/Shield.h"
 
 USING_NS_CC;
 
@@ -386,6 +387,60 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 		return false;
 	}
 	
+    // SHIELD
+    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == PLAYERSHIELD)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == PLAYER && bodyB->getTag() == PLAYERSHIELD)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == PLAYER)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == PLAYERPROJ && bodyB->getTag() == PLAYERSHIELD)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == PLAYERPROJ)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERSHIELD)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == ENEMY)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == ENEMYPROJ && bodyB->getTag() == PLAYERSHIELD)
+    {
+        // set to destroy Shield
+        Shield::SetDestroyPlayerShield();
+
+        bodyA->getNode()->removeFromParentAndCleanup(true);
+        //bodyB->getNode()->removeFromParentAndCleanup(false);
+    }
+    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == ENEMYPROJ)
+    {
+        // set to destroy Shield
+        Shield::SetDestroyPlayerShield();
+
+        //bodyA->getNode()->removeFromParentAndCleanup(false);
+        bodyB->getNode()->removeFromParentAndCleanup(true);
+    }
+    else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYERSHIELD)
+    {
+        return false;
+    }
+    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == POWERUP)
+    {
+        return false;
+    }
+
 	return true;
 }
 //bool HelloWorld::onContactPreSolve(PhysicsContact& contact)
@@ -452,6 +507,10 @@ void HelloWorld::update(float dt)
 
 	waveSpawner->Run(dt);
 	mainPlayer->Update(dt);
+
+    //======================
+    // Scrolling Background
+    //======================
 	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
 	{
 		currbg = 1;
@@ -465,6 +524,33 @@ void HelloWorld::update(float dt)
 		currbg = 0;
 	}
 
+    //=========
+    // Shields
+    //=========
+    // Update Shields
+    if (Shield::playerShield != NULL)
+        Shield::playerShield->UpdatePosition();
+    for (std::map<Entity*, Shield*>::iterator it = Shield::entityShieldsList.begin(); it != Shield::entityShieldsList.end(); ++it)
+    {
+        it->second->UpdatePosition();
+    }
+
+    // Spawn Shield
+    if (Shield::ToSpawnShield())
+    {
+        Shield::SpawnShield();
+        Shield::SetToSpawnShield(false);
+    }
+
+    // Destroy Shield
+    if (Shield::IsToDestroy())
+    {
+        Shield::DestroyShield();
+    }
+
+    //===========
+    // Power-Ups
+    //===========
 	// Spawn Power-up
 	if (Powerup::ToSpawnPowerup())
 	{
@@ -481,7 +567,9 @@ void HelloWorld::update(float dt)
 
     //Input::GetInstance()->Update(dt);
 
-    // post processing shader
+    //========================
+    // Post-processing shader
+    //========================
     if (freezeAnimationChange) {
         UpdateFreezeAnimation(dt);
     }

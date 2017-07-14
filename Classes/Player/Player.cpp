@@ -45,7 +45,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
 
 	AnimHandler::GetInstance()->Init();
-	AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, true);
+	AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, false);
 
 	charEffect->link();
 	charEffect->updateUniforms();

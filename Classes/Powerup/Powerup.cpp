@@ -2,8 +2,9 @@
 #include "Scenes\HelloWorldScene.h"
 #include "AnimationHandler.h"
 
+#include "Attack/Shield.h"
+
 std::vector<Powerup*> Powerup::powerupsList;
-int Powerup::powerupSpawnCount = 0;
 bool Powerup::toSpawnPowerup = false;
 Vec2 Powerup::spawnPosition = Vec2(300.f, 300.f);
 bool Powerup::toDestroy = false;
@@ -11,6 +12,8 @@ bool Powerup::toDestroy = false;
 void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
 {
 	//string spriteDirectory = "Powerups/";
+
+    powerupType = type;
 
 	powerupSprite = Sprite::create();
 	switch (type)
@@ -61,7 +64,21 @@ void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
 	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
 	Node* SpriteNode = helloLayer->getSpriteNode();
 	SpriteNode->addChild(powerupSprite, -1);
+
+    // set to "follow background" & move towards end of screen
+    /// speed = dist / time
+    /// time = dist / speed
+    /// speed is const
+    /// dist is x-dist away from edge of screen (aka x-coord)
+    auto moveEvent = MoveTo::create(powerupSprite->getPosition().x / 100.f, Vec2(0.f, powerupSprite->getPosition().y));
+
+    auto callbackFunc = CallFunc::create([this]() {
+        DestroySelf();
+    });
+    auto seq = Sequence::create(moveEvent, callbackFunc, nullptr);
+    powerupSprite->runAction(seq);
 }
+
 Sprite* Powerup::GetPowerupSprite()
 {
 	return powerupSprite;
@@ -88,7 +105,8 @@ void Powerup::RandomSpawnPowerup()
 	int toSpawn = cocos2d::RandomHelper::random_int(0, (int)POWERUPS_TOTAL - 1);
 
 	Powerup* newPowerup = new Powerup();
-	newPowerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
+	//newPowerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
+    newPowerup->InitPowerup(POWERUP_SHIELD, spawnPosition);
 
 	powerupsList.push_back(newPowerup);
 }
@@ -112,14 +130,16 @@ void Powerup::BeginPickup(const Vec2& pos)
 	auto moveEvent = MoveTo::create(0.3f, pos);
 
 	auto callbackFunc = CallFunc::create([this]() {
-		auto scene = Director::getInstance()->getRunningScene();
-		auto layer = scene->getChildByTag(999);
-		HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-
 		ApplyPowerupEffect();
 	});
 	auto seq = Sequence::create(moveEvent, callbackFunc, nullptr);
 	powerupSprite->runAction(seq);
+}
+
+void Powerup::DestroySelf()
+{
+    toBeDestroyed = true;	// personal variable
+    toDestroy = true;	// static variable
 }
 
 // apply effect and play SFX
@@ -138,6 +158,13 @@ void Powerup::ApplyPowerupEffect()
 		break;
 
 	case POWERUP_SHIELD:
+    {
+        Shield::SetToSpawnShield(true);
+        auto scene = Director::getInstance()->getRunningScene();
+        auto layer = scene->getChildByTag(999);
+        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+        Shield::SetSpawnUser(helloLayer->mainPlayer->GetSprite(), true);
+    }
 		break;
 
 	case POWERUP_LASER:

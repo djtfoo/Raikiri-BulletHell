@@ -38,6 +38,8 @@ public:
 		ENEMY=2,
 		ENEMYPROJ=3,
 		POWERUP=4,
+        PLAYERSHIELD=5,
+        ENEMYSHIELD=6,
 	};
     static cocos2d::Scene* createScene();
 
@@ -64,7 +66,7 @@ public:
 	
     // World objects
     Player* mainPlayer;
-    Player* GetPlayer();
+    //Player* GetPlayer() { return mainPlayer; }
 
 	Node* getSpriteNode();
     Node* getProjectileNode();

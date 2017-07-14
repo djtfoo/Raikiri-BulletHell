@@ -148,6 +148,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\Attack\Attack.cpp" />
     <ClCompile Include="..\Classes\Attack\Projectile.cpp" />
+    <ClCompile Include="..\Classes\Attack\Shield.cpp" />
     <ClCompile Include="..\Classes\Audio\AudioManager.cpp" />
     <ClCompile Include="..\Classes\Enemy\BConstruct.cpp" />
     <ClCompile Include="..\Classes\Enemy\BFunnel.cpp" />
@@ -173,6 +174,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\Attack\Attack.h" />
     <ClInclude Include="..\Classes\Attack\Projectile.h" />
+    <ClInclude Include="..\Classes\Attack\Shield.h" />
     <ClInclude Include="..\Classes\Audio\AudioManager.h" />
     <ClInclude Include="..\Classes\Enemy\BConstruct.h" />
     <ClInclude Include="..\Classes\Enemy\BFunnel.h" />

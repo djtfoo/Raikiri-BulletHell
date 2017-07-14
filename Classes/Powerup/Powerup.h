@@ -27,6 +27,7 @@ private:
 	bool toBeDestroyed;	// to be destroyed because picked up
 
 	void InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition);
+    void DestroySelf(); // to destroy self automatically when it leaves screen
 
 	static bool toSpawnPowerup;
 	static Vec2 spawnPosition;
@@ -37,13 +38,12 @@ public:
 
 	//static std::vector<Powerup> powerups;
 	static std::vector<Powerup*> powerupsList;
-	static int powerupSpawnCount;
 
 	Sprite* GetPowerupSprite();
 	POWERUP_TYPE GetPowerupType();
 
 	// function to call that checks whether a powerup should be spawned
-	static bool CheckSpawnPowerup();	// check whether to spawn is true
+	static bool CheckSpawnPowerup();	// check against RNG whether should spawn or not
 	static void RandomSpawnPowerup();	// randomly spawn 1 powerup
 
 	static bool ToSpawnPowerup() { return toSpawnPowerup; }

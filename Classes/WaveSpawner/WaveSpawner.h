@@ -19,6 +19,8 @@ public:
 	~WaveSpawner();
 	void SeteNode(Node* node);
 
+    Entity* GetEntity(Node* node);  // getter for Entity via its SpriteNode
+
 	void SpawnBoss();
 	void SpawnCurrentWave();
 	void SpawnEnemy(EnemyData enemy);

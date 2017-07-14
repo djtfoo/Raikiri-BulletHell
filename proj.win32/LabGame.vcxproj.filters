@@ -111,6 +111,9 @@
     <ClCompile Include="..\Classes\Powerup\Powerup.cpp">
       <Filter>src\Powerups</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Attack\Shield.cpp">
+      <Filter>src\Attack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -184,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Powerup\Powerup.h">
       <Filter>src\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Attack\Shield.h">
+      <Filter>src\Attack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
