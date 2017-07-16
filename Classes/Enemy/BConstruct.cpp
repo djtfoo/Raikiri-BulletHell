@@ -2,15 +2,18 @@
 #include "BFunnel.h"
 #include "AnimationHandler.h"
 #include "Attack\Projectile.h"
+#include "../Scenes/HelloWorldScene.h"
 BConstruct::BConstruct()
 {
 	timer = 0;
 	islooped = false;
-	phase = 2;
+	phase = 1;
 	counter = 0;
 	prevt = 0;
 	finished = false;
 	spawntimer = 0;
+	_hp = 3000;
+
 }
 BConstruct::~BConstruct()
 {
@@ -19,6 +22,8 @@ BConstruct::~BConstruct()
 
 void BConstruct::DoAttack(float dt)
 {
+
+	
 	switch (phase)
 	{
 	case(1)://first pattern
@@ -28,12 +33,14 @@ void BConstruct::DoAttack(float dt)
 		{
 			SpawnFunnels();
 			spawntimer = 0;
-			FirstAttack(dt);
-		
+			finished = false;
 		}
 		if (!islooped)
 			ToggleWaypoint();
+		if (_hp < 1800)
+			phase = 2;
 
+		FirstAttack(dt);
 		
 		break;
 	case(2) ://second pattern
@@ -46,11 +53,10 @@ void BConstruct::DoAttack(float dt)
 			FirstAttack(dt);
 			
 		}
-		else
-		{
+
 			SecondAttack(dt);
-		}
-		
+		if (_hp < 1000)
+			TriggerFinal();
 
 		if (!islooped)
 			ToggleWaypoint();
@@ -64,8 +70,6 @@ void BConstruct::DoAttack(float dt)
 			SpawnFunnels();
 			timer = 0;
 		}
-		if (!islooped)
-			ToggleWaypoint();
 
 		break;
 	}
@@ -131,7 +135,7 @@ void BConstruct::ToggleWaypoint()
 void BConstruct::FirstAttack(float dt)
 {
 	int i = counter;
-	if (timer - prevt > 0.07)
+	if (timer - prevt > 0.07 && !finished)
 	{
 		prevt = timer;
 		counter++;
@@ -144,9 +148,12 @@ void BConstruct::FirstAttack(float dt)
 		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, -pos.y - i*i), 300, Vec2(-1, 0).getNormalized(),true);
 		//Projectile* projectile3 = new Projectile();
 		//projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", -pos, 100, Vec2(-1, 0));
-		if (counter > 10)
+		if (counter > 5)
+		{
 			counter = 0;
-			
+			finished = true;
+		}
+		
 
 	}
 
@@ -175,7 +182,29 @@ void BConstruct::SecondAttack(float dt)
 			counter = 1;
 	}
 }
-void squareup(Vec2 pos , int i)
-{
 
+void BConstruct::TriggerFinal()
+{
+	islooped = true;
+	//AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
+	_eSprite->stopAllActions();
+	auto anim1 = Animate::create(AnimHandler::GetInstance()->getAnimAction(AnimHandler::CONSTRUCT_TPHASE));
+	_eSprite->runAction(CCSequence::create(anim1, CallFunc::create(CC_CALLBACK_0(BConstruct::P3Loop, this)), NULL));
+	phase = 3;
+}
+
+void BConstruct::P3Loop()
+{
+	if (islooped)
+	{
+		AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
+	}
+
+	islooped = false;
+	auto scene = Director::getInstance()->getRunningScene();
+	auto layer = scene->getChildByTag(999);
+	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+	Sprite* player = helloLayer->mainPlayer->GetSprite();
+	auto moveTo = MoveTo::create(2, player->getPosition());
+	_eSprite->runAction(CCSequence::create(moveTo,CallFunc::create(CC_CALLBACK_0(BConstruct::P3Loop, this)), NULL));
 }

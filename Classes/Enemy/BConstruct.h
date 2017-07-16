@@ -22,6 +22,8 @@ protected:
 	void ToggleWaypoint();
 	void FirstAttack(float dt);
 	void SecondAttack(float dt);
+	void TriggerFinal();
+	void P3Loop();
 
 };
 
