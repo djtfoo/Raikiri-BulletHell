@@ -3,21 +3,22 @@
 Entity::Entity()
 {
 	_eSprite = Sprite::create("Blue_Front1.png");
+	//_eSprite->setAnchorPoint(Vec2(0.5f, 0.5f));
 	_eSprite->setScale(0.5);
-	
+	_hp = 100;
 	_active = false;
 
 	auto physicsBody = PhysicsBody::createBox(
 		Size(_eSprite->getContentSize().width, _eSprite->getContentSize().height),
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
 	physicsBody->setDynamic(false);
-
 	physicsBody->setGravityEnable(false);
-	physicsBody->setCategoryBitmask(1);
-	physicsBody->setContactTestBitmask(1);
+	physicsBody->setCategoryBitmask(4);
+	physicsBody->setCollisionBitmask(130);
+	physicsBody->setContactTestBitmask(130);
 	physicsBody->setTag(2);
 
-	physicsBody->setPositionOffset(Vec2(_eSprite->getContentSize().width, _eSprite->getContentSize().height));
+	physicsBody->setPositionOffset(Vec2(0, _eSprite->getContentSize().height*1.5f));
 	_eSprite->addComponent(physicsBody);
 
 
@@ -31,6 +32,7 @@ Sprite* Entity::GetSprite()
 {
 	return _eSprite;
 }
+
 void Entity::SetEntity(EnemyData data)
 {
 	_waveNum = data._waveNum;

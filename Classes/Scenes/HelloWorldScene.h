@@ -40,6 +40,7 @@ public:
 		POWERUP=4,
         PLAYERSHIELD=5,
         ENEMYSHIELD=6,
+		LASERPOWERUP=7,
 	};
     static cocos2d::Scene* createScene();
 

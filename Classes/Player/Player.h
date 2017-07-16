@@ -19,6 +19,9 @@ private:
 	float iFrameTempTimer;
 	float iFrameRenderTimer;
 	float iFrameRenderTempTimer;
+	float RespawnTimer;
+	float RespawnTempTimer;
+	bool Death;
 	bool iFrameEnabled;
 	//int score;
 
@@ -62,6 +65,14 @@ public:
 	Sprite* GetSprite(void)
 	{
 		return mainSprite;
+	}
+	inline void SetDeath(bool death)
+	{
+		Death = death;
+	}
+	inline bool GetDeath()
+	{
+		return Death;
 	}
 };
 

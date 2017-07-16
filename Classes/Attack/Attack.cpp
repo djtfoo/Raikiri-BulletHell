@@ -47,7 +47,9 @@ void Attack::LaserUpdate(float dt, float LaserScaleX,Vec2 PlayerPosition)
 {
 	if (InitLaser)
 	{
-		LaserSprite->setScaleX(LaserSprite->getScaleX() + LaserScaleX);
+		//LaserSprite->getPhysicsBody()->getFirstShape()->
+		/*LaserSprite->getPhysicsBody()->getShape()->
+		LaserSprite->setScaleX(LaserSprite->getScaleX() + LaserScaleX);*/
 		LaserSprite->setPosition(PlayerPosition);
 	}
 }

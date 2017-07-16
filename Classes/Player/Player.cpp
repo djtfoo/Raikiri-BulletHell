@@ -8,7 +8,8 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	//remove imagesource for now
 	mainSprite = Sprite::create("Blue_Front1.png");
 	mainSprite->setOpacity(255.f);
-    //mainSprite->setScale(0.6f);
+  //  mainSprite->setScale(0.6f);
+	mainSprite->setAnchorPoint(Vec2(0.5f, 0.5f));
 	mainSprite->setPosition(X, Y);
 	mainSprite->setName(playerName);
 
@@ -18,18 +19,22 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 		Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
 		PhysicsMaterial(0.1f, 1.0f, 0.0f));
 	physicsBody->setCategoryBitmask(1);
-	physicsBody->setContactTestBitmask(1);
+	physicsBody->setCollisionBitmask(24);
+	physicsBody->setContactTestBitmask(24);
 	physicsBody->setTag(0);
 	physicsBody->setDynamic(false);
 	physicsBody->setGravityEnable(false);
-	physicsBody->setPositionOffset(Vec2(mainSprite->getContentSize().width, mainSprite->getContentSize().height));
+	physicsBody->setPositionOffset(Vec2(mainSprite->getContentSize().width, mainSprite->getContentSize().height*1.5f));
 	mainSprite->addComponent(physicsBody);
 
 	iFrameTimer = 2.f;
 	iFrameTempTimer = 0;
 	iFrameRenderTimer=0.1f;
 	iFrameRenderTempTimer = 0;
-	iFrameEnabled = true;
+	RespawnTempTimer = 0.0f;
+	RespawnTimer = 2.0f;
+	Death = false;
+	iFrameEnabled = false;
    // auto spawnpos = MoveTo::create(1, Vec2(150, 100));
     //mainSprite->runAction(spawnpos);
 	fSpeed = 200.f;
@@ -71,48 +76,69 @@ void Player::setScore(int score)
 }
 void Player::Update(float dt)
 {
-    if (intDirX != 0 || intDirY != 0) {
-        Vec2 playerPos = mainSprite->getPosition();
-        Vec2 destination = playerPos + intDirX * Vec2(1.f, 0.f) * fSpeed * dt + intDirY * Vec2(0.f, 1.f) * fSpeed * dt;
-
-        //destination.x = clampf(destination.x, 1.f, screenWidth - mainSprite->getContentSize().width - 1.f);
-       // destination.y = clampf(destination.y, 1.f, screenHeight - mainSprite->getContentSize().height * 0.55f - 1.f);
-
-        //auto moveEvent = MoveBy::create(0.f, intDirX * Vec2(1.f, 0.f) * fSpeed * dt);
-        //mainSprite->runAction(moveEvent);
-        auto moveEvent = MoveTo::create(0.f, destination);
-        mainSprite->runAction(moveEvent);
-    }
-	if (iFrameEnabled)
+	if (!Death)
 	{
-		iFrameUpdate(dt);
-	}
-    AttackSystems->LaserUpdate(dt, 10.f,
-        mainSprite->getPosition());
-        //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
-    //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
-	
-	
-	
-	//GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
-	//this offests the player sprite for some reason
-	//mainSprite->setGLProgram(charEffect);
-	//mainSprite->setGLProgramState(state);
-	
-	
-	
-	//state->setUniformVec2("loc", mLoc);
+		if (intDirX != 0 || intDirY != 0) {
+			Vec2 playerPos = mainSprite->getPosition();
+			Vec2 destination = playerPos + intDirX * Vec2(1.f, 0.f) * fSpeed * dt + intDirY * Vec2(0.f, 1.f) * fSpeed * dt;
 
-	//charEffect->
-	//
-	//uniform vec3  u_lightPos;
-	//uniform vec2  u_contentSize;
-	//uniform vec3  u_lightColor;
-	//uniform vec3  u_ambientColor;
-	//
-	//uniform float  u_brightness;
-	//uniform float u_cutoffRadius;
-	//uniform float u_halfRadius;
+			//destination.x = clampf(destination.x, 1.f, screenWidth - mainSprite->getContentSize().width - 1.f);
+			// destination.y = clampf(destination.y, 1.f, screenHeight - mainSprite->getContentSize().height * 0.55f - 1.f);
+
+			//auto moveEvent = MoveBy::create(0.f, intDirX * Vec2(1.f, 0.f) * fSpeed * dt);
+			//mainSprite->runAction(moveEvent);
+			auto moveEvent = MoveTo::create(0.f, destination);
+			mainSprite->runAction(moveEvent);
+		}
+		if (iFrameEnabled)
+		{
+			iFrameUpdate(dt);
+		}
+		AttackSystems->LaserUpdate(dt, 10.f,
+			mainSprite->getPosition());
+		//mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
+		//    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
+
+
+
+		//GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
+		//this offests the player sprite for some reason
+		//mainSprite->setGLProgram(charEffect);
+		//mainSprite->setGLProgramState(state);
+
+
+
+		//state->setUniformVec2("loc", mLoc);
+
+		//charEffect->
+		//
+		//uniform vec3  u_lightPos;
+		//uniform vec2  u_contentSize;
+		//uniform vec3  u_lightColor;
+		//uniform vec3  u_ambientColor;
+		//
+		//uniform float  u_brightness;
+		//uniform float u_cutoffRadius;
+		//uniform float u_halfRadius;
+	}
+	else
+	{
+		mainSprite->getPhysicsBody()->setCollisionBitmask(0);
+		mainSprite->getPhysicsBody()->setContactTestBitmask(0);
+		mainSprite->getPhysicsBody()->setCategoryBitmask(0);
+		RespawnTempTimer += dt;
+		mainSprite->setOpacity(0);
+		if (RespawnTempTimer > RespawnTimer)
+		{
+			mainSprite->setOpacity(255);
+			Death = false;
+			iFrameEnabled = true;
+			RespawnTempTimer = 0;
+			mainSprite->getPhysicsBody()->setCollisionBitmask(24);
+			mainSprite->getPhysicsBody()->setContactTestBitmask(24);
+			mainSprite->getPhysicsBody()->setCategoryBitmask(1);
+		}
+	}
 }
 
 void Player::AnimatePlayer(KEYCODE key)
@@ -152,7 +178,7 @@ void Player::FireBasicBullet()
 	AttackSystems->FireBasicBullet("Projectiles/Bullet.png",
         mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
         //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
-        300.f,25,false);
+        300.f,2,false);
     AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void Player::FireLaser()
@@ -221,7 +247,9 @@ void Player::setLives(int lives)
 }
 void Player::iFrameUpdate(float dt)
 {
-	mainSprite->getPhysicsBody()->setCollisionBitmask(0x10);
+	mainSprite->getPhysicsBody()->setCollisionBitmask(0);
+	mainSprite->getPhysicsBody()->setContactTestBitmask(0);
+	mainSprite->getPhysicsBody()->setCategoryBitmask(0);
 	iFrameTempTimer += dt;
 	if (iFrameTempTimer <= iFrameTimer)
 	{
@@ -245,6 +273,9 @@ void Player::iFrameUpdate(float dt)
 	else
 	{
 		mainSprite->setOpacity(255);
+		mainSprite->getPhysicsBody()->setCollisionBitmask(24);
+		mainSprite->getPhysicsBody()->setContactTestBitmask(24);
+		mainSprite->getPhysicsBody()->setCategoryBitmask(1);
 		iFrameTempTimer = 0;
 		iFrameRenderTempTimer = 0;
 		iFrameEnabled = false;

@@ -255,167 +255,79 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 //}
 bool HelloWorld::onContactBegin(PhysicsContact& contact)
 {
- 	auto bodyA = contact.getShapeA()->getBody();
+  	auto bodyA = contact.getShapeA()->getBody();
 	auto bodyB = contact.getShapeB()->getBody();
 //	bodyA->getNode()->getcom
 	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
 	{
-		Powerup::SetToSpawnPowerup(true);
-		Powerup::SetSpawnPos(bodyA->getPosition());
+		
 
-		waveSpawner->DestroyEnemy(bodyA->getNode());
-		bodyA->getNode()->removeFromParentAndCleanup(true);
+		
+		waveSpawner->GetEntity(bodyA->getNode())->_hp -= 30;
+		if (waveSpawner->GetEntity(bodyA->getNode())->_hp <= 0)
+		{
+			Powerup::SetToSpawnPowerup(true);
+			Powerup::SetSpawnPos(bodyA->getPosition());
+			waveSpawner->DestroyEnemy(bodyA->getNode());
+			bodyA->getNode()->getPhysicsBody()->removeFromWorld();
+			bodyA->getNode()->removeFromParentAndCleanup(true);
+		}
+		
+		bodyB->getNode()->getPhysicsBody()->removeFromWorld();
 		bodyB->getNode()->removeFromParentAndCleanup(true);
 
 		return true;
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
 	{
-		Powerup::SetToSpawnPowerup(true);
-		Powerup::SetSpawnPos(bodyB->getPosition());
+	
 
-		waveSpawner->DestroyEnemy(bodyB->getNode());
+	
+		waveSpawner->GetEntity(bodyB->getNode())->_hp -= 30;
+		if (waveSpawner->GetEntity(bodyB->getNode())->_hp <= 0)
+		{	
+			Powerup::SetToSpawnPowerup(true);
+			Powerup::SetSpawnPos(bodyB->getPosition());
+			waveSpawner->DestroyEnemy(bodyB->getNode());
+			bodyB->getNode()->removeFromParentAndCleanup(true);
+			bodyB->getNode()->getPhysicsBody()->removeFromWorld();
+		}
+		bodyA->getNode()->getPhysicsBody()->removeFromWorld();
+		
 		bodyA->getNode()->removeFromParentAndCleanup(true);
-		bodyB->getNode()->removeFromParentAndCleanup(true);
+	
 
 		return true;
 	}
-	else if (bodyB->getTag() == PLAYERPROJ &&  bodyA->getTag() == PLAYERPROJ)
-	{
-		return false;
-	}
-	else if (bodyA->getTag() == PLAYERPROJ &&  bodyB->getTag() == PLAYERPROJ)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == ENEMYPROJ &&  bodyA->getTag() == ENEMYPROJ)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == ENEMYPROJ &&  bodyA->getTag() == ENEMYPROJ)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == ENEMYPROJ &&  bodyA->getTag() == PLAYERPROJ)
-	{
-		return false;
-	}
-	else if (bodyA->getTag() == ENEMYPROJ &&  bodyB->getTag() == PLAYERPROJ)
-	{
-		return false;
-	}
 	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMYPROJ)
 	{
+		mainPlayer->SetDeath(true);
+		mainPlayer->setLives(mainPlayer->getLives() - 1);
 		bodyB->getNode()->removeFromParentAndCleanup(true);
 		return true;
 	}
 	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMYPROJ)
 	{
+		mainPlayer->SetDeath(true);
+		mainPlayer->setLives(mainPlayer->getLives() - 1);
 		bodyA->getNode()->removeFromParentAndCleanup(true);
 		return true;
 	}
-	else if (bodyA->getTag() == ENEMY && bodyB->getTag() == ENEMY)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == ENEMY && bodyA->getTag() == ENEMY)
-	{
-		return false;
-	}
-	else if (bodyA->getTag() == ENEMY && bodyB->getTag() == ENEMYPROJ)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == ENEMY && bodyA->getTag() == ENEMYPROJ)
-	{
-		return false;
-	}
-	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMY)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMY)
-	{
-		return false;
-	}
-	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == PLAYERPROJ)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == PLAYERPROJ)
-	{ 
-		return false;
-	}
-
+	
 	// POWERUP
-	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == POWERUP)
-	{
- 		return false;
-	}
-	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYERPROJ)
-	{
-		return false;
-	}
+
 	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYER)
 	{
 		Powerup::FindAndBeginPickup(bodyA->getNode(), bodyA->getPosition() + 0.25f * bodyB->getNode()->getContentSize());
 		return true;
-	}
-	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == ENEMY)
-	{
-		return false;
-	}
-	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == ENEMYPROJ)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == PLAYERPROJ)
-	{
-		return false;
 	}
 	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == PLAYER)
 	{
 		Powerup::FindAndBeginPickup(bodyB->getNode(), bodyA->getPosition() + 0.25f * bodyA->getNode()->getContentSize());
 		return true;
 	}
-	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == ENEMY)
-	{
-		return false;
-	}
-	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == ENEMYPROJ)
-	{
-		return false;
-	}
 	
     // SHIELD
-    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == PLAYERSHIELD)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == PLAYER && bodyB->getTag() == PLAYERSHIELD)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == PLAYER)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == PLAYERPROJ && bodyB->getTag() == PLAYERSHIELD)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == PLAYERPROJ)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERSHIELD)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == ENEMY)
-    {
-        return false;
-    }
     else if (bodyA->getTag() == ENEMYPROJ && bodyB->getTag() == PLAYERSHIELD)
     {
         // set to destroy Shield
@@ -432,14 +344,17 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
         //bodyA->getNode()->removeFromParentAndCleanup(false);
         bodyB->getNode()->removeFromParentAndCleanup(true);
     }
-    else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYERSHIELD)
-    {
-        return false;
-    }
-    else if (bodyA->getTag() == PLAYERSHIELD && bodyB->getTag() == POWERUP)
-    {
-        return false;
-    }
+	//Laser
+	else if (bodyA->getTag() == LASERPOWERUP && bodyB->getTag() == ENEMY)
+	{
+		waveSpawner->DestroyEnemy(bodyB->getNode());
+		bodyB->getNode()->removeFromParentAndCleanup(true);
+	}
+	else if (bodyB->getTag() == LASERPOWERUP && bodyA->getTag() == ENEMY)
+	{
+		waveSpawner->DestroyEnemy(bodyA->getNode());
+		bodyA->getNode()->removeFromParentAndCleanup(true);
+	}
 
 	return true;
 }

@@ -52,8 +52,9 @@ void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
 		Size(spriteSize.x, spriteSize.y),
 		PhysicsMaterial(0.f, 0.0f, 0.0f));
 	physicsBody->setDynamic(false);
-	physicsBody->setCategoryBitmask(1);
+	physicsBody->setCategoryBitmask(16);
 	physicsBody->setContactTestBitmask(1);
+	physicsBody->setCollisionBitmask(1);
 	physicsBody->setTag(4);
 
 	physicsBody->setGravityEnable(false);

@@ -1,0 +1,29 @@
+Player=01
+PlayerProjectile=02
+Enemy=04
+EnemyProjectile=08
+PowerUp=16;
+PlayerShield=32;
+EnemyShield=64;
+Laser=128;
+
+Player collides with EnemyProjectile,PowerUP
+08+16=24;
+
+Player Projectile collides with Enemy
+04;
+
+Enemy collides with Player Projectile,Laser
+2+128=130;
+
+Enemy Projectile Collides with Player,Player shield
+01+32;
+
+Power Up collides with Player 
+01
+
+PlayerShield collides with Enemy Projectile
+08
+
+Laser colide with Enemy
+04;

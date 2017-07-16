@@ -38,6 +38,7 @@ public:
 	void SetActive();
 	Sprite* GetSprite();
 	virtual void DoAttack(float dt);
+	
 
 	//game related vairables
 	int _waveNum;

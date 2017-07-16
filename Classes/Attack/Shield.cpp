@@ -28,8 +28,9 @@ void Shield::InitShield(Sprite* userSprite)
         Size(spriteSize.x, spriteSize.y),
         PhysicsMaterial(0.f, 0.0f, 0.0f));
     physicsBody->setDynamic(false);
-    physicsBody->setCategoryBitmask(1);
-    physicsBody->setContactTestBitmask(1);
+    physicsBody->setCategoryBitmask(32);
+    physicsBody->setContactTestBitmask(8);
+	physicsBody->setCollisionBitmask(8);
     if (isSpawnUserPlayer)
         physicsBody->setTag(5); // Player Shield
     else
