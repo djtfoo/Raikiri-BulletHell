@@ -13,11 +13,15 @@ private:
 	Label* labelLives;
 	Label* labelScore;
 
+    Sprite* specialBarBackground;
+    Sprite* specialBarFill;
+
 public:
 	//GUI();
 	//~GUI();
 	static GUI* createPlayerGUI(Player* player); //std::string& _message);
 	void initOptions(Player* player);	// generic
+    void initSpecialBar();
     void Update(float dt);
 	//virtual bool init();
 
@@ -32,13 +36,6 @@ private:
 
 	CREATE_FUNC(GUI);
 };
-
-
-
-
-
-
-
 
 
 #endif

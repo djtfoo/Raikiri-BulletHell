@@ -37,7 +37,13 @@ private:
 public:
 
 	//static std::vector<Powerup> powerups;
-	static std::vector<Powerup*> powerupsList;
+	static std::vector<Powerup*> activePowerupsList;
+    static std::vector<Powerup*> inactivePowerupsList;
+
+    static void CreateInactivePowerups();
+
+    void Update();  // for onAdd()
+    static void PowerupsUpdate();   // Update every Powerup
 
 	Sprite* GetPowerupSprite();
 	POWERUP_TYPE GetPowerupType();

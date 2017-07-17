@@ -3,22 +3,23 @@
 Entity::Entity()
 {
 	_eSprite = Sprite::create("Blue_Front1.png");
-	//_eSprite->setAnchorPoint(Vec2(0.5f, 0.5f));
+	//_eSprite->setAnchorPoint(Vec2(1.f, 1.f));
+    _eSprite->setAnchorPoint(Vec2(0.5f, 0.5f));
 	_eSprite->setScale(0.5);
 	_hp = 100;
 	_active = false;
 
-	auto physicsBody = PhysicsBody::createBox(
-		Size(_eSprite->getContentSize().width, _eSprite->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+	auto physicsBody = PhysicsBody::createCircle(100,
+		//Size(_eSprite->getContentSize().width, _eSprite->getContentSize().height),
+		PhysicsMaterial(0.0f, 0.0f, 0.0f));
 	physicsBody->setDynamic(false);
 	physicsBody->setGravityEnable(false);
 	physicsBody->setCategoryBitmask(4);
-	physicsBody->setCollisionBitmask(130);
-	physicsBody->setContactTestBitmask(130);
+	physicsBody->setCollisionBitmask(131);
+	physicsBody->setContactTestBitmask(131);
 	physicsBody->setTag(2);
 
-	physicsBody->setPositionOffset(Vec2(0, _eSprite->getContentSize().height*1.5f));
+	//physicsBody->setPositionOffset(Vec2(_eSprite->getContentSize().width, _eSprite->getContentSize().height*1.8f));
 	_eSprite->addComponent(physicsBody);
 
 

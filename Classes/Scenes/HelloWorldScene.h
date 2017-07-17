@@ -23,12 +23,16 @@ private:
 
     bool timeStopped;
 	bool freezeAnimationChange;
+    bool freezeAttack;
+    float freezeAttackTimer;
+
     Vec2 screenMin, screenMax;
     float xPos, yPos;
     float widthX, heightY;
     //float minX, maxX, minY, maxY;
 
     void UpdateFreezeAnimation(float dt);
+    void UpdateFreezeAttack(float dt);
 
 public:
 	enum GO_TYPE
@@ -52,15 +56,19 @@ public:
     virtual void onMouseDown(Event*);
     virtual void onMouseUp(Event*);
 	virtual bool onContactBegin(PhysicsContact& contact);
+    virtual bool onContactSeparate(PhysicsContact& contact);
 	/*virtual bool onContactPreSolve(PhysicsContact& contact);
-	virtual bool onContactPostSolve(PhysicsContact& contact);
-	virtual bool onContactSeparate(PhysicsContact& contact); */
-	//virtual void  tick(float dt);
+	virtual bool onContactPostSolve(PhysicsContact& contact);*/
+	//virtual void tick(float dt);
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
 	void update(float dt);
-    void FreezeTime();
+
+    // For Special Attack
+    void ExecuteFreezeTime();
+    void SetPlayerDashPoints(const std::vector<Vec2>& points);
+
     //bool isKeyHeld(EventKeyboard::KeyCode keyCode);
 
 	Size playingSize;

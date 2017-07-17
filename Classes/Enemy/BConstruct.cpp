@@ -114,14 +114,14 @@ void BConstruct::SettoAttack()
 
 void BConstruct::SpawnFunnels()
 {
-	BFunnel* funnel = new BFunnel;
-	Vec2 spawn;
-	spawn.x = _eSprite->getPositionX() + cocos2d::RandomHelper::random_int(-250, 50);
-	spawn.y = _eSprite->getPositionY() + cocos2d::RandomHelper::random_int(-150, 150);
+	//BFunnel* funnel = new BFunnel;
+	//Vec2 spawn;
+	//spawn.x = _eSprite->getPositionX() + cocos2d::RandomHelper::random_int(-250, 50);
+	//spawn.y = _eSprite->getPositionY() + cocos2d::RandomHelper::random_int(-150, 150);
 
-	funnel->SetSpawn(spawn);
-	Entity* ent = dynamic_cast<Entity*>(funnel);
-	spawner->SpawnInEnemy(funnel);
+	//funnel->SetSpawn(spawn);
+	//Entity* ent = dynamic_cast<Entity*>(funnel);
+	//spawner->SpawnInEnemy(funnel);
 }
 
 void BConstruct::ToggleWaypoint()
@@ -143,9 +143,9 @@ void BConstruct::FirstAttack(float dt)
 		Vec2 pos = _eSprite->getPosition();
 		
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+i, pos.y-i*i), 300, Vec2(-1, 0).getNormalized(),true);
+		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+i, pos.y-i*i), 600, Vec2(-1, 0).getNormalized(),true);
 		Projectile* projectile2 = new Projectile();
-		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, -pos.y - i*i), 300, Vec2(-1, 0).getNormalized(),true);
+		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, -pos.y - i*i), 600, Vec2(-1, 0).getNormalized(),true);
 		//Projectile* projectile3 = new Projectile();
 		//projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", -pos, 100, Vec2(-1, 0));
 		if (counter > 5)

@@ -3,7 +3,7 @@
 #include "Scenes/HelloWorldScene.h"
 #include <fstream>	
 using std::string;
-
+#define COCOS2D_DEBUG 1
 WaveSpawner::WaveSpawner()
 {
 
@@ -13,8 +13,11 @@ WaveSpawner::~WaveSpawner()
 {
 }
 
+// written by JT
 Entity* WaveSpawner::GetEntity(Node* node)
 {
+    CCLOG("Size; %d", enemy_list.size());
+
     int a = 0;
     for (auto enemyNode : enemy_list)
     {
@@ -24,21 +27,30 @@ Entity* WaveSpawner::GetEntity(Node* node)
         }
         a++;
     }
-
     return NULL;
 }
 
 void WaveSpawner::DestroyEnemy(Node* node)
 {
+    CCLOG("Size; %d", enemy_list.size());
+
 	int a = 0;
 	for (auto enemyNode : enemy_list)
 	{
 		if (node == enemyNode->GetSprite())
 		{
+            // remove its visibility
+            //node->setVisible(false);
+
+            // remove it from active enemy list
+
+            // add it to inactive enemy list
+
 			Entity* entity = enemy_list[a];
 			enemy_list.erase(enemy_list.begin()+a);
 
 			delete entity;
+
 			break;
 		}
 		a++;
@@ -47,7 +59,7 @@ void WaveSpawner::DestroyEnemy(Node* node)
 void WaveSpawner::Init()
 {
 	wavetimer = 0;
-	currentwave = 1;
+	currentwave = 7;
 	wavetimer = 0;
 	isspawned = false;
 	isboss = false;
@@ -136,6 +148,9 @@ void WaveSpawner::Run(float dt)
 
 			if (e->_waveNum == currentwave && e->_active)
 				e->DoAttack(dt);
+            else
+                e->_eSprite->getPhysicsBody()->onAdd();
+
 		}
 		//we need to add stuff to check if wave is dead later
 	}
@@ -143,9 +158,11 @@ void WaveSpawner::Run(float dt)
 	{
 		for (Entity* e : enemy_list)
 		{
-			if (e->_active)
-				e->DoAttack(dt);
-		}
+            if (e->_active)
+                e->DoAttack(dt);
+            else
+                e->_eSprite->getPhysicsBody()->onAdd();
+        }
 	}
 
 }

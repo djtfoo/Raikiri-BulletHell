@@ -4,7 +4,8 @@
 
 #include "Attack/Shield.h"
 
-std::vector<Powerup*> Powerup::powerupsList;
+std::vector<Powerup*> Powerup::activePowerupsList;
+std::vector<Powerup*> Powerup::inactivePowerupsList;
 bool Powerup::toSpawnPowerup = false;
 Vec2 Powerup::spawnPosition = Vec2(300.f, 300.f);
 bool Powerup::toDestroy = false;
@@ -16,32 +17,6 @@ void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
     powerupType = type;
 
 	powerupSprite = Sprite::create();
-	switch (type)
-	{
-	case POWERUP_LIVES:
-		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_LIVES, true);
-		break;
-
-	case POWERUP_BULLETS:
-		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_BULLET, true);
-		break;
-
-	case POWERUP_MISSILE:
-		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_MISSILE, true);
-		break;
-
-	case POWERUP_SHIELD:
-		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_SHIELD, true);
-		break;
-
-	case POWERUP_LASER:
-		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_LASER, true);
-		break;
-
-	default:
-		AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_BULLET, true);
-		break;
-	}
 
 	Vec2 spriteSize = Vec2(140.f, 140.f);
 
@@ -59,6 +34,33 @@ void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
 
 	physicsBody->setGravityEnable(false);
 	powerupSprite->addComponent(physicsBody);
+
+    switch (type)
+    {
+    case POWERUP_LIVES:
+        AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_LIVES, true);
+        break;
+
+    case POWERUP_BULLETS:
+        AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_BULLET, true);
+        break;
+
+    case POWERUP_MISSILE:
+        AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_MISSILE, true);
+        break;
+
+    case POWERUP_SHIELD:
+        AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_SHIELD, true);
+        break;
+
+    case POWERUP_LASER:
+        AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_LASER, true);
+        break;
+
+    default:
+        AnimHandler::GetInstance()->setAnimation(powerupSprite, AnimHandler::POWERUP_BULLET, true);
+        break;
+    }   
 
 	auto scene = Director::getInstance()->getRunningScene();
 	auto layer = scene->getChildByTag(999);
@@ -106,15 +108,15 @@ void Powerup::RandomSpawnPowerup()
 	int toSpawn = cocos2d::RandomHelper::random_int(0, (int)POWERUPS_TOTAL - 1);
 
 	Powerup* newPowerup = new Powerup();
-	//newPowerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
-    newPowerup->InitPowerup(POWERUP_SHIELD, spawnPosition);
+	newPowerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
+    //newPowerup->InitPowerup(POWERUP_SHIELD, spawnPosition);
 
-	powerupsList.push_back(newPowerup);
+	activePowerupsList.push_back(newPowerup);
 }
 
 void Powerup::FindAndBeginPickup(Node* node, const Vec2& pos)
 {
-	for (std::vector<Powerup*>::iterator it = powerupsList.begin(); it != powerupsList.end(); ++it)
+	for (std::vector<Powerup*>::iterator it = activePowerupsList.begin(); it != activePowerupsList.end(); ++it)
 	{
 		Powerup* powerup = *it;
 		if (powerup->powerupSprite == node)
@@ -141,6 +143,19 @@ void Powerup::DestroySelf()
 {
     toBeDestroyed = true;	// personal variable
     toDestroy = true;	// static variable
+}
+
+void Powerup::Update()
+{
+    powerupSprite->getPhysicsBody()->onAdd();
+}
+
+void Powerup::PowerupsUpdate()
+{
+    for (Powerup* powerup : activePowerupsList)
+    {
+        powerup->Update();
+    }
 }
 
 // apply effect and play SFX
@@ -186,7 +201,7 @@ bool Powerup::IsToDestroy()
 
 void Powerup::DestroyPickedups()
 {
-	for (std::vector<Powerup*>::iterator it = powerupsList.begin(); it != powerupsList.end(); ++it)
+	for (std::vector<Powerup*>::iterator it = activePowerupsList.begin(); it != activePowerupsList.end(); ++it)
 	{
 		Powerup* powerup = *it;
 		if (powerup->toBeDestroyed == true)
@@ -199,7 +214,7 @@ void Powerup::DestroyPickedups()
 			delete powerup;
 
 			// remove from list
-			powerupsList.erase(it);
+            activePowerupsList.erase(it);
 			toDestroy = false;
 
 			break;

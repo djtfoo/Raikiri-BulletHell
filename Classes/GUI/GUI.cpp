@@ -10,6 +10,7 @@ GUI* GUI::createPlayerGUI(Player* player)
 	gui->setAnchorPoint(cocos2d::Vec2(0, 0));
 
 	gui->initOptions(player);
+    gui->initSpecialBar();
 
 	return gui;
 }
@@ -46,4 +47,27 @@ void GUI::initOptions(Player* player)
 	addChild(labelScore, 1);
 
 	labelScore->setPosition(cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 150));
+}
+
+void GUI::initSpecialBar()
+{
+    // Size of this bar is:
+    // 50 x 200 pixels
+    // border is: 6 pixels wide
+
+    // background
+    specialBarBackground = Sprite::create("GUI/specialbar_background.png");
+
+    // scale according to screen res?
+    //shieldSprite->setScale(spriteSize.x / imageSize.x, spriteSize.y / imageSize.y);
+
+    specialBarBackground->setPosition(50.f, 120.f);
+    addChild(specialBarBackground, 1);
+
+    // fill
+    specialBarFill = Sprite::create("GUI/specialbar_fill.png");
+    specialBarFill->setPosition(31.f, 26.f);
+    specialBarFill->setAnchorPoint(Vec2::ZERO);
+    specialBarFill->setScaleY(0.5f);
+    addChild(specialBarFill, 1);
 }

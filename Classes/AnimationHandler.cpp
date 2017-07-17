@@ -57,18 +57,19 @@ void AnimHandler::addAnimation(const char* plist, const char* format, int framec
 
 void AnimHandler::setAnimation(Sprite* sprite, ANIMATION_TYPE  name, bool loop)
 {
-
 	if (loop)
 	sprite->runAction(RepeatForever::create(Animate::create(animList[name])));
 	else
 		sprite->runAction(Animate::create(animList[name]));
 
-
+    sprite->getPhysicsBody()->onAdd();
 }
 
 void AnimHandler::setCCAnimation(Sprite* sprite, ANIMATION_TYPE  name,CallFunc* callback)
 {
 	sprite->runAction(CCSequence::create(Animate::create(animList[name]), callback, NULL));
+
+    sprite->getPhysicsBody()->onAdd();
 }
 
 Animation* AnimHandler::getAnimAction(ANIMATION_TYPE name)
@@ -87,5 +88,10 @@ Vector<cocos2d::SpriteFrame*> AnimHandler::getAnimation(const char *format, int 
 		animFrames.pushBack(spritecache->getSpriteFrameByName(str));
 	}
 	return animFrames;
+}
+
+void AnimHandler::setAnimframe(Sprite* sprite, ANIMATION_TYPE  name)
+{
+    //sprite = Sprite::create(animList[name]->createWithSpriteFrames)
 }
 

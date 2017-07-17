@@ -16,6 +16,9 @@ void GameInputManager::Init()
 
 void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
 {
+    if (!player->b_movement)
+        return;
+    
     if (keyCode == KEYS_TOTAL)
         return;
 
@@ -53,7 +56,7 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
         auto scene = Director::getInstance()->getRunningScene();
         auto layer = scene->getChildByTag(999);
         HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-        helloLayer->FreezeTime();
+        helloLayer->ExecuteFreezeTime();
         //SceneManager::GetInstance()->ChangeScene("HelloWorld");
     }
 
@@ -96,7 +99,8 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
         //mainPlayer->setUpOrDown(-1, false);
     }
     else if (keyCode == keyControls["Shoot"]) {
-		player->FireBasicBullet();
+        if (!player->IsDead())
+		    player->FireBasicBullet();
     }
 
 	else if (keyCode == keyControls["FireLaser"]) {

@@ -114,6 +114,9 @@
     <ClCompile Include="..\Classes\Attack\Shield.cpp">
       <Filter>src\Attack</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Scenes\FreezeTimeScene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Attack\Shield.h">
       <Filter>src\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scenes\FreezeTimeScene.h">
+      <Filter>src\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

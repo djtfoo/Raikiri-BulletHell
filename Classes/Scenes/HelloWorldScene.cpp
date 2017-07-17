@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "FreezeTimeScene.h"
 
 #include "Input/GameInputManager.h"
 #include "Audio/AudioManager.h"
@@ -21,6 +22,8 @@ Scene* HelloWorld::createScene()
     // add layer as a child to scene
 	//scene->addChild(GUILayer,0, 997);
     scene->addChild(layer, 0, 999);
+
+    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // return the scene
     return scene;
@@ -142,7 +145,7 @@ bool HelloWorld::init()
 
     // PLAYER
     mainPlayer = new Player();
-    mainPlayer->SetLightEffect(lightEffect);
+    //mainPlayer->SetLightEffect(lightEffect);
     mainPlayer->Init("Blue_Front1.png", "Player", 300, 300, playingSize);
 	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
     this->addChild(mainPlayer->GetSprite(), 1);
@@ -205,10 +208,10 @@ bool HelloWorld::init()
 
 	auto collisionListener = EventListenerPhysicsContact::create();
 	collisionListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+    collisionListener->onContactSeparate = CC_CALLBACK_1(HelloWorld::onContactSeparate, this);
 
 	//collisionListener->onContactPreSolve = CC_CALLBACK_1(HelloWorld::onContactPreSolve, this);
 	//collisionListener->onContactPostSolve = CC_CALLBACK_3(HelloWorld::onContactPostSolve, this);
-	//collisionListener->onContactSeparate = CC_CALLBACK_3(HelloWorld::onContactSeparate, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(collisionListener,this);
 	//schedule(CC_SCHEDULE_SELECTOR(HelloWorld::tick), 0.3f);
@@ -222,6 +225,9 @@ bool HelloWorld::init()
     // Freeze Time Post-Processing
     timeStopped = false;
     freezeAnimationChange = false;
+    freezeAttack = false;
+    freezeAttackTimer = 0.f;
+
     screenMin.setZero();
     screenMax.set(visibleSize.width, visibleSize.height);
     xPos = yPos = 0.f;
@@ -260,70 +266,96 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 //	bodyA->getNode()->getcom
 	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
 	{
-		
-
-		
-		waveSpawner->GetEntity(bodyA->getNode())->_hp -= 30;
+  		waveSpawner->GetEntity(bodyA->getNode())->_hp -= 30;
 		if (waveSpawner->GetEntity(bodyA->getNode())->_hp <= 0)
 		{
 			Powerup::SetToSpawnPowerup(true);
 			Powerup::SetSpawnPos(bodyA->getPosition());
+
 			waveSpawner->DestroyEnemy(bodyA->getNode());
-			bodyA->getNode()->getPhysicsBody()->removeFromWorld();
+            //bodyA->removeFromWorld();
 			bodyA->getNode()->removeFromParentAndCleanup(true);
+           // delete bodyA->getNode();
 		}
-		
-		bodyB->getNode()->getPhysicsBody()->removeFromWorld();
+    ///    delete bodyA->getNode();
+        //bodyB->removeFromWorld();
+        if (bodyB->getNode() == NULL)
+            return false;
 		bodyB->getNode()->removeFromParentAndCleanup(true);
 
 		return true;
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
 	{
-	
-
-	
 		waveSpawner->GetEntity(bodyB->getNode())->_hp -= 30;
 		if (waveSpawner->GetEntity(bodyB->getNode())->_hp <= 0)
 		{	
 			Powerup::SetToSpawnPowerup(true);
 			Powerup::SetSpawnPos(bodyB->getPosition());
+
 			waveSpawner->DestroyEnemy(bodyB->getNode());
+            //bodyB->removeFromWorld();
 			bodyB->getNode()->removeFromParentAndCleanup(true);
-			bodyB->getNode()->getPhysicsBody()->removeFromWorld();
 		}
-		bodyA->getNode()->getPhysicsBody()->removeFromWorld();
-		
+        //bodyA->removeFromWorld();
+        if (bodyA->getNode() == NULL)
+            return false;
 		bodyA->getNode()->removeFromParentAndCleanup(true);
-	
+  //      delete bodyA->getNode();
 
 		return true;
 	}
 	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMYPROJ)
 	{
-		mainPlayer->SetDeath(true);
-		mainPlayer->setLives(mainPlayer->getLives() - 1);
-		bodyB->getNode()->removeFromParentAndCleanup(true);
-		return true;
+        if (!freezeAttack)
+        {
+            mainPlayer->SetDeath(true);
+            mainPlayer->setLives(mainPlayer->getLives() - 1);
+            bodyB->getNode()->removeFromParentAndCleanup(true);
+
+            return true;
+        }
+        return false;
 	}
 	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMYPROJ)
 	{
-		mainPlayer->SetDeath(true);
-		mainPlayer->setLives(mainPlayer->getLives() - 1);
-		bodyA->getNode()->removeFromParentAndCleanup(true);
-		return true;
+        if (!freezeAttack)
+        {
+            mainPlayer->SetDeath(true);
+            mainPlayer->setLives(mainPlayer->getLives() - 1);
+            bodyA->getNode()->removeFromParentAndCleanup(true);
+
+            return true;
+        }
+        return false;
 	}
+
+    // collision for attacks
+    else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMY)
+    {
+        Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
+        sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
+        sparkle->setPosition(bodyB->getPosition());
+        spriteNode->addChild(sparkle, 1);
+    }
+    else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMY)
+    {
+        Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
+        sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
+        sparkle->setPosition(bodyB->getPosition());
+        spriteNode->addChild(sparkle, 1);
+    }
 	
 	// POWERUP
 
 	else if (bodyA->getTag() == POWERUP && bodyB->getTag() == PLAYER)
 	{
-		Powerup::FindAndBeginPickup(bodyA->getNode(), bodyA->getPosition() + 0.25f * bodyB->getNode()->getContentSize());
+		Powerup::FindAndBeginPickup(bodyA->getNode(), bodyA->getPosition());
 		return true;
 	}
 	else if (bodyB->getTag() == POWERUP && bodyA->getTag() == PLAYER)
 	{
-		Powerup::FindAndBeginPickup(bodyB->getNode(), bodyA->getPosition() + 0.25f * bodyA->getNode()->getContentSize());
+		Powerup::FindAndBeginPickup(bodyB->getNode(), bodyA->getPosition());
 		return true;
 	}
 	
@@ -347,13 +379,11 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	//Laser
 	else if (bodyA->getTag() == LASERPOWERUP && bodyB->getTag() == ENEMY)
 	{
-		waveSpawner->DestroyEnemy(bodyB->getNode());
-		bodyB->getNode()->removeFromParentAndCleanup(true);
+        mainPlayer->GetAttackSystems()->AddToLaserVector(waveSpawner->GetEntity(bodyB->getNode()), bodyB->getNode());
 	}
 	else if (bodyB->getTag() == LASERPOWERUP && bodyA->getTag() == ENEMY)
 	{
-		waveSpawner->DestroyEnemy(bodyA->getNode());
-		bodyA->getNode()->removeFromParentAndCleanup(true);
+        mainPlayer->GetAttackSystems()->AddToLaserVector(waveSpawner->GetEntity(bodyA->getNode()), bodyA->getNode());
 	}
 
 	return true;
@@ -370,12 +400,23 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 //	auto bodyB = contact.getShapeB()->getBody();
 //	return true;
 //}
-//bool HelloWorld::onContactSeparate(PhysicsContact& contact)
-//{
-//	auto bodyA = contact.getShapeA()->getBody();
-//	auto bodyB = contact.getShapeB()->getBody();
-//	return true;
-//}
+
+bool HelloWorld::onContactSeparate(PhysicsContact& contact)
+{
+	auto bodyA = contact.getShapeA()->getBody();
+	auto bodyB = contact.getShapeB()->getBody();
+
+    if (bodyA->getTag() == LASERPOWERUP && bodyB->getTag() == ENEMY)
+    {
+        mainPlayer->GetAttackSystems()->DeleteFromLaserVector(waveSpawner->GetEntity(bodyB->getNode()));
+    }
+    else if (bodyB->getTag() == LASERPOWERUP && bodyA->getTag() == ENEMY)
+    {
+        mainPlayer->GetAttackSystems()->DeleteFromLaserVector(waveSpawner->GetEntity(bodyA->getNode()));
+    }
+
+	return true;
+}
 void HelloWorld::onMouseDown(Event* event)
 {
     EventMouse* mouseEvent = (EventMouse*)event;
@@ -423,6 +464,9 @@ void HelloWorld::update(float dt)
 	waveSpawner->Run(dt);
 	mainPlayer->Update(dt);
 
+    if (freezeAttack)
+        UpdateFreezeAttack(dt);
+
     //======================
     // Scrolling Background
     //======================
@@ -466,6 +510,8 @@ void HelloWorld::update(float dt)
     //===========
     // Power-Ups
     //===========
+    Powerup::PowerupsUpdate();
+
 	// Spawn Power-up
 	if (Powerup::ToSpawnPowerup())
 	{
@@ -492,8 +538,13 @@ void HelloWorld::update(float dt)
     this->visit();
     rendtex->end();
     rendtexSprite->setTexture(rendtex->getSprite()->getTexture());
+    rendtexSprite->setPosition(xPos, yPos);
     if (timeStopped) {
+        rendtexSprite->setPosition(xPos, yPos);
         rendtexSprite->setGLProgram(proPostProcess);    // apply grayscale effect
+    }
+    else {
+        rendtexSprite->setPosition(0.f, 0.f);
     }
 }
 
@@ -511,8 +562,6 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
-    
-    
 }
 
 
@@ -529,24 +578,27 @@ Vector<cocos2d::SpriteFrame*> HelloWorld::getAnimation(const char *format, int c
 	return animFrames;
 }
 
-void HelloWorld::FreezeTime()
+void HelloWorld::ExecuteFreezeTime()
 {
 	if (!freezeAnimationChange) {
         freezeAnimationChange = true;
 		//timeStopped = !timeStopped;
-        if (!timeStopped)
-        {
-            timeStopped = true;
-            xPos = mainPlayer->GetSprite()->getPosition().x;
-            yPos = mainPlayer->GetSprite()->getPosition().y;
-            widthX = 0.f;
-            heightY = 0.f;
-        }
-        else
+        if (timeStopped)
         {
             timeStopped = false;
             //xPos = mainPlayer->GetSprite()->getPosition().x;
             //yPos = mainPlayer->GetSprite()->getPosition().y;
+        }
+        else
+        {
+            timeStopped = true;
+            //xPos = mainPlayer->GetSprite()->getPosition().x;
+            //yPos = mainPlayer->GetSprite()->getPosition().y;
+
+            xPos = mainPlayer->GetSprite()->getPosition().x;
+            yPos = mainPlayer->GetSprite()->getPosition().y;
+            widthX = 0.f;
+            heightY = 0.f;
         }
 	}
 }
@@ -615,9 +667,47 @@ void HelloWorld::UpdateFreezeAnimation(float dt)
     rendtexSprite->setTextureRect(Rect(xPos, yPos, widthX, heightY));
 
     if (doneFreezing)
+    {
         freezeAnimationChange = false;
+        if (timeStopped)
+        {
+            freezeAttack = true;
+            freezeAttackTimer = 1.f;
+
+            // create freeze scene
+            //CCDirector::getInstance()->pause();
+            Scene* scene = FreezeTime::createScene(rendtexSprite);
+            scene->init();
+            CCDirector::getInstance()->pushScene(scene);
+        }
+    }
 }
 Node* HelloWorld::getProjectileNode()
 {
     return projectieNode;
+}
+
+void HelloWorld::SetPlayerDashPoints(const std::vector<Vec2>& points)
+{
+    mainPlayer->GetAttackSystems()->SetDashLinePoints(points);
+}
+
+void HelloWorld::UpdateFreezeAttack(float dt)
+{
+    if (FreezeTime::dashLinePoints.empty())
+    {
+        freezeAttack = false;
+        ExecuteFreezeTime();
+        return;
+    }
+
+    freezeAttackTimer += dt;
+    if (freezeAttackTimer > 1.f)
+    {
+        auto moveEvent = MoveTo::create(0.1f, FreezeTime::dashLinePoints[0]);
+        mainPlayer->GetSprite()->runAction(moveEvent);
+
+        // remove first point
+        FreezeTime::dashLinePoints.erase(FreezeTime::dashLinePoints.begin());
+    }
 }

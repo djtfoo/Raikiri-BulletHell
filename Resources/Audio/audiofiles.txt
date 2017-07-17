@@ -5,3 +5,4 @@
 0,Boss,BGM_boss.mp3,
 1,Laser,SFX_laser.wav,
 1,Bullet,SFX_bullet.wav,
+1,Powerup,SFX_powerup.wav,

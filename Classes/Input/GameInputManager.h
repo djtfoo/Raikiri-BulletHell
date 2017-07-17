@@ -32,7 +32,6 @@ public:
         static GameInputManager input;
         return &input;
     };
-
     void Init();
 
     // called by keyboard listener

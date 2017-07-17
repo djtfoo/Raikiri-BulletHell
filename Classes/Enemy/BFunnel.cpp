@@ -33,6 +33,6 @@ void BFunnel::Attack()
 void BFunnel::Fire()
 {
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", _eSprite->getPosition(), 300, Vec2(-1, 0),true);
+		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", _eSprite->getPosition(), 600, Vec2(-1, 0),true);
 		timer = 0;
 }

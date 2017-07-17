@@ -2,34 +2,49 @@
 #include "Scenes/HelloWorldScene.h"
 #include "AnimationHandler.h"
 #include "Audio/AudioManager.h"
+#include "Input\input.h"
+
+#define COCOS2D_DEBUG 1
 
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y, Size playingSize)
 {
 	//remove imagesource for now
-	mainSprite = Sprite::create("Blue_Front1.png");
+    b_movement = true;
+	mainSprite = Sprite::create("ship_test.png");
+    //AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 	mainSprite->setOpacity(255.f);
-  //  mainSprite->setScale(0.6f);
-	mainSprite->setAnchorPoint(Vec2(0.5f, 0.5f));
-	mainSprite->setPosition(X, Y);
+    mainSprite->setScale(0.6f);
+	//mainSprite->setAnchorPoint(Vec2(0.5f, 0.5f));
+
+
+    startingPos.set(X, Y);
+    mainSprite->setPosition(X, Y);
+
 	mainSprite->setName(playerName);
 
-	mainSprite->setScale(0.5);
+	//mainSprite->setScale(0.5);
 
-	auto physicsBody = PhysicsBody::createBox(
-		Size(mainSprite->getContentSize().width, mainSprite->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
+    auto physicsBody = PhysicsBody::createBox(
+        Size(0.3f * mainSprite->getContentSize().width, 0.3f * mainSprite->getContentSize().height),
+       // Size(200, 100),
+		PhysicsMaterial(0.1f, 0.0f, 0.0f));
+
+    //auto physicsBody = PhysicsBody::createCircle(0.5f * mainSprite->getContentSize().height, PhysicsMaterial(0.1f, 0.0f, 0.0f));
+    //CCLOG("SIZE : %4.2f ", mainSprite->getContentSize().height);
 	physicsBody->setCategoryBitmask(1);
-	physicsBody->setCollisionBitmask(24);
-	physicsBody->setContactTestBitmask(24);
+	physicsBody->setCollisionBitmask(28);
+	physicsBody->setContactTestBitmask(28);
 	physicsBody->setTag(0);
 	physicsBody->setDynamic(false);
 	physicsBody->setGravityEnable(false);
-	physicsBody->setPositionOffset(Vec2(mainSprite->getContentSize().width, mainSprite->getContentSize().height*1.5f));
+	//physicsBody->setPositionOffset(Vec2(0, 0.3f * mainSprite->getContentSize().height));
+    //CCLOG("SIZE OFFSET : %4.2f ", mainSprite->getContentSize().height);
 	mainSprite->addComponent(physicsBody);
+
 
 	iFrameTimer = 2.f;
 	iFrameTempTimer = 0;
-	iFrameRenderTimer=0.1f;
+	iFrameRenderTimer = 0.1f;
 	iFrameRenderTempTimer = 0;
 	RespawnTempTimer = 0.0f;
 	RespawnTimer = 2.0f;
@@ -38,22 +53,23 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
    // auto spawnpos = MoveTo::create(1, Vec2(150, 100));
     //mainSprite->runAction(spawnpos);
 	fSpeed = 200.f;
-
+    Respawn();
 	//AnimatePlayer(KEY_DOWN);
 	//StopAnimation();
 
-	charEffect = new GLProgram();
-	//charEffect->initWithFilenames("Shaders/Basic.vsh", "Shaders/CharEffect.fsh");
-	charEffect->initWithFilenames("Shaders/Basic.vsh", "Shaders/light.fsh");
-	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
-	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
-	charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
+	//charEffect = new GLProgram();
+	///charEffect->initWithFilenames("Shaders/Basic.vsh", "Shaders/CharEffect.fsh");
+	//charEffect->initWithFilenames("Shaders/Basic.vsh", "Shaders/light.fsh");
+	//charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
+    //charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
+    //charEffect->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
 
-	AnimHandler::GetInstance()->Init();
-	AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, false);
+	//AnimHandler::GetInstance()->Init();
+	//AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_SPAWN, false);
+    //Respawn();
 
-	charEffect->link();
-	charEffect->updateUniforms();
+    //charEffect->link();
+    //charEffect->updateUniforms();
 
 	this->intDirX = 0;
 	this->intDirY = 0;
@@ -65,6 +81,8 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     screenWidth = playingSize.width;
     screenHeight = playingSize.height;
+
+    //mainSprite->getPhysicsBody()->onAdd();
 }
 int Player::getScore()
 {
@@ -76,7 +94,31 @@ void Player::setScore(int score)
 }
 void Player::Update(float dt)
 {
-	if (!Death)
+    if (Death)
+    {
+        mainSprite->getPhysicsBody()->setCollisionBitmask(0);
+        mainSprite->getPhysicsBody()->setContactTestBitmask(0);
+        mainSprite->getPhysicsBody()->setCategoryBitmask(0);
+        RespawnTempTimer += dt;
+        mainSprite->setOpacity(0);
+        if (RespawnTempTimer > 2.f)
+        {
+            mainSprite->setOpacity(255);
+            Death = false;
+            //iFrameEnabled = true;
+            Respawn();
+            RespawnTempTimer = 0;
+        }
+
+        //if (RespawnTempTimer > RespawnTimer)
+        //{
+        //    mainSprite->setOpacity(255);
+        //    Death = false;
+        //    iFrameEnabled = true;
+        //    RespawnTempTimer = 0;
+        //}
+    }
+    else
 	{
 		if (intDirX != 0 || intDirY != 0) {
 			Vec2 playerPos = mainSprite->getPosition();
@@ -90,6 +132,13 @@ void Player::Update(float dt)
 			auto moveEvent = MoveTo::create(0.f, destination);
 			mainSprite->runAction(moveEvent);
 		}
+
+        mainSprite->getPhysicsBody()->onAdd();
+
+        //mainSprite->getPhysicsBody()->setVelocity(Vec2(intDirX, intDirY));
+        //CCLOG("Position: %4.2f, %4.2f", mainSprite->getPosition().x, mainSprite->getPosition().y);
+        //CCLOG("Veloctity: %4.2f, %4.2f", mainSprite->getPhysicsBody()->getVelocity().x, mainSprite->getPhysicsBody()->getVelocity().y);
+
 		if (iFrameEnabled)
 		{
 			iFrameUpdate(dt);
@@ -120,33 +169,19 @@ void Player::Update(float dt)
 		//uniform float  u_brightness;
 		//uniform float u_cutoffRadius;
 		//uniform float u_halfRadius;
-	}
-	else
-	{
-		mainSprite->getPhysicsBody()->setCollisionBitmask(0);
-		mainSprite->getPhysicsBody()->setContactTestBitmask(0);
-		mainSprite->getPhysicsBody()->setCategoryBitmask(0);
-		RespawnTempTimer += dt;
-		mainSprite->setOpacity(0);
-		if (RespawnTempTimer > RespawnTimer)
-		{
-			mainSprite->setOpacity(255);
-			Death = false;
-			iFrameEnabled = true;
-			RespawnTempTimer = 0;
-			mainSprite->getPhysicsBody()->setCollisionBitmask(24);
-			mainSprite->getPhysicsBody()->setContactTestBitmask(24);
-			mainSprite->getPhysicsBody()->setCategoryBitmask(1);
-		}
-	}
+	}   
+
 }
 
 void Player::AnimatePlayer(KEYCODE key)
 {
+    if (!b_movement)
+        return;
+
 	mainSprite->stopAllActions();
 	//AnimHandler::getInstance()->Init();
-	Vector<SpriteFrame*> animFrames;
-	animFrames.reserve(4);
+	//Vector<SpriteFrame*> animFrames;
+	//animFrames.reserve(4);
 
 	switch (key)
 	{
@@ -178,7 +213,7 @@ void Player::FireBasicBullet()
 	AttackSystems->FireBasicBullet("Projectiles/Bullet.png",
         mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
         //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
-        300.f,2,false);
+        3000.f,2,false);
     AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void Player::FireLaser()
@@ -192,7 +227,7 @@ void Player::FireLaser()
 }
 void Player::StopFiringLaser()
 {
-	AttackSystems->StopFiringLaser(100000, 25);
+	AttackSystems->StopFiringLaser(100000, 1);
 }
 void Player::StopAnimation()
 {
@@ -247,9 +282,9 @@ void Player::setLives(int lives)
 }
 void Player::iFrameUpdate(float dt)
 {
-	mainSprite->getPhysicsBody()->setCollisionBitmask(0);
-	mainSprite->getPhysicsBody()->setContactTestBitmask(0);
-	mainSprite->getPhysicsBody()->setCategoryBitmask(0);
+    mainSprite->getPhysicsBody()->setCollisionBitmask(0);
+    mainSprite->getPhysicsBody()->setContactTestBitmask(0);
+    mainSprite->getPhysicsBody()->setCategoryBitmask(0);
 	iFrameTempTimer += dt;
 	if (iFrameTempTimer <= iFrameTimer)
 	{
@@ -273,8 +308,8 @@ void Player::iFrameUpdate(float dt)
 	else
 	{
 		mainSprite->setOpacity(255);
-		mainSprite->getPhysicsBody()->setCollisionBitmask(24);
-		mainSprite->getPhysicsBody()->setContactTestBitmask(24);
+		mainSprite->getPhysicsBody()->setCollisionBitmask(28);
+		mainSprite->getPhysicsBody()->setContactTestBitmask(28);
 		mainSprite->getPhysicsBody()->setCategoryBitmask(1);
 		iFrameTempTimer = 0;
 		iFrameRenderTempTimer = 0;
@@ -317,4 +352,32 @@ void Player::MoveCharByCoord(float X, float Y)
 	//});
 	//auto seq = Sequence::create(moveEvent, callbackStop, nullptr);
 	//mainSprite->runAction(seq);
+}
+
+void Player::Respawn()
+{
+    mainSprite->setPosition(startingPos.x, startingPos.y);
+
+    b_movement = false;
+    mainSprite->stopAllActions();
+    AnimHandler::GetInstance()->setCCAnimation(mainSprite, AnimHandler::SHIP_SPAWN, CallFunc::create(CC_CALLBACK_0(Player::SetiFrames/*Player::CompleteRespawn*/, this)));
+}
+
+void Player::SetiFrames()
+{
+    AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE,true);
+    b_movement = true;
+    //Death = true;
+    iFrameRenderTimer = 0;
+    iFrameEnabled = true;
+}
+
+void Player::CompleteRespawn()
+{
+    AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
+    b_movement = true;
+
+    mainSprite->getPhysicsBody()->setCollisionBitmask(28);
+    mainSprite->getPhysicsBody()->setContactTestBitmask(28);
+    mainSprite->getPhysicsBody()->setCategoryBitmask(1);
 }

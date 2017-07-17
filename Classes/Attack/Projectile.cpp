@@ -1,72 +1,89 @@
 #include "Projectile.h"
 #include "Scenes\HelloWorldScene.h"
-
-
-
-Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition,float BulletSpeed,float LifeTime,bool isEnemy)
+#define COCOS2D_DEBUG 1
+Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime, bool isEnemy)
 {
-	Sprite* Projectile = Sprite::create(BulletImg);
+    ProjectileSprite = Sprite::create(BulletImg);
 
-	ProjectileSpeed = BulletSpeed;
-    Projectile->setPosition(SpawnPosition.x - Projectile->getContentSize().width, SpawnPosition.y - Projectile->getContentSize().height);
-	Projectile->setScaleY(2.0f);
-	Projectile->setScaleX(2.0f);
-	//Projectile->setAnchorPoint(Vec2::ZERO);
-	auto physicsBody = PhysicsBody::createBox(
-		Size(Projectile->getContentSize().width, Projectile->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setDynamic(true);
-	physicsBody->setCategoryBitmask(2);
-	physicsBody->setCollisionBitmask(4);
-	physicsBody->setContactTestBitmask(4);
+    ProjectileSpeed = BulletSpeed;
+    ProjectileSprite->setPosition(SpawnPosition.x - ProjectileSprite->getContentSize().width, SpawnPosition.y - ProjectileSprite->getContentSize().height);
+    ProjectileSprite->setScaleY(2.0f);
+    ProjectileSprite->setScaleX(2.0f);
+    //Projectile->setAnchorPoint(Vec2::ZERO);
+    auto physicsBody = PhysicsBody::createBox(
+        Size(ProjectileSprite->getContentSize().width, ProjectileSprite->getContentSize().height),
+        PhysicsMaterial(0.1f, 1.0f, 0.0f));
+    physicsBody->setDynamic(true);
+    physicsBody->setCategoryBitmask(2);
+    physicsBody->setCollisionBitmask(4);
+    physicsBody->setContactTestBitmask(4);
 
-	physicsBody->setVelocity(Vec2(1.f, 0.f) * ProjectileSpeed);
-	physicsBody->setTag(1);
-	Projectile->addComponent(physicsBody);
+    //physicsBody->setVelocity(Vec2(1.f, 0.f) * ProjectileSpeed);
+    physicsBody->setTag(1);
+    ProjectileSprite->addComponent(physicsBody);
 
-	auto moveEvent = MoveBy::create(LifeTime, Vec2(0.f, 0.f) );
-	Projectile->runAction(moveEvent);
-	//auto moveEvent = MoveBy::create(LifeTime, Vec2(5.f, 0.f) * ProjectileSpeed);
-	//Projectile->runAction(moveEvent);
+    // Get HelloWorld Scene layer
+    auto scene = Director::getInstance()->getRunningScene();
+    auto layer = scene->getChildByTag(999);
+    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+    Node* SpriteNode = helloLayer->getSpriteNode();
 
+    auto moveEvent = MoveTo::create((helloLayer->playingSize.width - ProjectileSprite->getPosition().x) / 200.f, Vec2(helloLayer->playingSize.width, ProjectileSprite->getPosition().y));
 
-	auto scene = Director::getInstance()->getRunningScene();
-	auto layer = scene->getChildByTag(999);
-	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-	Node* SpriteNode = helloLayer->getSpriteNode();
-	SpriteNode->addChild(Projectile, -1);
+    auto callbackFunc = CallFunc::create([this]() {
+        ProjectileSprite->removeFromParentAndCleanup(true);
 
-	return Projectile;
+        // delete this Projectile object
+        delete this;
+    });
+    auto seq = Sequence::create(moveEvent, callbackFunc, nullptr);
+    ProjectileSprite->runAction(seq);
+
+    SpriteNode->addChild(ProjectileSprite, -1);
+
+    return ProjectileSprite;
 }
 
 Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, Vec2 direction, bool isEnemy)
 {
-	float lifetime = 5;
-	Sprite* Projectile = Sprite::create(BulletImg);
-	//Projectile->setPosition(SpawnPosition.x,SpawnPosition.y);
-	Projectile->setScale(0.1);
-	Projectile->setPosition(SpawnPosition.x, SpawnPosition.y);
-	ProjectileSpeed = BulletSpeed;
-	auto physicsBody = PhysicsBody::createBox(
-		Size(Projectile->getContentSize().width, Projectile->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setDynamic(true);
-	physicsBody->setCategoryBitmask(8);
-	physicsBody->setCollisionBitmask(33);
-	physicsBody->setContactTestBitmask(33);
-	physicsBody->setTag(3);
-	physicsBody->setVelocity(direction * ProjectileSpeed);
-	physicsBody->setGravityEnable(false);
-	Projectile->addComponent(physicsBody);
-	auto moveEvent = MoveBy::create(lifetime, Vec2(0.f, 0.f));
-	Projectile->runAction(moveEvent);
-	auto scene = Director::getInstance()->getRunningScene();
-	auto layer = scene->getChildByTag(999);
-	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-	Node* SpriteNode = helloLayer->getSpriteNode();
-	SpriteNode->addChild(Projectile, -1);
+    float lifetime = 10.f;
+    ProjectileSprite = Sprite::create(BulletImg);
+    //Projectile->setPosition(SpawnPosition.x,SpawnPosition.y);
+    //CCLOG("Position : 4.",  Projectile->getContentSize().width);
+    ProjectileSprite->setPosition(SpawnPosition.x - (ProjectileSprite->getContentSize().width*0.3), SpawnPosition.y - (ProjectileSprite->getContentSize().height*0.2));
+    ProjectileSpeed = BulletSpeed;
+    auto physicsBody = PhysicsBody::createBox(
+        Size(0.5f * ProjectileSprite->getContentSize().width, 0.5f * ProjectileSprite->getContentSize().height),
+        PhysicsMaterial(0.1f, 1.0f, 0.0f));
+    physicsBody->setDynamic(true);
+    physicsBody->setCategoryBitmask(8);
+    physicsBody->setCollisionBitmask(33);
+    physicsBody->setContactTestBitmask(33);
+    physicsBody->setTag(3);
+    //physicsBody->setVelocity(direction * ProjectileSpeed);
+    physicsBody->setGravityEnable(false);
+    ProjectileSprite->addComponent(physicsBody);
+    
+    // Get HelloWorld Scene layer
+    auto scene = Director::getInstance()->getRunningScene();
+    auto layer = scene->getChildByTag(999);
+    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+    Node* SpriteNode = helloLayer->getSpriteNode();
 
-	return Projectile;
+    auto moveEvent = MoveBy::create(lifetime, direction * ProjectileSpeed);
+
+    auto callbackFunc = CallFunc::create([this]() {
+        ProjectileSprite->removeFromParentAndCleanup(true);
+
+        // delete this Projectile object
+        delete this;
+    });
+    auto seq = Sequence::create(moveEvent, callbackFunc, nullptr);
+    ProjectileSprite->runAction(seq);
+
+    SpriteNode->addChild(ProjectileSprite, -1);
+
+    return ProjectileSprite;
 }
 
 //Sprite*  Projectile::getProjectileSprite()
@@ -77,32 +94,31 @@ Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float 
 //{
 //	this->ProjectileSprite = ProjectileSprite;
 //}
-Sprite*  Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
+Sprite* Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
 {
-	Sprite* Projectile = Sprite::create(LaserImg);
-	Projectile->setAnchorPoint(Vec2::ZERO);
+    Sprite* Projectile = Sprite::create(LaserImg);
+    Projectile->setAnchorPoint(Vec2::ZERO);
     Projectile->setPosition(SpawnPosition.x - Projectile->getContentSize().width, SpawnPosition.y - Projectile->getContentSize().height);
-	Projectile->setScaleY(1.f);
-	auto scene = Director::getInstance()->getRunningScene();
-	auto layer = scene->getChildByTag(999);
-	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-	Projectile->setScaleX(helloLayer->playingSize.width-Projectile->getPosition().x);
+    Projectile->setScaleY(1.f);
+    auto scene = Director::getInstance()->getRunningScene();
+    auto layer = scene->getChildByTag(999);
+    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+    Projectile->setScaleX(helloLayer->playingSize.width /*- Projectile->getPosition().x*/);
+   
+    auto physicsBody = PhysicsBody::createBox(
+        //Size((Projectile->getScaleX()/2)-Projectile->getPosition().x, Projectile->getContentSize().height),
+        Size(1, Projectile->getContentSize().height),
+        PhysicsMaterial(0.1f, 1.0f, 0.0f));
+    physicsBody->setDynamic(false);
+    physicsBody->setCategoryBitmask(128);
+    physicsBody->setCollisionBitmask(4);
+    physicsBody->setContactTestBitmask(4);
+    physicsBody->setTag(7);
+    physicsBody->setGravityEnable(false);
+    Projectile->addComponent(physicsBody);
 
-	auto physicsBody = PhysicsBody::createBox(
-		Size(Projectile->getContentSize().width, Projectile->getContentSize().height),
-		PhysicsMaterial(0.1f, 1.0f, 0.0f));
-	physicsBody->setDynamic(false);
-	physicsBody->setCategoryBitmask(128);
-	physicsBody->setCollisionBitmask(4);
-	physicsBody->setContactTestBitmask(4);
-	physicsBody->setTag(7);
-	//physicsBody->life
-	//physicsBody->setVelocity(direction * ProjectileSpeed);
-	physicsBody->setGravityEnable(false);
-	Projectile->addComponent(physicsBody);
 
-	
-	Node* SpriteNode = helloLayer->getSpriteNode();
-	SpriteNode->addChild(Projectile, -1);
-	return Projectile;
+    Node* SpriteNode = helloLayer->getSpriteNode();
+    SpriteNode->addChild(Projectile, -1);
+    return Projectile;
 }
