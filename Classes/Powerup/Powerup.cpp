@@ -10,30 +10,60 @@ bool Powerup::toSpawnPowerup = false;
 Vec2 Powerup::spawnPosition = Vec2(300.f, 300.f);
 bool Powerup::toDestroy = false;
 
+void Powerup::PopulatePowerupPool()
+{
+    // create 10 inactive Powerups
+    for (int i = 0; i < 10; ++i)
+    {
+        CreateInactivePowerup();
+    }
+}
+
+void Powerup::CreateInactivePowerup()
+{
+    Powerup* newPowerup = new Powerup();
+
+    newPowerup->powerupSprite = Sprite::create();
+
+    Vec2 spriteSize = Vec2(140.f, 140.f);
+
+    newPowerup->powerupSprite->setScale(0.5);
+    newPowerup->powerupSprite->setVisible(false);
+
+    auto physicsBody = PhysicsBody::createBox(
+        Size(spriteSize.x, spriteSize.y),
+        PhysicsMaterial(0.f, 0.0f, 0.0f));
+    physicsBody->setDynamic(false);
+    physicsBody->setCategoryBitmask(16);
+    physicsBody->setContactTestBitmask(1);
+    physicsBody->setCollisionBitmask(1);
+    physicsBody->setTag(4);
+
+    physicsBody->setGravityEnable(false);
+    newPowerup->powerupSprite->addComponent(physicsBody);
+
+    physicsBody->setEnabled(false);
+
+    auto scene = Director::getInstance()->getRunningScene();
+    auto layer = scene->getChildByTag(999);
+    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+    Node* SpriteNode = helloLayer->getSpriteNode();
+    SpriteNode->addChild(newPowerup->powerupSprite, -1);
+
+    inactivePowerupsList.push_back(newPowerup);
+}
+
 void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
 {
 	//string spriteDirectory = "Powerups/";
 
     powerupType = type;
+    Vec2 spriteSize = Vec2(140.f, 140.f);
 
-	powerupSprite = Sprite::create();
+    powerupSprite->setPosition(SpawnPosition.x + 0.5f * spriteSize.x, SpawnPosition.y + 0.5f * spriteSize.y);
+    powerupSprite->setVisible(true);
 
-	Vec2 spriteSize = Vec2(140.f, 140.f);
-
-	powerupSprite->setScale(0.5);
-	powerupSprite->setPosition(SpawnPosition.x + 0.5f * spriteSize.x, SpawnPosition.y + 0.5f * spriteSize.y);
-
-	auto physicsBody = PhysicsBody::createBox(
-		Size(spriteSize.x, spriteSize.y),
-		PhysicsMaterial(0.f, 0.0f, 0.0f));
-	physicsBody->setDynamic(false);
-	physicsBody->setCategoryBitmask(16);
-	physicsBody->setContactTestBitmask(1);
-	physicsBody->setCollisionBitmask(1);
-	physicsBody->setTag(4);
-
-	physicsBody->setGravityEnable(false);
-	powerupSprite->addComponent(physicsBody);
+    powerupSprite->getPhysicsBody()->setEnabled(true);
 
     switch (type)
     {
@@ -62,12 +92,6 @@ void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
         break;
     }   
 
-	auto scene = Director::getInstance()->getRunningScene();
-	auto layer = scene->getChildByTag(999);
-	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-	Node* SpriteNode = helloLayer->getSpriteNode();
-	SpriteNode->addChild(powerupSprite, -1);
-
     // set to "follow background" & move towards end of screen
     /// speed = dist / time
     /// time = dist / speed
@@ -95,7 +119,7 @@ Powerup::POWERUP_TYPE Powerup::GetPowerupType()
 // function to call that checks whether a powerup should be spawned
 bool Powerup::CheckSpawnPowerup()
 {
-	// percentage chance of drop: 30%
+	// percentage chance of drop: 50%
 	int chance = cocos2d::RandomHelper::random_int(1, 10);
 	if (chance < 5)
 		return true;
@@ -105,13 +129,24 @@ bool Powerup::CheckSpawnPowerup()
 
 void Powerup::RandomSpawnPowerup()
 {
-	int toSpawn = cocos2d::RandomHelper::random_int(0, (int)POWERUPS_TOTAL - 1);
+    // if inactive list is empty, populate it first
+    if (inactivePowerupsList.empty())
+    {
+        PopulatePowerupPool();
+    }
 
-	Powerup* newPowerup = new Powerup();
-	newPowerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
-    //newPowerup->InitPowerup(POWERUP_SHIELD, spawnPosition);
+    // fetch a Powerup from inactive list
+    Powerup* powerup = inactivePowerupsList[0];
+    inactivePowerupsList.erase(inactivePowerupsList.begin());
 
-	activePowerupsList.push_back(newPowerup);
+    // set powerup
+    int toSpawn = cocos2d::RandomHelper::random_int(0, (int)POWERUPS_TOTAL - 1);
+
+    powerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
+    //powerup->InitPowerup(POWERUP_SHIELD, spawnPosition);
+
+    // move to active powerups list
+    activePowerupsList.push_back(powerup);
 }
 
 void Powerup::FindAndBeginPickup(Node* node, const Vec2& pos)
@@ -206,15 +241,23 @@ void Powerup::DestroyPickedups()
 		Powerup* powerup = *it;
 		if (powerup->toBeDestroyed == true)
 		{
-			// delete Powerup sprite
-			Node* sprite = powerup->powerupSprite;
-			sprite->removeFromParentAndCleanup(true);
+			/// delete Powerup sprite
+			//Node* sprite = powerup->powerupSprite;
+			//sprite->removeFromParentAndCleanup(true);
 
-			// delete internal Powerup object
-			delete powerup;
+			/// delete internal Powerup object
+			//delete powerup;
+
+            // set sprite to inactive
+            powerup->powerupSprite->setVisible(false);
+            powerup->powerupSprite->getPhysicsBody()->setEnabled(false);
 
 			// remove from list
             activePowerupsList.erase(it);
+
+            // return it to inactive list
+            inactivePowerupsList.push_back(powerup);
+
 			toDestroy = false;
 
 			break;

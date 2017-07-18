@@ -32,6 +32,8 @@ private:
 	static bool toSpawnPowerup;
 	static Vec2 spawnPosition;
 
+    static void CreateInactivePowerup();    // create 1 inactive Powerup to populate inactive pool
+
 	static bool toDestroy;	// there is a Powerup to destroy
 
 public:
@@ -40,7 +42,7 @@ public:
 	static std::vector<Powerup*> activePowerupsList;
     static std::vector<Powerup*> inactivePowerupsList;
 
-    static void CreateInactivePowerups();
+    static void PopulatePowerupPool();
 
     void Update();  // for onAdd()
     static void PowerupsUpdate();   // Update every Powerup
