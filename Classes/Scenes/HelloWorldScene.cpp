@@ -43,10 +43,10 @@ bool HelloWorld::init()
 	
 	//GUI
 	//auto GUIlayer = this->getChildByTag(997);
-	
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	playingSize = Size(visibleSize.width, visibleSize.height - (visibleSize.height / 8));
+	playingSize = Size(visibleSize.width, visibleSize.height);
 	AnimHandler::GetInstance()->Init();
 
 	//sprite stuff
@@ -309,8 +309,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{
         if (!freezeAttack)
         {
-            mainPlayer->SetDeath(true);
-            mainPlayer->setLives(mainPlayer->getLives() - 1);
+            mainPlayer->Die();
             bodyB->getNode()->removeFromParentAndCleanup(true);
 
             return true;
@@ -321,8 +320,9 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{
         if (!freezeAttack)
         {
-            mainPlayer->SetDeath(true);
-            mainPlayer->setLives(mainPlayer->getLives() - 1);
+            mainPlayer->Die();
+            //mainPlayer->SetDeath(true);
+            //mainPlayer->setLives(mainPlayer->getLives() - 1);
             bodyA->getNode()->removeFromParentAndCleanup(true);
 
             return true;
@@ -603,9 +603,10 @@ void HelloWorld::ExecuteFreezeTime()
 	}
 }
 
+static float freezeSpeed = 1000.f;
 void HelloWorld::UpdateFreezeAnimation(float dt)
 {
-    float deltaChange = 600.f * dt;
+    float deltaChange = freezeSpeed * dt;
     bool doneFreezing = true;
 
     if (timeStopped) {
@@ -702,10 +703,13 @@ void HelloWorld::UpdateFreezeAttack(float dt)
     }
 
     freezeAttackTimer += dt;
-    if (freezeAttackTimer > 1.f)
+    if (freezeAttackTimer > 0.05f)
     {
-        auto moveEvent = MoveTo::create(0.1f, FreezeTime::dashLinePoints[0]);
+        freezeAttackTimer = 0.f;
+
+        auto moveEvent = MoveTo::create(0.04f, FreezeTime::dashLinePoints[0]);
         mainPlayer->GetSprite()->runAction(moveEvent);
+        //mainPlayer->GetSprite()->getPhysicsBody()->setVelocity(0.f);
 
         // remove first point
         FreezeTime::dashLinePoints.erase(FreezeTime::dashLinePoints.begin());

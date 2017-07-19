@@ -68,7 +68,12 @@ void AudioManager::PlaySoundEffect(string soundName, bool loop)
 {
     map<string, string>::iterator it = SFXList.find(soundName);
     if (it != SFXList.end())
-        audioEngine->playEffect(it->second.c_str(), loop);
+    {
+        int ID = audioEngine->playEffect(it->second.c_str(), loop);
+        if (loop) {
+            loopSFXID.insert(std::pair<string, int>(soundName, ID));
+        }
+    }
 }
 
 void AudioManager::PlayBackgroundMusic(string musicName, bool loop)
@@ -81,19 +86,30 @@ void AudioManager::PlayBackgroundMusic(string musicName, bool loop)
         audioEngine->playBackgroundMusic(it->second.c_str(), loop);
 }
 
-void AudioManager::PauseBackgroundMusic()
-{
-
-}
-
-void AudioManager::ResumeBackgroundMusic()
-{
-
-}
+//void AudioManager::PauseBackgroundMusic()
+//{
+//
+//}
+//
+//void AudioManager::ResumeBackgroundMusic()
+//{
+//
+//}
 
 void AudioManager::StopBackgroundMusic()
 {
+    if (audioEngine->isBackgroundMusicPlaying())
+        audioEngine->stopBackgroundMusic();
+}
 
+void AudioManager::StopSoundEffect(string soundName)
+{
+    map<string, int>::iterator it = loopSFXID.find(soundName);
+    if (it != loopSFXID.end())
+    {
+        audioEngine->stopEffect(it->second);
+        loopSFXID.erase(it);
+    }
 }
 
 // functions called by AppDelegate

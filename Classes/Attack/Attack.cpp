@@ -1,6 +1,8 @@
 #include "Attack.h"
 #include "Projectile.h"
 #include "../Scenes/HelloWorldScene.h"
+#include "../Audio/AudioManager.h"
+
 #define COCOS2D_DEBUG 1
 Attack::Attack()
 {
@@ -18,6 +20,8 @@ void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletS
 {
 	Projectile* projectile = new Projectile();
 	/*Sprite* ProjectileSprite =*/ projectile->InitBasicBullet(BulletImg, SpawnPosition, BulletSpeed, LifeTime, isEnemy);
+
+    AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition)
 {
@@ -26,13 +30,16 @@ void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition)
 		Projectile* projectile = new Projectile();
 		LaserSprite = projectile->InitLaserBullet(LaserImg, SpawnPosition);
 		this->InitLaser = true;
+
+        AudioManager::GetInstance()->PlaySoundEffect("Laser");
+        AudioManager::GetInstance()->PlaySoundEffect("LaserHum", true);
 	}
 	/*else
 	{
 		LaserSprite->setScaleX(LaserSprite->getScaleX() + LaserScaleX);
 	}*/
 }
-void  Attack::StopFiringLaser(float LaserSpeed,float LifeTime)
+void  Attack::StopFiringLaser(/*float LaserSpeed,float LifeTime*/)
 {
     if (this->InitLaser) {
         this->InitLaser = false;
@@ -41,6 +48,8 @@ void  Attack::StopFiringLaser(float LaserSpeed,float LifeTime)
 
         LaserSprite->removeFromParentAndCleanup(true);
         LaserSprite = NULL;
+
+        AudioManager::GetInstance()->StopSoundEffect("LaserHum");
     }
 
 }

@@ -1,6 +1,7 @@
 #include "Powerup.h"
 #include "Scenes\HelloWorldScene.h"
 #include "AnimationHandler.h"
+#include "../Audio/AudioManager.h"
 
 #include "Attack/Shield.h"
 
@@ -224,6 +225,8 @@ void Powerup::ApplyPowerupEffect()
 	default:
 		break;
 	}
+    
+    AudioManager::GetInstance()->PlaySoundEffect("Powerup", false);
 
 	toBeDestroyed = true;	// personal variable
 	toDestroy = true;	// static variable

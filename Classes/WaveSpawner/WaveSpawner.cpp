@@ -1,6 +1,8 @@
 #include "WaveSpawner.h"
 #include "Enemy\BConstruct.h"
 #include "Scenes/HelloWorldScene.h"
+#include "../Audio/AudioManager.h"
+
 #include <fstream>	
 using std::string;
 #define COCOS2D_DEBUG 1
@@ -131,6 +133,10 @@ void WaveSpawner::Run(float dt)
 		if (currentwave > waveTimer.size())//is this the finaal wave?
 		{
 			SpawnBoss();
+
+            // play boss BGM
+            AudioManager::GetInstance()->PlayBackgroundMusic("Boss");
+
 			return;
 		}
 

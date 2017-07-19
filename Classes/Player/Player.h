@@ -44,6 +44,7 @@ public:
 	void Update(float dt);
 	void AnimatePlayer(KEYCODE key);	// KEY_INPUT for direction
 	
+    void Die();
     void StopAnimation();
     void Respawn();
     void SetiFrames();

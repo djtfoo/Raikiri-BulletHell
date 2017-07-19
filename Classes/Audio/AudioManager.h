@@ -18,6 +18,8 @@ private:
     bool LoadFile(const char* file_path);
     void PreloadAudio(int fileType, string audioName, string fileName);
 
+    std::map<string, int> loopSFXID;  // return ID for playing SFX (used for stopping SFX loops) - key is name of SFX
+
 public:
     ~AudioManager(){}
 
@@ -31,9 +33,10 @@ public:
     void PlaySoundEffect(string soundName, bool loop = false);
     void PlayBackgroundMusic(string musicName, bool loop = true);
 
-    void PauseBackgroundMusic();
-    void ResumeBackgroundMusic();
+    //void PauseBackgroundMusic();
+    //void ResumeBackgroundMusic();
     void StopBackgroundMusic();
+    void StopSoundEffect(string soundName);
 
     void ApplicationDidEnterBackground();
     void ApplicationWillEnterForeground();

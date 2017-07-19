@@ -39,7 +39,8 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	physicsBody->setGravityEnable(false);
 	//physicsBody->setPositionOffset(Vec2(0, 0.3f * mainSprite->getContentSize().height));
     //CCLOG("SIZE OFFSET : %4.2f ", mainSprite->getContentSize().height);
-	mainSprite->addComponent(physicsBody);
+    physicsBody->setVelocityLimit(0.f);
+    mainSprite->addComponent(physicsBody);
 
 
 	iFrameTimer = 2.f;
@@ -84,6 +85,19 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 
     //mainSprite->getPhysicsBody()->onAdd();
 }
+
+void Player::Die()
+{
+    mainSprite->getPhysicsBody()->setCollisionBitmask(0);
+    mainSprite->getPhysicsBody()->setContactTestBitmask(0);
+    mainSprite->getPhysicsBody()->setCategoryBitmask(0);
+
+    StopFiringLaser();
+
+    SetDeath(true);
+    setLives(lives - 1);
+}
+
 int Player::getScore()
 {
 	return score;
@@ -96,9 +110,6 @@ void Player::Update(float dt)
 {
     if (Death)
     {
-        mainSprite->getPhysicsBody()->setCollisionBitmask(0);
-        mainSprite->getPhysicsBody()->setContactTestBitmask(0);
-        mainSprite->getPhysicsBody()->setCategoryBitmask(0);
         RespawnTempTimer += dt;
         mainSprite->setOpacity(0);
         if (RespawnTempTimer > 2.f)
@@ -124,8 +135,8 @@ void Player::Update(float dt)
 			Vec2 playerPos = mainSprite->getPosition();
 			Vec2 destination = playerPos + intDirX * Vec2(1.f, 0.f) * fSpeed * dt + intDirY * Vec2(0.f, 1.f) * fSpeed * dt;
 
-			//destination.x = clampf(destination.x, 1.f, screenWidth - mainSprite->getContentSize().width - 1.f);
-			// destination.y = clampf(destination.y, 1.f, screenHeight - mainSprite->getContentSize().height * 0.55f - 1.f);
+            destination.x = clampf(destination.x, 1.f, screenWidth - 0.25f * mainSprite->getContentSize().width - 1.f);
+			destination.y = clampf(destination.y, 1.f, screenHeight - 1.f);
 
 			//auto moveEvent = MoveBy::create(0.f, intDirX * Vec2(1.f, 0.f) * fSpeed * dt);
 			//mainSprite->runAction(moveEvent);
@@ -214,7 +225,6 @@ void Player::FireBasicBullet()
         mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
         //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
         3000.f,2,false);
-    AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
 void Player::FireLaser()
 {
@@ -223,11 +233,10 @@ void Player::FireLaser()
         //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
         //mainSprite->getPosition() + Vec2(mainSprite->getScaleX() * 50, 0),
         //1000);
-    AudioManager::GetInstance()->PlaySoundEffect("Laser");
 }
 void Player::StopFiringLaser()
 {
-	AttackSystems->StopFiringLaser(100000, 1);
+	AttackSystems->StopFiringLaser(/*100000, 1*/);
 }
 void Player::StopAnimation()
 {
