@@ -61,7 +61,7 @@ void WaveSpawner::DestroyEnemy(Node* node)
 void WaveSpawner::Init()
 {
 	wavetimer = 0;
-	currentwave = 7;
+	currentwave = 1;
 	wavetimer = 0;
 	isspawned = false;
 	isboss = false;
@@ -232,6 +232,24 @@ Vec2 StrToVec2(std::string data)
 	return value;
 }
 
+Vec2 WaveSpawner::GetSpawnPos(Vec2 point)
+{
+	bool x = false, y = false;
+	if (point.x > 0)
+		point.x = point.x + screen_width;
+	if (point.y > 0)
+		point.y = point.y + screen_height;
+
+	return point;
+
+}
+
+void WaveSpawner::SetScreenBoundaries(float h, float w)
+{
+	screen_height = h;
+	screen_width = w;
+}
+
 bool WaveSpawner::LoadFile(const char* file_path)
 {
 	std::ifstream fileStream(file_path, std::ios::binary);
@@ -294,7 +312,7 @@ bool WaveSpawner::LoadFile(const char* file_path)
 
 		// third content is spawn position
 		std::getline(dataStream, data, ',');
-		thisEnemyData._spawnPos = StrToVec2(data);
+		thisEnemyData._spawnPos = GetSpawnPos(StrToVec2(data));
 
 		// fourth content is first destination
 		std::getline(dataStream, data, ',');
@@ -302,7 +320,7 @@ bool WaveSpawner::LoadFile(const char* file_path)
 
 		// fifth content is exit destination to leave the screen
 		std::getline(dataStream, data, ',');
-		thisEnemyData._exitDestination = StrToVec2(data);
+		thisEnemyData._exitDestination = GetSpawnPos(StrToVec2(data));
 
 		// push into waveData vector
 		waveData.push_back(thisEnemyData);

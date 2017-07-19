@@ -191,6 +191,7 @@ bool HelloWorld::init()
     waveSpawner = new WaveSpawner();
     waveSpawner->LoadFile("WaveData/testwave.csv");
     waveSpawner->Init();
+	waveSpawner->SetScreenBoundaries(playingSize.height, playingSize.width);
 	waveSpawner->SeteNode(enemynode);
 
 
