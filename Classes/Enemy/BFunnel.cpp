@@ -26,13 +26,13 @@ void BFunnel::SettoAttack()
 }
 void BFunnel::Attack()
 {
-	auto delay = DelayTime::create(0.5f);
+	auto delay = DelayTime::create(1.f);
 	_eSprite->runAction(CCSequence::create(delay, CallFunc::create(CC_CALLBACK_0(BFunnel::Fire, this)), CallFunc::create(CC_CALLBACK_0(BFunnel::Attack, this)), NULL));
 }
 
 void BFunnel::Fire()
 {
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", _eSprite->getPosition(), 600, Vec2(-1, 0),true);
+		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", _eSprite->getPosition(), Vec2(-1, 0), 900,true);
 		timer = 0;
 }

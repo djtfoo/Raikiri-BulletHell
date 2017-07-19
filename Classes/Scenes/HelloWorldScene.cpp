@@ -23,7 +23,7 @@ Scene* HelloWorld::createScene()
 	//scene->addChild(GUILayer,0, 997);
     scene->addChild(layer, 0, 999);
 
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+   // scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
     // return the scene
     return scene;
@@ -188,10 +188,12 @@ bool HelloWorld::init()
 	enemynode->setName("eNode");
 	this->addChild(enemynode, 1);
 
-    waveSpawner = new WaveSpawner();
+    waveSpawner = new WaveSpawner();	//order is important here
+	waveSpawner->Init();
+	waveSpawner->SetScreenBoundaries(playingSize.height,playingSize.width);
     waveSpawner->LoadFile("WaveData/testwave.csv");
-    waveSpawner->Init();
-	waveSpawner->SetScreenBoundaries(playingSize.height, playingSize.width);
+
+
 	waveSpawner->SeteNode(enemynode);
 
 

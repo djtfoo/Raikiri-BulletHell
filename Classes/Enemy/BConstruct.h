@@ -7,7 +7,7 @@ class BConstruct : public Entity
 public:
 	BConstruct();
 	~BConstruct();
-	void SetData();
+	void SetData(float scale);
 	void SettoSpawn();
 	void SettoAttack();
 	void SpawnFunnels();

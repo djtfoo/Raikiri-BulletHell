@@ -221,10 +221,10 @@ void Player::AnimatePlayer(KEYCODE key)
 }
 void Player::FireBasicBullet()
 {
-	AttackSystems->FireBasicBullet("Projectiles/Bullet.png",
+	AttackSystems->FireBasicBullet("Projectiles/ship_bullet.png",
         mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
         //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
-        3000.f,2,false);
+        3000.f,1.5,false);
 }
 void Player::FireLaser()
 {

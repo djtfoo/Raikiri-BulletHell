@@ -12,7 +12,7 @@ class WaveSpawner
 	std::vector<Entity*> enemy_list;//need to implement recycling for this
 
 private:
-	float screen_height, screen_width;
+	float screen_height, screen_width,screen_scaling,default_scale;
 
 
 public:
@@ -23,7 +23,7 @@ public:
     Entity* GetEntity(Node* node);  // getter for Entity via its SpriteNode
 
 	void SpawnBoss();
-	Vec2 GetSpawnPos(Vec2 point);
+	Vec2 ScreenToWorld(Vec2 point);
 	void SpawnCurrentWave();
 	void SpawnEnemy(EnemyData enemy);
 	void SpawnInEnemy(Entity* enemy);

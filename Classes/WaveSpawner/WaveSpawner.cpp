@@ -60,8 +60,12 @@ void WaveSpawner::DestroyEnemy(Node* node)
 }
 void WaveSpawner::Init()
 {
+	screen_height = 0;
+	screen_width = 0;
+	screen_scaling = 0;
+	default_scale = 1600;
 	wavetimer = 0;
-	currentwave = 1;
+	currentwave = 9;
 	wavetimer = 0;
 	isspawned = false;
 	isboss = false;
@@ -120,7 +124,7 @@ void WaveSpawner::SpawnEnemy(EnemyData enemy)
 
 void WaveSpawner::SpawnInEnemy(Entity* enemy)
 {
-	//enemy_list.push_back(enemy);
+	enemy_list.push_back(enemy);
 	eNode->addChild(enemy->_eSprite, 1);
 }
 
@@ -147,23 +151,34 @@ void WaveSpawner::Run(float dt)
 		{
 			DespawnEnemies();
 		}
-		for (Entity* e : enemy_list)
+		std::vector<Entity>::size_type size = enemy_list.size();
+		for (std::vector<Entity>::size_type i = 0; i < size; ++i)
 		{
-			//if (!e->_active)//this should work when implemented
-			//	continue;
-
-			if (e->_waveNum == currentwave && e->_active)
-				e->DoAttack(dt);
-            else
-                e->_eSprite->getPhysicsBody()->onAdd();
-
+			Entity*e = enemy_list[i];
+				if (e->_waveNum == currentwave && e->_active)
+					e->DoAttack(dt);
+			          else
+			              e->_eSprite->getPhysicsBody()->onAdd();
 		}
+		//for (Entity* e : enemy_list)
+		//{
+		//	//if (!e->_active)//this should work when implemented
+		//	//	continue;
+
+		//	if (e->_waveNum == currentwave && e->_active)
+		//		e->DoAttack(dt);
+  //          else
+  //              e->_eSprite->getPhysicsBody()->onAdd();
+
+		//}
 		//we need to add stuff to check if wave is dead later
 	}
 	else
 	{
-		for (Entity* e : enemy_list)
+		std::vector<Entity>::size_type size = enemy_list.size();
+		for (std::vector<Entity>::size_type i = 0; i < size; ++i)
 		{
+			Entity*e = enemy_list[i];
             if (e->_active)
                 e->DoAttack(dt);
             else
@@ -232,22 +247,19 @@ Vec2 StrToVec2(std::string data)
 	return value;
 }
 
-Vec2 WaveSpawner::GetSpawnPos(Vec2 point)
+Vec2 WaveSpawner::ScreenToWorld(Vec2 pos)
 {
-	bool x = false, y = false;
-	if (point.x > 0)
-		point.x = point.x + screen_width;
-	if (point.y > 0)
-		point.y = point.y + screen_height;
-
-	return point;
+	Vec2 result = pos*screen_scaling;
+	return result;
 
 }
+
 
 void WaveSpawner::SetScreenBoundaries(float h, float w)
 {
 	screen_height = h;
 	screen_width = w;
+	screen_scaling = (w/default_scale);
 }
 
 bool WaveSpawner::LoadFile(const char* file_path)
@@ -312,7 +324,7 @@ bool WaveSpawner::LoadFile(const char* file_path)
 
 		// third content is spawn position
 		std::getline(dataStream, data, ',');
-		thisEnemyData._spawnPos = GetSpawnPos(StrToVec2(data));
+		thisEnemyData._spawnPos = ScreenToWorld(StrToVec2(data));
 
 		// fourth content is first destination
 		std::getline(dataStream, data, ',');
@@ -320,7 +332,7 @@ bool WaveSpawner::LoadFile(const char* file_path)
 
 		// fifth content is exit destination to leave the screen
 		std::getline(dataStream, data, ',');
-		thisEnemyData._exitDestination = GetSpawnPos(StrToVec2(data));
+		thisEnemyData._exitDestination = ScreenToWorld(StrToVec2(data));
 
 		// push into waveData vector
 		waveData.push_back(thisEnemyData);
@@ -336,8 +348,8 @@ void WaveSpawner::SpawnBoss()
 	isboss = true;
 	BConstruct* boss = new BConstruct;
 	boss->spawner = this;
-	boss->SetData();
-	boss->SettoSpawn();
+ 	boss->SetData(screen_scaling);
+ 	boss->SettoSpawn();
 	enemy_list.push_back(boss);
 	eNode->addChild(boss->_eSprite, 1);
 }

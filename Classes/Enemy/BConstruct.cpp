@@ -78,10 +78,10 @@ void BConstruct::DoAttack(float dt)
 
 }
 
-void BConstruct::SetData()
+void BConstruct::SetData(float scale)
 {
-	_spawnPos = Vec2(4000, 500);
-	_destination = Vec2(920, 500);
+	_spawnPos = Vec2(4000, 650)*scale;
+	_destination = Vec2(1400, 600)*scale;
 	//_exitDestination = data._exitDestination;
 	_type = BCONSTRUCT;
 
@@ -114,14 +114,14 @@ void BConstruct::SettoAttack()
 
 void BConstruct::SpawnFunnels()
 {
-	//BFunnel* funnel = new BFunnel;
-	//Vec2 spawn;
-	//spawn.x = _eSprite->getPositionX() + cocos2d::RandomHelper::random_int(-250, 50);
-	//spawn.y = _eSprite->getPositionY() + cocos2d::RandomHelper::random_int(-150, 150);
+	BFunnel* funnel = new BFunnel;
+	Vec2 spawn;
+	spawn.x = _eSprite->getPositionX() + cocos2d::RandomHelper::random_int(-250, 50);
+	spawn.y = _eSprite->getPositionY() + cocos2d::RandomHelper::random_int(-150, 150);
 
-	//funnel->SetSpawn(spawn);
-	//Entity* ent = dynamic_cast<Entity*>(funnel);
-	//spawner->SpawnInEnemy(funnel);
+	funnel->SetSpawn(spawn);
+	Entity* ent = dynamic_cast<Entity*>(funnel);
+	spawner->SpawnInEnemy(funnel);
 }
 
 void BConstruct::ToggleWaypoint()
@@ -143,12 +143,12 @@ void BConstruct::FirstAttack(float dt)
 		Vec2 pos = _eSprite->getPosition();
 		
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+i, pos.y-i*i), 600, Vec2(-1, 0).getNormalized(),true);
+		projectile->InitComplexBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+i, pos.y-i*i), Vec2(-1, i*0.1),900,true);
 		Projectile* projectile2 = new Projectile();
-		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, -pos.y - i*i), 600, Vec2(-1, 0).getNormalized(),true);
+		projectile2->InitComplexBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - i, pos.y - i*i), Vec2(-1, -i*0.1), 900,true);
 		//Projectile* projectile3 = new Projectile();
 		//projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", -pos, 100, Vec2(-1, 0));
-		if (counter > 5)
+		if (counter > 8)
 		{
 			counter = 0;
 			finished = true;
@@ -170,15 +170,15 @@ void BConstruct::SecondAttack(float dt)
 
 		Vec2 pos = _eSprite->getPosition();
 		Projectile* projectile = new Projectile();
-		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x-120, pos.y-120+i), 300, Vec2(-1, i*0.1).getNormalized(),true);
+		projectile->InitComplexBullet("Projectiles/enemy_bullet.png", Vec2(pos.x-120, pos.y-120+i), Vec2(-2, -0.6+i*0.2).getNormalized(), 270, true,true);
 		Projectile* projectile2 = new Projectile();
-		projectile2->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+120, pos.y-120+i), 300, Vec2(-1, i*0.1).getNormalized(),true);
+		projectile2->InitComplexBullet("Projectiles/enemy_bullet.png", Vec2(pos.x+120, pos.y-120+i), Vec2(-2, -0.6 + i*0.2).getNormalized(), 270, true,true);
 		Projectile* projectile3 = new Projectile();
-		projectile3->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - 120+i, pos.y + 120), 300, Vec2(-1, i*0.1).getNormalized(),true);
+		projectile3->InitComplexBullet("Projectiles/enemy_bullet.png", Vec2(pos.x - 120+i, pos.y + 120), Vec2(-2, -0.6 + i*0.2).getNormalized(), 270, true,true);
 		Projectile* projectile4 = new Projectile();
-		projectile4->InitBasicBullet("Projectiles/enemy_bullet.png", Vec2(pos.x -120+ i, pos.y - 120), 300, Vec2(-1, i*0.1).getNormalized(),true);
+		projectile4->InitComplexBullet("Projectiles/enemy_bullet.png", Vec2(pos.x -120+ i, pos.y - 120), Vec2(-2, -0.6 + i*0.2).getNormalized(), 270, true,true);
 	
-		if (counter > 10)
+		if (counter > 5)
 			counter = 1;
 	}
 }
