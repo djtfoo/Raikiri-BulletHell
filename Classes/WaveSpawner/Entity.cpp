@@ -25,6 +25,16 @@ Entity::Entity()
 
 }
 
+void Entity::TakeDamage(int dmg)
+{
+    _hp -= dmg;
+}
+
+bool Entity::IsDead()
+{
+    return (_hp <= 0);
+}
+
 Entity::~Entity()
 {
 

@@ -121,18 +121,21 @@ void FreezeTime::onMouseMove(Event* event)
     if (Input::GetTouchState(TOUCH_MOUSELEFT) == TOUCH_HELD
         && drawPointTimer > 0.1f)
     {
-        Vec2 point;
-        point.setPoint(mouseEvent->getCursorX(), mouseEvent->getCursorY());
+        if (dashLinePoints.size() < 15)
+        {
+            Vec2 point;
+            point.setPoint(mouseEvent->getCursorX(), mouseEvent->getCursorY());
 
-        dashLinePoints.push_back(point);
+            dashLinePoints.push_back(point);
 
-        std::vector<Vec2>::iterator prevPoint = dashLinePoints.end() - 2;
+            std::vector<Vec2>::iterator prevPoint = dashLinePoints.end() - 2;
 
-        DrawNode* draw = DrawNode::create();
-        draw->drawLine(*prevPoint, point, Color4F::BLUE);
-        addChild(draw, 1);
+            DrawNode* draw = DrawNode::create();
+            draw->drawLine(*prevPoint, point, Color4F::BLUE);
+            addChild(draw, 1);
 
-        drawPointTimer = 0.f;
+            drawPointTimer = 0.f;
+        }
     }
 }
 

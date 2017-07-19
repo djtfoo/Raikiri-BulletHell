@@ -39,6 +39,8 @@ public:
 	Sprite* GetSprite();
 	virtual void DoAttack(float dt);
 	
+    void TakeDamage(int dmg);
+    bool IsDead();
 
 	//game related vairables
 	int _waveNum;

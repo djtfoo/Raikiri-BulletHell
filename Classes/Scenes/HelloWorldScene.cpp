@@ -60,12 +60,12 @@ bool HelloWorld::init()
 	currbg = 0;
 
 	bg_sprite1 = Sprite::create("moon_b_1.png");
-	bg_sprite1->setPosition(0, -playingSize.height);
+	bg_sprite1->setPosition(0, -0.45f * playingSize.height);
 	bg_sprite1->setAnchorPoint(Vec2::ZERO);
 	bg_sprite1->setName("bg1");
 	bg_sprite2 = Sprite::create("moon_b_1.png");
 	bg_sprite2->setAnchorPoint(Vec2::ZERO);
-	bg_sprite2->setPosition(bg_sprite1->getContentSize().width, -playingSize.height);
+	bg_sprite2->setPosition(bg_sprite1->getContentSize().width, -0.45f * playingSize.height);
 	bg_sprite2->setName("bg2");
 
 	nodeItems->addChild(bg_sprite1, 0);
@@ -266,8 +266,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 //	bodyA->getNode()->getcom
 	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
 	{
-  		waveSpawner->GetEntity(bodyA->getNode())->_hp -= 30;
-		if (waveSpawner->GetEntity(bodyA->getNode())->_hp <= 0)
+  		waveSpawner->GetEntity(bodyA->getNode())->TakeDamage(30);
+		if (waveSpawner->GetEntity(bodyA->getNode())->IsDead())
 		{
 			Powerup::SetToSpawnPowerup(true);
 			Powerup::SetSpawnPos(bodyA->getPosition());
@@ -287,8 +287,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
 	{
-		waveSpawner->GetEntity(bodyB->getNode())->_hp -= 30;
-		if (waveSpawner->GetEntity(bodyB->getNode())->_hp <= 0)
+		waveSpawner->GetEntity(bodyB->getNode())->TakeDamage(30);
+		if (waveSpawner->GetEntity(bodyB->getNode())->IsDead())
 		{	
 			Powerup::SetToSpawnPowerup(true);
 			Powerup::SetSpawnPos(bodyB->getPosition());
@@ -333,17 +333,63 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
     // collision for attacks
     else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMY)
     {
-        Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
-        sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
-        sparkle->setPosition(bodyB->getPosition());
-        spriteNode->addChild(sparkle, 1);
+        if (freezeAttack)   // player is in freeze special attack
+        {
+            // play hit SFX
+            AudioManager::GetInstance()->PlaySoundEffect("DashHit");
+
+            // deal damage to entity
+            waveSpawner->GetEntity(bodyB->getNode())->TakeDamage(500);
+            if (waveSpawner->GetEntity(bodyB->getNode())->IsDead())
+            {
+                Powerup::SetToSpawnPowerup(true);
+                Powerup::SetSpawnPos(bodyB->getPosition());
+
+                waveSpawner->DestroyEnemy(bodyB->getNode());
+                //bodyB->removeFromWorld();
+                bodyB->getNode()->removeFromParentAndCleanup(true);
+            }
+
+            Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
+            sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
+            sparkle->setPosition(bodyB->getPosition());
+            spriteNode->addChild(sparkle, 1);
+        }
+        else
+        {
+            // player loses 1 life
+
+        }
     }
     else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMY)
     {
-        Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
-        sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
-        sparkle->setPosition(bodyB->getPosition());
-        spriteNode->addChild(sparkle, 1);
+        if (freezeAttack)   // player is in freeze special attack
+        {
+            // play hit SFX
+            AudioManager::GetInstance()->PlaySoundEffect("DashHit");
+
+            // deal damage to entity
+            waveSpawner->GetEntity(bodyA->getNode())->TakeDamage(500);
+            if (waveSpawner->GetEntity(bodyA->getNode())->IsDead())
+            {
+                Powerup::SetToSpawnPowerup(true);
+                Powerup::SetSpawnPos(bodyA->getPosition());
+
+                waveSpawner->DestroyEnemy(bodyA->getNode());
+                //bodyB->removeFromWorld();
+                bodyA->getNode()->removeFromParentAndCleanup(true);
+            }
+
+            Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
+            sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
+            sparkle->setPosition(bodyB->getPosition());
+            spriteNode->addChild(sparkle, 1);
+        }
+        else
+        {
+            // player loses 1 life
+
+        }
     }
 	
 	// POWERUP
@@ -473,13 +519,13 @@ void HelloWorld::update(float dt)
 	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
 	{
 		currbg = 1;
-		bg_sprite2->setPosition(playingSize.width, -playingSize.height);
+		bg_sprite2->setPosition(playingSize.width, -0.45f * playingSize.height);
 		//bg_sprite1->setPosition(playingSize.width, -playingSize.height);
 	}
 	if (bg_sprite2->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==1)
 	{
 		//bg_sprite2->setPosition(playingSize.width, -playingSize.height);
-		bg_sprite1->setPosition(playingSize.width, -playingSize.height);
+		bg_sprite1->setPosition(playingSize.width, -0.45f * playingSize.height);
 		currbg = 0;
 	}
 
