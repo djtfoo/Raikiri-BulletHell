@@ -4,17 +4,14 @@
 #include "../Audio/AudioManager.h"
 
 #define COCOS2D_DEBUG 1
-Attack::Attack()
+Attack::Attack() : chargeBarMaxValue(100)
 {
 	InitLaser = false;
+    chargeBarValue = 0.f;
 }
 
 Attack::~Attack()
 {
-
-
-
-
 }
 void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime,bool isEnemy)
 {
@@ -129,4 +126,34 @@ void Attack::DeleteFromLaserVector(Entity* entity)
 void Attack::SetDashLinePoints(const std::vector<Vec2>& points)
 {
     dashLinePoints = points;
+}
+
+void Attack::AddDashHitEntity(Entity* entity)
+{
+    dashEntitiesHit.push_back(entity);
+}
+
+bool Attack::HasDashHitEntity(Entity* entity)
+{
+    if (std::find(dashEntitiesHit.begin(), dashEntitiesHit.end(), entity) == dashEntitiesHit.end())
+        return false;
+
+    return true;
+}
+
+void Attack::ClearDashHitEntities()
+{
+    dashEntitiesHit.clear();
+}
+
+void Attack::IncreaseChargeBarValue(int value)
+{
+    SetChargeBarValue(chargeBarValue + value);
+}
+
+void Attack::SetChargeBarValue(int value)
+{
+    chargeBarValue = value;
+    if (chargeBarValue > chargeBarMaxValue)
+        chargeBarValue = chargeBarMaxValue;
 }

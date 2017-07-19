@@ -68,6 +68,11 @@ void GUI::initSpecialBar()
     specialBarFill = Sprite::create("GUI/specialbar_fill.png");
     specialBarFill->setPosition(31.f, 26.f);
     specialBarFill->setAnchorPoint(Vec2::ZERO);
-    specialBarFill->setScaleY(0.5f);
+    specialBarFill->setScaleY(0.f);
     addChild(specialBarFill, 1);
+}
+
+void GUI::UpdateSpecialBarFill(float ratio)
+{
+    specialBarFill->setScaleY(ratio);
 }

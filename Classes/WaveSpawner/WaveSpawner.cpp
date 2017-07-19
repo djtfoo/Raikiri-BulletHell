@@ -274,7 +274,7 @@ bool WaveSpawner::LoadFile(const char* file_path)
 		std::string data;
 		if (firstLine)
 		{
-            for (std::getline(dataStream, data, ','); data != "\r";) {
+            for (std::getline(dataStream, data, ','); data != "\r" && data != "";) {
                 waveTimer.push_back(std::stof(data));
                 std::getline(dataStream, data, ',');
             }

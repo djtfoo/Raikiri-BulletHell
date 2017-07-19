@@ -27,6 +27,7 @@ public:
 
 	void UpdateLivesLabel(const char* _message);
 	void UpdateScoreLabel(const char* _message);
+    void UpdateSpecialBarFill(float ratio);
 
 	//virtual void draw(cocos2d::Renderer * renderer, const cocos2d::Mat4 & transform, bool transformUpdated);
 

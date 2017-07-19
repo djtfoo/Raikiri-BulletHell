@@ -120,9 +120,9 @@ Powerup::POWERUP_TYPE Powerup::GetPowerupType()
 // function to call that checks whether a powerup should be spawned
 bool Powerup::CheckSpawnPowerup()
 {
-	// percentage chance of drop: 50%
+	// percentage chance of drop: 40%
 	int chance = cocos2d::RandomHelper::random_int(1, 10);
-	if (chance < 5)
+	if (chance < 4)
 		return true;
 
 	return false;

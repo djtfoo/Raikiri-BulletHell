@@ -48,6 +48,11 @@ public:
 	};
     static cocos2d::Scene* createScene();
 
+    GUI* GetGUI()
+    {
+        return playerGui;
+    }
+
     virtual bool init();
     
     // callback functions

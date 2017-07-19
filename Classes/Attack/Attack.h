@@ -23,13 +23,32 @@ private:
 	bool InitLaser;
 
     std::vector<Vec2> dashLinePoints;   // for special attack
+    std::vector<Entity*> dashEntitiesHit;
+
+    int chargeBarValue;
+    const int chargeBarMaxValue;
+
+    void SetChargeBarValue(int value);
 
 public:
 	Attack();
 	~Attack();
 
+    bool ChargeBarIsMax()
+    {
+        return (chargeBarValue == chargeBarMaxValue);
+    }
+    float GetChargeBarPercentage()
+    {
+        return (float)chargeBarValue / (float)chargeBarMaxValue;
+    }
+
+    void IncreaseChargeBarValue(int value);
 
     void SetDashLinePoints(const std::vector<Vec2>& points);
+    void AddDashHitEntity(Entity* entity);
+    bool HasDashHitEntity(Entity* entity);
+    void ClearDashHitEntities();
 
 	void FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime,bool isEnemy);
 	void FireLaserBullet(string LaserImg, Vec2 SpawnPosition);

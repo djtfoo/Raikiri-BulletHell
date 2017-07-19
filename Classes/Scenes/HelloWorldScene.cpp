@@ -283,6 +283,10 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             return false;
 		bodyB->getNode()->removeFromParentAndCleanup(true);
 
+        // increase charge bar
+        mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(5);
+        playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+
 		return true;
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
@@ -302,6 +306,10 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             return false;
 		bodyA->getNode()->removeFromParentAndCleanup(true);
   //      delete bodyA->getNode();
+
+        // increase charge bar
+        mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(10);
+        playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
 
 		return true;
 	}
@@ -339,15 +347,24 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             AudioManager::GetInstance()->PlaySoundEffect("DashHit");
 
             // deal damage to entity
-            waveSpawner->GetEntity(bodyB->getNode())->TakeDamage(500);
-            if (waveSpawner->GetEntity(bodyB->getNode())->IsDead())
+            Entity* entity = waveSpawner->GetEntity(bodyB->getNode());
+            if (!mainPlayer->GetAttackSystems()->HasDashHitEntity(entity))   // not hit before
             {
-                Powerup::SetToSpawnPowerup(true);
-                Powerup::SetSpawnPos(bodyB->getPosition());
+                entity->TakeDamage(500);
+                if (entity->IsDead())
+                {
+                    Powerup::SetToSpawnPowerup(true);
+                    Powerup::SetSpawnPos(bodyB->getPosition());
 
-                waveSpawner->DestroyEnemy(bodyB->getNode());
-                //bodyB->removeFromWorld();
-                bodyB->getNode()->removeFromParentAndCleanup(true);
+                    waveSpawner->DestroyEnemy(bodyB->getNode());
+                    //bodyB->removeFromWorld();
+                    bodyB->getNode()->removeFromParentAndCleanup(true);
+                }
+                else
+                {
+                    // add to temp hit entities list so it cannot be hit again
+                    mainPlayer->GetAttackSystems()->AddDashHitEntity(entity);
+                }
             }
 
             Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
@@ -369,20 +386,29 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             AudioManager::GetInstance()->PlaySoundEffect("DashHit");
 
             // deal damage to entity
-            waveSpawner->GetEntity(bodyA->getNode())->TakeDamage(500);
-            if (waveSpawner->GetEntity(bodyA->getNode())->IsDead())
+            Entity* entity = waveSpawner->GetEntity(bodyA->getNode());
+            if (!mainPlayer->GetAttackSystems()->HasDashHitEntity(entity))   // not hit before
             {
-                Powerup::SetToSpawnPowerup(true);
-                Powerup::SetSpawnPos(bodyA->getPosition());
+                entity->TakeDamage(500);
+                if (entity->IsDead())
+                {
+                    Powerup::SetToSpawnPowerup(true);
+                    Powerup::SetSpawnPos(bodyA->getPosition());
 
-                waveSpawner->DestroyEnemy(bodyA->getNode());
-                //bodyB->removeFromWorld();
-                bodyA->getNode()->removeFromParentAndCleanup(true);
+                    waveSpawner->DestroyEnemy(bodyA->getNode());
+                    //bodyB->removeFromWorld();
+                    bodyA->getNode()->removeFromParentAndCleanup(true);
+                }
+                else
+                {
+                    // add to temp hit entities list so it cannot be hit again
+                    mainPlayer->GetAttackSystems()->AddDashHitEntity(entity);
+                }
             }
 
             Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
             sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
-            sparkle->setPosition(bodyB->getPosition());
+            sparkle->setPosition(bodyA->getPosition());
             spriteNode->addChild(sparkle, 1);
         }
         else
@@ -745,6 +771,7 @@ void HelloWorld::UpdateFreezeAttack(float dt)
     {
         freezeAttack = false;
         ExecuteFreezeTime();
+        mainPlayer->GetAttackSystems()->ClearDashHitEntities();
         return;
     }
 

@@ -53,11 +53,13 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
     }
     else if (keyCode == keyControls["FreezeTime"]) {
         Input::OnKeyPressed(KEY_SHIFT);
-        auto scene = Director::getInstance()->getRunningScene();
-        auto layer = scene->getChildByTag(999);
-        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-        helloLayer->ExecuteFreezeTime();
-        //SceneManager::GetInstance()->ChangeScene("HelloWorld");
+        if (player->b_movement && player->GetAttackSystems()->ChargeBarIsMax())
+        {
+            auto scene = Director::getInstance()->getRunningScene();
+            auto layer = scene->getChildByTag(999);
+            HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+            helloLayer->ExecuteFreezeTime();
+        }
     }
 
 }
