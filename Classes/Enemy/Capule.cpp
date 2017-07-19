@@ -12,6 +12,21 @@ Capule::~Capule()
 
 void Capule::DoAttack(float dt)
 {
+	if (TakenDamage)
+	{
+		DamagedRenderTempTimer += dt;
+		if (DamagedRenderTempTimer <= DamagedRenderTimer)
+		{
+			if (_eSprite->getOpacity() != 0)
+				_eSprite->setOpacity(0);
+		}
+		else
+		{
+			_eSprite->setOpacity(255);
+			TakenDamage = false;
+			DamagedRenderTempTimer = 0;
+		}
+	}
 	timer += dt;
 	if (timer > 1.4)
 	{

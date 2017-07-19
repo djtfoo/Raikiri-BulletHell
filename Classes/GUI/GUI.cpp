@@ -8,9 +8,10 @@ GUI* GUI::createPlayerGUI(Player* player)
 
 	gui->setContentSize(cocos2d::Size::Size(1, 1));
 	gui->setAnchorPoint(cocos2d::Vec2(0, 0));
-
+	//gui->initOptions(player);
+	//gui->initEndScreen(player);
 	gui->initOptions(player);
-    gui->initSpecialBar();
+   gui->initSpecialBar();
 
 	return gui;
 }
@@ -22,33 +23,67 @@ void GUI::Update(float dt)
  
 void GUI::UpdateLivesLabel(const char* _message)
 {
-	labelLives->setString(_message);
+	string text = "Lives Left: ";
+	text += _message;	
+	labelLives->setString(text);
 }
 
 void GUI::UpdateScoreLabel(const char* _message)
 {
-	labelScore->setString(_message);
+	string text = "Score: ";
+	text += _message;
+	labelScore->setString(text);
 }
-
+void GUI::UpdateScoreMultiplierLabel(const char* _message)
+{
+	string text = "Score Multiplier: ";
+	text += _message;
+	labelScoreMultiplier->setString(text);
+}
 void GUI::initOptions(Player* player)
 {
 	// Lives
 	labelLives = Label::createWithTTF("Lives Left: " + std::to_string(player->getLives()), "fonts/Batman.ttf", 24);
-	labelLives->setColor(cocos2d::Color3B(255, 215, 0));
+	labelLives->setColor(cocos2d::Color3B(0, 0, 0));
 
 	addChild(labelLives, 1);
 
-	labelLives->setPosition(cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 100));
+	labelLives->setPosition(cocos2d::Vec2(0 + 110, cocos2d::Director::getInstance()->getVisibleSize().height - 100));
 
 	// Score
 	labelScore = Label::createWithTTF("Score: " + std::to_string(player->getScore()), "fonts/Batman.ttf", 24);
-	labelScore->setColor(cocos2d::Color3B(255, 215, 0));
+	labelScore->setColor(cocos2d::Color3B(0, 0, 0));
 
 	addChild(labelScore, 1);
 
 	labelScore->setPosition(cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 150));
-}
 
+	labelScoreMultiplier = Label::createWithTTF("Score Multiplier: " + std::to_string(player->GetScoreMultiplier()), "fonts/Batman.ttf", 24);
+	labelScoreMultiplier->setColor(cocos2d::Color3B(0, 0, 0));
+
+	addChild(labelScoreMultiplier, 1);
+
+	labelScoreMultiplier->setPosition(cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 200));
+
+}
+void  GUI::initEndScreen(Player* player)
+{
+	Label* endScreenLabel = Label::createWithTTF("GAME OVER ", "fonts/Batman.ttf", 70);
+	endScreenLabel->setColor(cocos2d::Color3B(0, 0, 0));
+	Label* endScreenLabel2 = Label::createWithTTF("Press R to restart Level", "fonts/Batman.ttf", 70);
+	endScreenLabel2->setColor(cocos2d::Color3B(0, 0, 0));
+
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Size playingSize = Size(visibleSize.width, visibleSize.height);
+	endScreenLabel->setPosition(playingSize.width / 2, playingSize.height / 2);
+	endScreenLabel2->setPosition(playingSize.width / 2, playingSize.height / 2-150);
+	labelLives->setPosition(playingSize.width / 2, playingSize.height / 2 - 50);
+	labelScore->setPosition(playingSize.width / 2, playingSize.height / 2 - 100);
+	labelLives->setScale(2);
+	labelScore->setScale(2);
+	addChild(endScreenLabel);
+	addChild(endScreenLabel2);
+}
 void GUI::initSpecialBar()
 {
     // Size of this bar is:
@@ -72,7 +107,11 @@ void GUI::initSpecialBar()
     addChild(specialBarFill, 1);
 }
 
+
+
 void GUI::UpdateSpecialBarFill(float ratio)
 {
     specialBarFill->setScaleY(ratio);
 }
+
+

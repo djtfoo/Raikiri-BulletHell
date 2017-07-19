@@ -73,6 +73,7 @@ public:
     // For Special Attack
     void ExecuteFreezeTime();
     void SetPlayerDashPoints(const std::vector<Vec2>& points);
+	void LoadEnemies();
 
     //bool isKeyHeld(EventKeyboard::KeyCode keyCode);
 

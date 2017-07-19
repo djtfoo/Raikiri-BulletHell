@@ -48,8 +48,8 @@ void Powerup::CreateInactivePowerup()
     auto scene = Director::getInstance()->getRunningScene();
     auto layer = scene->getChildByTag(999);
     HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-    Node* SpriteNode = helloLayer->getSpriteNode();
-    SpriteNode->addChild(newPowerup->powerupSprite, -1);
+      Node* SpriteNode = helloLayer->getSpriteNode();
+     SpriteNode->addChild(newPowerup->powerupSprite, -1);
 
     inactivePowerupsList.push_back(newPowerup);
 }

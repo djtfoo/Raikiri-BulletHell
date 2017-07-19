@@ -110,7 +110,7 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
 		player->StopFiringLaser();
 	}
     else if (keyCode == keyControls["ResetScene"]) {
-        SceneManager::GetInstance()->ChangeScene("HelloWorld");
+        SceneManager::GetInstance()->ChangeScene("MainMenu");
     }
     else if (keyCode == keyControls["FreezeTime"]) {
 

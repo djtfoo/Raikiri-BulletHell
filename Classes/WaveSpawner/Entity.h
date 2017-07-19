@@ -26,6 +26,9 @@ public:
 	Vec2 _spawnPos;
 	Vec2 _destination;
 	Vec2 _exitDestination;
+	float DamagedRenderTimer;
+	float DamagedRenderTempTimer;
+	bool TakenDamage;
 	Entity();
 	~Entity();
 
@@ -44,7 +47,7 @@ public:
 
 	//game related vairables
 	int _waveNum;
-	int _hp;
+	float _hp;
 	bool _active;
 	Sprite* _eSprite;
 };

@@ -11,19 +11,26 @@ public:
 	void SettoSpawn();
 	void SettoAttack();
 	void SpawnFunnels();
+	void UpdateHP();
 	WaveSpawner* spawner;
+	Sprite* BossHealthBarRed;
+	Sprite* BossHealthBarGreen;
+	Label* BossHealthNumber;
+
 
 protected:
 	float timer,prevt,spawntimer;
 	bool islooped,finished;
 	int counter;
 	unsigned phase;
+	float MaxHp;
 	void DoAttack(float deltaatime);
 	void ToggleWaypoint();
 	void FirstAttack(float dt);
 	void SecondAttack(float dt);
 	void TriggerFinal();
 	void P3Loop();
+	
 
 };
 

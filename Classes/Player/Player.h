@@ -6,7 +6,6 @@
 #include "Attack\Attack.h"
 
 #include "LightEffect/LightEffect.h"
-
 using namespace cocos2d;
 
 class Player
@@ -14,6 +13,7 @@ class Player
 private:
 	int lives;
 	int score;
+	double scoreMultiplier;
 
 	float iFrameTimer;
 	float iFrameTempTimer;
@@ -36,7 +36,7 @@ private:
 	Attack* AttackSystems;
 
     Vec2 startingPos;
-
+	//GUI* playerGUI;
 public:
     bool b_shooting, b_movement;
 	Sprite* mainSprite;
@@ -62,13 +62,23 @@ public:
 	void setLives(int lives);
 
 	int getScore();
-	void setScore(int score);
+	void AddScore()
+	{
+		score += 100 * scoreMultiplier;
+	}
 
 	//void SetLightEffect(LightEffect* _effect)
 	//{
 	//	lightEffect = _effect;
 	//}
-
+	void AddScoreMultiplier(float multipler)
+	{
+		scoreMultiplier += multipler;
+	}
+	double GetScoreMultiplier()
+	{
+		return scoreMultiplier;
+	}
     Attack* GetAttackSystems()
     {
         return AttackSystems;
@@ -85,7 +95,10 @@ public:
 	{
 		return Death;
 	}
-
+	//void SetPlayerGUI(GUI* gui)
+	//{
+	//	playerGUI = gui;
+	//}
     void CompleteRespawn();
 };
 

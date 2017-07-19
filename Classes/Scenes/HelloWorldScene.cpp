@@ -5,7 +5,7 @@
 #include "Input/GameInputManager.h"
 #include "Audio/AudioManager.h"
 #include "AnimationHandler.h"
-
+#include "Enemy\BConstruct.h"
 #include "Powerup/Powerup.h"
 #include "Attack/Shield.h"
 
@@ -15,6 +15,7 @@ Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::createWithPhysics();
+	//Scene::
 	scene->getPhysicsWorld()->setGravity(Vec2(0, 0));
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
@@ -24,7 +25,7 @@ Scene* HelloWorld::createScene()
     scene->addChild(layer, 0, 999);
 
    // scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-
+	//LoadEnemies();
     // return the scene
     return scene;
 }
@@ -43,6 +44,9 @@ bool HelloWorld::init()
 	
 	//GUI
 	//auto GUIlayer = this->getChildByTag(997);
+	spriteNode = Node::create();
+	spriteNode->setName("spriteNode");
+	this->addChild(spriteNode, 1);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -96,10 +100,7 @@ bool HelloWorld::init()
 
 	// player sprites
 	//auto spriteNode = Node::create();
-	spriteNode = Node::create();
-	spriteNode->setName("spriteNode");
-	this->addChild(spriteNode, 1);
-
+	
   /*  projectieNode = Node::create();
     projectieNode->setName("projectileNode");
     this->addChild(projectieNode, 2);*/
@@ -184,19 +185,9 @@ bool HelloWorld::init()
     // ENEMY
 
 	// enemy sprites
-	auto enemynode = Node::create();
-	enemynode->setName("eNode");
-	this->addChild(enemynode, 1);
+	LoadEnemies();
 
-    waveSpawner = new WaveSpawner();	//order is important here
-	waveSpawner->Init();
-	waveSpawner->SetScreenBoundaries(playingSize.height,playingSize.width);
-    waveSpawner->LoadFile("WaveData/testwave.csv");
-
-
-	waveSpawner->SeteNode(enemynode);
-
-
+	
 	// cannot use same event variable for multiple objects; use CloneBy
 
     // Listeners
@@ -211,7 +202,7 @@ bool HelloWorld::init()
 
 	auto collisionListener = EventListenerPhysicsContact::create();
 	collisionListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
-    collisionListener->onContactSeparate = CC_CALLBACK_1(HelloWorld::onContactSeparate, this);
+   // collisionListener->onContactSeparate = CC_CALLBACK_1(HelloWorld::onContactSeparate, this);
 
 	//collisionListener->onContactPreSolve = CC_CALLBACK_1(HelloWorld::onContactPreSolve, this);
 	//collisionListener->onContactPostSolve = CC_CALLBACK_3(HelloWorld::onContactPostSolve, this);
@@ -220,6 +211,7 @@ bool HelloWorld::init()
 	//schedule(CC_SCHEDULE_SELECTOR(HelloWorld::tick), 0.3f);
     // GUI
 	playerGui = GUI::createPlayerGUI(mainPlayer);
+	//mainPlayer->SetPlayerGUI(playerGui);
 	this->addChild(playerGui, 2);
 
     // Audio
@@ -262,6 +254,21 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 //	physicsBody->setVelocity(Vec2(cocos2d::random(-500, 500), cocos2d::random(-500, 500)));
 //	physicsBody->setContactTestBitmask(0xFFFFFFFF);
 //}
+void HelloWorld::LoadEnemies()
+{
+	auto enemynode = Node::create();
+	enemynode->setName("eNode");
+	this->addChild(enemynode, 1);
+
+
+	waveSpawner = new WaveSpawner();	//order is important here
+	waveSpawner->Init();
+	waveSpawner->SetScreenBoundaries(playingSize.height, playingSize.width);
+	waveSpawner->LoadFile("WaveData/testwave.csv");
+
+
+	waveSpawner->SeteNode(enemynode);
+}
 bool HelloWorld::onContactBegin(PhysicsContact& contact)
 {
   	auto bodyA = contact.getShapeA()->getBody();
@@ -269,9 +276,19 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 //	bodyA->getNode()->getcom
 	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
 	{
-  		waveSpawner->GetEntity(bodyA->getNode())->TakeDamage(30);
+		Entity* entity = waveSpawner->GetEntity(bodyA->getNode());
+		entity->TakeDamage(30);
+		
 		if (waveSpawner->GetEntity(bodyA->getNode())->IsDead())
 		{
+			if (entity->_type == Entity::BCONSTRUCT)
+			{
+				playerGui->initEndScreen(mainPlayer);
+			}	
+			mainPlayer->AddScore();
+			mainPlayer->AddScoreMultiplier(0.2);
+			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+			playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
 			Powerup::SetToSpawnPowerup(true);
 			Powerup::SetSpawnPos(bodyA->getPosition());
 
@@ -290,13 +307,24 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
         mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(5);
         playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
 
+		//mainPlayer->
 		return true;
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
 	{
-		waveSpawner->GetEntity(bodyB->getNode())->TakeDamage(30);
+		Entity* entity = waveSpawner->GetEntity(bodyB->getNode());
+		entity->TakeDamage(30);
+	
 		if (waveSpawner->GetEntity(bodyB->getNode())->IsDead())
 		{	
+			if (entity->_type == Entity::BCONSTRUCT)
+			{
+				playerGui->initEndScreen(mainPlayer);
+			}
+			mainPlayer->AddScore();
+			mainPlayer->AddScoreMultiplier(0.2);
+			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+			playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
 			Powerup::SetToSpawnPowerup(true);
 			Powerup::SetSpawnPos(bodyB->getPosition());
 
@@ -321,6 +349,10 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
         if (!freezeAttack)
         {
             mainPlayer->Die();
+			if (mainPlayer->getLives() < 0)
+				playerGui->initEndScreen(mainPlayer);
+			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyB->getNode()->removeFromParentAndCleanup(true);
 
             return true;
@@ -334,6 +366,10 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             mainPlayer->Die();
             //mainPlayer->SetDeath(true);
             //mainPlayer->setLives(mainPlayer->getLives() - 1);
+			if (mainPlayer->getLives() < 0)
+				playerGui->initEndScreen(mainPlayer);
+			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyA->getNode()->removeFromParentAndCleanup(true);
 
             return true;
@@ -356,6 +392,16 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 entity->TakeDamage(500);
                 if (entity->IsDead())
                 {
+					if (entity->_type == Entity::BCONSTRUCT)
+					{
+						playerGui->initEndScreen(mainPlayer);
+						mainPlayer->AddScoreMultiplier(10);
+					}
+					mainPlayer->AddScoreMultiplier(1.0);
+					mainPlayer->AddScore();
+				//	mainPlayer->AddScoreMultiplier(0.2);
+					playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+					playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
                     Powerup::SetToSpawnPowerup(true);
                     Powerup::SetSpawnPos(bodyB->getPosition());
 
@@ -395,6 +441,15 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 entity->TakeDamage(500);
                 if (entity->IsDead())
                 {
+					if (entity->_type == Entity::BCONSTRUCT)
+					{
+						playerGui->initEndScreen(mainPlayer);
+						mainPlayer->AddScoreMultiplier(10);
+					}
+					mainPlayer->AddScoreMultiplier(1.0);
+					mainPlayer->AddScore();
+					playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+					playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
                     Powerup::SetToSpawnPowerup(true);
                     Powerup::SetSpawnPos(bodyA->getPosition());
 
@@ -535,7 +590,7 @@ void HelloWorld::update(float dt)
 	//auto currSprite = this->getChildByName("spriteNode")->getChildByName("bg1");
 	//Vec2 pos;
 	//pos = currSprite->getPosition;
-
+	
 	waveSpawner->Run(dt);
 	mainPlayer->Update(dt);
 

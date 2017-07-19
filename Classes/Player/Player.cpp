@@ -75,8 +75,9 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	this->intDirX = 0;
 	this->intDirY = 0;
 
-	lives = 1;
-	score = 200;
+	lives = 100;
+	score = 0;
+	scoreMultiplier = 1;
 	AttackSystems = new Attack();
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -91,9 +92,9 @@ void Player::Die()
     mainSprite->getPhysicsBody()->setCollisionBitmask(0);
     mainSprite->getPhysicsBody()->setContactTestBitmask(0);
     mainSprite->getPhysicsBody()->setCategoryBitmask(0);
-
+	scoreMultiplier = 1.f;
     StopFiringLaser();
-
+	
     SetDeath(true);
     setLives(lives - 1);
 }
@@ -102,13 +103,13 @@ int Player::getScore()
 {
 	return score;
 }
-void Player::setScore(int score)
-{
-	this->score = score;
-}
+//void Player::setScore(int score)
+//{
+//	this->score = score;
+//}
 void Player::Update(float dt)
 {
-    if (Death)
+    if (Death && lives>=0)
     {
         RespawnTempTimer += dt;
         mainSprite->setOpacity(0);
@@ -140,8 +141,24 @@ void Player::Update(float dt)
 
 			//auto moveEvent = MoveBy::create(0.f, intDirX * Vec2(1.f, 0.f) * fSpeed * dt);
 			//mainSprite->runAction(moveEvent);
-			auto moveEvent = MoveTo::create(0.f, destination);
-			mainSprite->runAction(moveEvent);
+
+			//Constrain Player
+			if ((destination.x > 0 + ((mainSprite->getContentSize().width*mainSprite->getScaleX()) / 8)&& destination.x < screenWidth -(( mainSprite->getContentSize().width*mainSprite->getScaleX()) / 8)) &&
+				(destination.y >0 + ((mainSprite->getContentSize().height*mainSprite->getScaleY()) / 8 )&& destination.y < screenHeight -( (mainSprite->getContentSize().height*mainSprite->getScaleY()) / 8)))
+			{
+				auto moveEvent = MoveTo::create(0.f, destination);
+				mainSprite->runAction(moveEvent);
+			}
+			else
+			{
+				Vec2 playerPos = mainSprite->getPosition();
+				Vec2 destination = playerPos +(-1) *intDirX * Vec2(1.f, 0.f) * fSpeed * dt + (-1)*intDirY * Vec2(0.f, 1.f) * fSpeed * dt;
+				destination.x = clampf(destination.x, 1.f, screenWidth - 0.25f * mainSprite->getContentSize().width - 1.f);
+				destination.y = clampf(destination.y, 1.f, screenHeight - 1.f);
+				auto moveEvent = MoveTo::create(0.f, destination);
+				mainSprite->runAction(moveEvent);
+
+			}
 		}
 
         mainSprite->getPhysicsBody()->onAdd();

@@ -49,6 +49,7 @@ void WaveSpawner::DestroyEnemy(Node* node)
             // add it to inactive enemy list
 
 			Entity* entity = enemy_list[a];
+			
 			enemy_list.erase(enemy_list.begin()+a);
 
 			delete entity;
@@ -65,7 +66,7 @@ void WaveSpawner::Init()
 	screen_scaling = 0;
 	default_scale = 1600;
 	wavetimer = 0;
-	currentwave = 9;
+	currentwave = 1;
 	wavetimer = 0;
 	isspawned = false;
 	isboss = false;
@@ -137,7 +138,7 @@ void WaveSpawner::Run(float dt)
 		if (currentwave > waveTimer.size())//is this the finaal wave?
 		{
 			SpawnBoss();
-
+			
             // play boss BGM
             AudioManager::GetInstance()->PlayBackgroundMusic("Boss");
 

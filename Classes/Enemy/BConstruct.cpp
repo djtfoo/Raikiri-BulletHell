@@ -3,6 +3,7 @@
 #include "AnimationHandler.h"
 #include "Attack\Projectile.h"
 #include "../Scenes/HelloWorldScene.h"
+#define COCOS2D_DEBUG 1
 BConstruct::BConstruct()
 {
 	timer = 0;
@@ -12,7 +13,37 @@ BConstruct::BConstruct()
 	prevt = 0;
 	finished = false;
 	spawntimer = 0;
-	_hp = 3000;
+	_hp = 1000;
+	BossHealthBarRed=Sprite::create("GUI/BossHealthBarRed.png");
+	BossHealthBarGreen=Sprite::create("GUI/BossHealthBarGreen.png");
+
+	/*auto scene = Director::getInstance()->getRunningScene();
+	auto layer = scene->getChildByTag(999);
+	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+	Node* SpriteNode = helloLayer->getSpriteNode();
+	
+	SpriteNode->addChild(BossHealthBarRed, 1);
+	SpriteNode->addChild(BossHealthBarGreen, 1);*/
+	
+	
+	BossHealthBarGreen->setPosition(Vec2(300,400));
+	BossHealthBarRed->setPosition(Vec2(300, 400));
+	BossHealthBarGreen->setAnchorPoint(Vec2::ZERO);
+	BossHealthBarRed->setAnchorPoint(Vec2::ZERO);
+	BossHealthBarGreen->setScaleY(0.5f);
+	BossHealthBarRed->setScaleY(0.5f);
+	BossHealthBarGreen->setScaleX(200);
+	BossHealthBarRed->setScaleX(200);
+	MaxHp = _hp;
+	BossHealthNumber = Label::createWithTTF(std::to_string(static_cast<int>(_hp)) + "/" + std::to_string(static_cast<int>(MaxHp)), "fonts/Batman.ttf", 24);
+	BossHealthNumber->setColor(cocos2d::Color3B(0, 0, 0));
+	BossHealthNumber->setPosition(500, 420);
+
+	_eSprite->addChild(BossHealthBarRed, 0);
+	_eSprite->addChild(BossHealthBarGreen, 0);
+	_eSprite->addChild(BossHealthNumber, 0);
+	//SpriteNode->addChild(BossHealthNumber, 1);
+
 
 }
 BConstruct::~BConstruct()
@@ -22,8 +53,22 @@ BConstruct::~BConstruct()
 
 void BConstruct::DoAttack(float dt)
 {
-
-	
+	UpdateHP();
+	if (TakenDamage)
+	{
+		DamagedRenderTempTimer += dt;
+		if (DamagedRenderTempTimer <= DamagedRenderTimer)
+		{
+			if (_eSprite->getOpacity() != 0)
+				_eSprite->setOpacity(0);
+		}
+		else
+		{
+			_eSprite->setOpacity(255);
+			TakenDamage = false;
+			DamagedRenderTempTimer = 0;
+		}
+	}
 	switch (phase)
 	{
 	case(1)://first pattern
@@ -159,7 +204,20 @@ void BConstruct::FirstAttack(float dt)
 
 
 }
-
+void BConstruct::UpdateHP()
+{
+	if (!IsDead()){
+		float BossHealthScaleX = (_hp / MaxHp) * 200.F;
+		BossHealthBarGreen->setScaleX(BossHealthScaleX);
+		BossHealthNumber->setString(std::to_string(static_cast<int>(_hp)) + "/" + std::to_string(static_cast<int>(MaxHp)));
+	}
+	else
+	{
+		BossHealthBarGreen->removeFromParentAndCleanup(true);
+		BossHealthBarRed->removeFromParentAndCleanup(true);
+		BossHealthNumber->removeFromParentAndCleanup(true);
+	}
+}
 void BConstruct::SecondAttack(float dt)
 {
 	int i = counter*3;

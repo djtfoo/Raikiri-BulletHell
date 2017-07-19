@@ -12,7 +12,7 @@ private:
 
 	Label* labelLives;
 	Label* labelScore;
-
+	Label* labelScoreMultiplier;
     Sprite* specialBarBackground;
     Sprite* specialBarFill;
 
@@ -20,13 +20,16 @@ public:
 	//GUI();
 	//~GUI();
 	static GUI* createPlayerGUI(Player* player); //std::string& _message);
+
 	void initOptions(Player* player);	// generic
     void initSpecialBar();
     void Update(float dt);
+	void initEndScreen(Player* player);
 	//virtual bool init();
 
 	void UpdateLivesLabel(const char* _message);
 	void UpdateScoreLabel(const char* _message);
+	void UpdateScoreMultiplierLabel(const char* _message);
     void UpdateSpecialBarFill(float ratio);
 
 	//virtual void draw(cocos2d::Renderer * renderer, const cocos2d::Mat4 & transform, bool transformUpdated);

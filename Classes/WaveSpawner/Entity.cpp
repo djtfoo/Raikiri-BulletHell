@@ -8,7 +8,9 @@ Entity::Entity()
 	_eSprite->setScale(0.5);
 	_hp = 100;
 	_active = false;
-
+	DamagedRenderTimer=0.1f;
+	DamagedRenderTempTimer=0.f;
+	TakenDamage = false;
 	auto physicsBody = PhysicsBody::createCircle(100,
 		//Size(_eSprite->getContentSize().width, _eSprite->getContentSize().height),
 		PhysicsMaterial(0.0f, 0.0f, 0.0f));
@@ -27,6 +29,8 @@ Entity::Entity()
 
 void Entity::TakeDamage(int dmg)
 {
+	if (!TakenDamage)
+	TakenDamage = true;
     _hp -= dmg;
 }
 
