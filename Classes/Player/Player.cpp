@@ -13,6 +13,8 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	missiles = 0;
 	powerup_max = 4;
     b_movement = true;
+    b_winGame = false;
+
 	mainSprite = Sprite::create("ship_test.png");
     //AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
 	mainSprite->setOpacity(255.f);
@@ -82,7 +84,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	lives = 1;
 	score = 0;
 	scoreMultiplier = 1;
-	AttackSystems = new Attack();
+	AttackSystems = new Attack("Projectiles/Laser.png");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     screenWidth = playingSize.width;
@@ -97,8 +99,13 @@ void Player::Die()
     mainSprite->getPhysicsBody()->setContactTestBitmask(0);
     mainSprite->getPhysicsBody()->setCategoryBitmask(0);
 	scoreMultiplier = 1.f;
+
+    // reset laser
+    AttackSystems->SetLaserMode(false);
     StopFiringLaser();
-	
+    
+
+    b_movement = false;
     SetDeath(true);
     setLives(lives - 1);
 }
@@ -123,11 +130,10 @@ void Player::Update(float dt)
             //iFrameEnabled = true;
 
             if (lives < 0) {
-
                 auto scene = Director::getInstance()->getRunningScene();
                 auto layer = scene->getChildByTag(999);
                 HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-                    helloLayer->GetGUI()->initEndScreen(this, false);
+                helloLayer->GetGUI()->initEndScreen(this, false);
             }
             else {
                 mainSprite->setOpacity(255);
@@ -186,11 +192,14 @@ void Player::Update(float dt)
 		{
 			iFrameUpdate(dt);
 		}
-		AttackSystems->LaserUpdate(dt, 10.f,
-			mainSprite->getPosition());
-		//mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
-		//    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
 
+        // Attack Systems
+        if (AttackSystems->IsLaserMode()) {
+            AttackSystems->UpdateLaserTimer(dt);
+            AttackSystems->LaserUpdate(dt, 10.f, mainSprite->getPosition());
+            //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
+            //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
+        }
 
 
 		//GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
@@ -260,9 +269,8 @@ void Player::FireBasicBullet()
 }
 void Player::FireLaser()
 {
-	Upgrade();
-    AttackSystems->FireLaserBullet("Projectiles/Laser.png",
-		mainSprite->getPosition() - Vec2(0, -mainSprite->getContentSize().height*100));
+	//Upgrade();
+    AttackSystems->FireLaserBullet(mainSprite->getPosition() - Vec2(0, -mainSprite->getContentSize().height*100));
         //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
         //mainSprite->getPosition() + Vec2(mainSprite->getScaleX() * 50, 0),
         //1000);
@@ -457,7 +465,6 @@ void Player::Respawn()
 	missiles = 0;
     mainSprite->setPosition(startingPos.x, startingPos.y);
 
-    b_movement = false;
     mainSprite->stopAllActions();
     AnimHandler::GetInstance()->setCCAnimation(mainSprite, AnimHandler::SHIP_SPAWN, CallFunc::create(CC_CALLBACK_0(Player::SetiFrames/*Player::CompleteRespawn*/, this)));
 }

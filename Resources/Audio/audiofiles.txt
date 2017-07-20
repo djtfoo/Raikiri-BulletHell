@@ -8,3 +8,4 @@
 1,Powerup,SFX_powerup.wav,
 1,LaserHum,SFX_laserhum.wav,
 1,DashHit,SFX_dashhit.wav,
+1,ChargeMax,SFX_chargemax.wav,

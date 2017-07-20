@@ -43,6 +43,7 @@ public:
     static std::vector<Powerup*> inactivePowerupsList;
 
     static void PopulatePowerupPool();
+    static void ClearPowerupPool();
 
     void Update();  // for onAdd()
     static void PowerupsUpdate();   // Update every Powerup

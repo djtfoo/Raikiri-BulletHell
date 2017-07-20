@@ -16,7 +16,7 @@ void Shield::InitShield(Sprite* userSprite)
     shieldSprite = Sprite::create("shield.png");
     
     spriteSize = userSprite->getContentSize();
-    spriteSize = Vec2(0.4f * spriteSize.x, 0.4f * spriteSize.y);
+    spriteSize = Vec2(0.45f * spriteSize.x, 0.45f * spriteSize.y);
 
     const Vec2 imageSize = shieldSprite->getContentSize();
     shieldSprite->setScale(spriteSize.x / imageSize.x, spriteSize.y / imageSize.y);

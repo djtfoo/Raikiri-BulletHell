@@ -1,5 +1,6 @@
 #include "GUI\GUI.h"
 #include "../Scenes/HelloWorldScene.h"
+#include "../Audio/AudioManager.h"
 
 GUI* GUI::createPlayerGUI(Player* player)
 {
@@ -130,11 +131,11 @@ void GUI::initSpecialBar()
     addChild(specialBarFill, 1);
 }
 
-
-
 void GUI::UpdateSpecialBarFill(float ratio)
 {
     specialBarFill->setScaleY(ratio);
+    if (ratio > 0.99f)
+        AudioManager::GetInstance()->PlaySoundEffect("ChargeMax");
 }
 
 

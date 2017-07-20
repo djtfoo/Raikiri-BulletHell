@@ -10,7 +10,7 @@ void GameInputManager::Init()
     keyControls.insert(std::pair<string, KEYCODE>("MoveDown", KEY_DOWN));
     keyControls.insert(std::pair<string, KEYCODE>("Shoot", KEY_SPACE));
     keyControls.insert(std::pair<string, KEYCODE>("ResetScene", KEY_R));
-	keyControls.insert(std::pair<string, KEYCODE>("FireLaser", KEY_ALT));
+	//keyControls.insert(std::pair<string, KEYCODE>("FireLaser", KEY_ALT));
     keyControls.insert(std::pair<string, KEYCODE>("FreezeTime", KEY_SHIFT));
 }
 
@@ -41,20 +41,24 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
         player->SetMoveCharY(-1);
     }
     else if (keyCode == keyControls["Shoot"]) {
-        if (player->b_movement)
-            player->FireBasicBullet();
+        if (player->b_movement) {
+            if (player->GetAttackSystems()->IsLaserMode())
+                player->FireLaser();
+            else
+                player->FireBasicBullet();
+        }
     }
-	else if (keyCode == keyControls["FireLaser"]) {
-		// player shoot here
-		player->FireLaser();
-	}
+	//else if (keyCode == keyControls["FireLaser"]) {
+	//	// player shoot here
+	//	player->FireLaser();
+	//}
     else if (keyCode == keyControls["ResetScene"]) {
         Input::OnKeyPressed(KEY_R);
         //SceneManager::GetInstance()->ChangeScene("HelloWorld");
     }
     else if (keyCode == keyControls["FreezeTime"]) {
         Input::OnKeyPressed(KEY_SHIFT);
-        if (player->b_movement && player->GetAttackSystems()->ChargeBarIsMax())
+        if (player->b_movement && player->GetAttackSystems()->IsChargeBarMax())
         {
             auto scene = Director::getInstance()->getRunningScene();
             auto layer = scene->getChildByTag(999);
@@ -102,16 +106,25 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
         //mainPlayer->setUpOrDown(-1, false);
     }
     else if (keyCode == keyControls["Shoot"]) {
-
+        if (player->b_movement) {
+            if (player->GetAttackSystems()->IsLaserMode())
+                player->StopFiringLaser();
+        }
     }
 
-	else if (keyCode == keyControls["FireLaser"]) {
-		// player shoot here
-		player->StopFiringLaser();
-	}
+	//else if (keyCode == keyControls["FireLaser"]) {
+	//	// player shoot here
+	//	player->StopFiringLaser();
+	//}
     else if (keyCode == keyControls["ResetScene"]) {
-        if (player->getLives() < 0)
+        if (player->getLives() < 0 || player->IsGameWon()) {
+            auto scene = Director::getInstance()->getRunningScene();
+            auto layer = scene->getChildByTag(999);
+            HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+            helloLayer->ExitScene();
+
             SceneManager::GetInstance()->ChangeScene("HelloWorld");
+        }
     }
     else if (keyCode == keyControls["FreezeTime"]) {
 

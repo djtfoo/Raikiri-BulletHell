@@ -4,10 +4,18 @@
 #include "../Audio/AudioManager.h"
 
 #define COCOS2D_DEBUG 1
-Attack::Attack() : chargeBarMaxValue(100)
+Attack::Attack(string LaserImg) : chargeBarMaxValue(100), laserLifetime(10.f)
 {
 	InitLaser = false;
     chargeBarValue = 0;
+
+    // create laser projectile
+    LaserProjectile = new Projectile();
+    LaserSprite = Sprite::create(LaserImg);
+
+    // Laser as a powerup
+    isLaserMode = false;
+    laserTimer = 0.f;
 }
 
 Attack::~Attack()
@@ -20,13 +28,13 @@ void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletS
 
     AudioManager::GetInstance()->PlaySoundEffect("Bullet");
 }
-void  Attack::FireLaserBullet(string LaserImg, Vec2 SpawnPosition)
+void  Attack::FireLaserBullet(Vec2 SpawnPosition)
 {
 	if (!InitLaser)
 	{
-		Projectile* projectile = new Projectile();
-		LaserSprite = projectile->InitLaserBullet(LaserImg, SpawnPosition);
-		this->InitLaser = true;
+        //Projectile* projectile = new Projectile();
+        LaserProjectile->SetLaserBullet(LaserSprite, SpawnPosition);
+        this->InitLaser = true;
 
         AudioManager::GetInstance()->PlaySoundEffect("Laser");
         AudioManager::GetInstance()->PlaySoundEffect("LaserHum", true);
@@ -43,30 +51,80 @@ void  Attack::StopFiringLaser(/*float LaserSpeed,float LifeTime*/)
         //auto moveEvent = MoveBy::create(LifeTime, Vec2(1.f, 0.f) * LaserSpeed);
         //LaserSprite->runAction(moveEvent);
 
-        LaserSprite->removeFromParentAndCleanup(true);
-        LaserSprite = NULL;
+        //LaserSprite->removeFromParentAndCleanup(true);
+        //LaserSprite = NULL;
+
+        LaserSprite->setVisible(false);
+        LaserSprite->getPhysicsBody()->setEnabled(false);
 
         AudioManager::GetInstance()->StopSoundEffect("LaserHum");
     }
 
 }
+
+void Attack::InitialiseLaser(Size size, Node* spriteNode)
+{
+    LaserProjectile->InitLaserBullet(LaserSprite, size, spriteNode);
+}
+
+void Attack::SetLaserMode(bool laserMode)
+{
+    isLaserMode = laserMode;
+    if (!laserMode)
+    {
+        // reset timer
+        laserTimer = 0.f;
+    }
+}
+
+void Attack::UpdateLaserTimer(float dt)
+{
+    laserTimer += dt;
+    if (laserTimer >= laserLifetime)    // end laser powerup
+    {
+        StopFiringLaser();
+        isLaserMode = false;
+
+        // reset timer
+        laserTimer = 0.f;
+    }
+}
+
 void Attack::LaserUpdate(float dt, float LaserScaleX,Vec2 PlayerPosition)
 {
     if (InitLaser)
     {
         for (map<Entity*, Node*>::iterator it = EntityLaserDamageList.begin(); it != EntityLaserDamageList.end(); it++)
         {
-            it->first->_hp -= 0.1f;
-            if (it->first->_hp <= 0)
+            if (it->second == NULL) // this Entity was deleted already
             {
-                auto scene = Director::getInstance()->getRunningScene();
-                auto layer = scene->getChildByTag(999);
-                HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-                helloLayer->waveSpawner->DestroyEnemy(it->second);
-
-                it->second->removeFromParentAndCleanup(true);
                 EntityLaserDamageList.erase(it);
                 break;
+            }
+            else
+            {
+                it->first->_hp -= 0.5f;
+                if (it->first->_hp <= 0)    // Entity is killed
+                {
+                    auto scene = Director::getInstance()->getRunningScene();
+                    auto layer = scene->getChildByTag(999);
+                    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+
+                    // if boss, set victory
+                    if (it->first->_type == Entity::BCONSTRUCT) {
+                        helloLayer->mainPlayer->SetWinGame(true);
+                        helloLayer->GetGUI()->initEndScreen(helloLayer->mainPlayer, true);
+                    }
+
+                    helloLayer->waveSpawner->DestroyEnemy(it->second);
+
+                    it->second->removeFromParentAndCleanup(true);
+                    it->second = NULL;
+
+                    EntityLaserDamageList.erase(it);
+                    break;
+                }
+
             }
         }
         if (LaserSprite) {
@@ -149,6 +207,11 @@ void Attack::ClearDashHitEntities()
 void Attack::IncreaseChargeBarValue(int value)
 {
     SetChargeBarValue(chargeBarValue + value);
+}
+
+void Attack::ResetChargeBarValue()
+{
+    SetChargeBarValue(0);
 }
 
 void Attack::SetChargeBarValue(int value)

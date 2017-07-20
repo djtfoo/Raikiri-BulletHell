@@ -16,11 +16,13 @@ class Attack
 
 
 private:
-	string BulletImg;
+    string BulletImg;
 
     map<Entity*, Node*> EntityLaserDamageList;
-	Sprite* LaserSprite;
-	bool InitLaser;
+
+    Projectile* LaserProjectile;
+    Sprite* LaserSprite;
+    bool InitLaser;
 
     std::vector<Vec2> dashLinePoints;   // for special attack
     std::vector<Entity*> dashEntitiesHit;
@@ -30,11 +32,20 @@ private:
 
     void SetChargeBarValue(int value);
 
-public:
-	Attack();
-	~Attack();
+    // Laser as a powerup
+    bool isLaserMode;
+    float laserTimer;
+    const float laserLifetime;
 
-    bool ChargeBarIsMax()
+public:
+    Attack(string LaserImg);
+    ~Attack();
+
+    bool IsLaserMode() { return isLaserMode; }
+    void SetLaserMode(bool laserMode);
+    void UpdateLaserTimer(float dt);
+
+    bool IsChargeBarMax()
     {
         return (chargeBarValue == chargeBarMaxValue);
     }
@@ -44,6 +55,7 @@ public:
     }
 
     void IncreaseChargeBarValue(int value);
+    void ResetChargeBarValue();
 
     void SetDashLinePoints(const std::vector<Vec2>& points);
     void AddDashHitEntity(Entity* entity);
@@ -51,9 +63,11 @@ public:
     void ClearDashHitEntities();
 
 	void FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime,bool isEnemy);
-	void FireLaserBullet(string LaserImg, Vec2 SpawnPosition);
+	void FireLaserBullet(Vec2 SpawnPosition);
 	void StopFiringLaser(/*float LaserSpeed, float LifeTime*/);
-	void LaserUpdate(float dt, float LaserScaleX, Vec2 PlayerPosition);
+	
+    void InitialiseLaser(Size size, Node* spriteNode);
+    void LaserUpdate(float dt, float LaserScaleX, Vec2 PlayerPosition);
 	bool GetInitLaser();
 	void SetInitLaser(bool setlaser);
 

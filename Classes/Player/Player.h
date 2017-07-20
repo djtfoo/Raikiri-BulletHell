@@ -38,6 +38,8 @@ private:
 	float fSpeed;
 	Attack* AttackSystems;
 
+    bool b_winGame;
+
     Vec2 startingPos;
 	//GUI* playerGUI;
 public:
@@ -106,6 +108,10 @@ public:
 	//	playerGUI = gui;
 	//}
     void CompleteRespawn();
+
+
+    void SetWinGame(bool win) { b_winGame = win; }
+    bool IsGameWon() { return b_winGame; }
 };
 
 #endif

@@ -11,6 +11,7 @@ using namespace cocos2d;
 USING_NS_CC;
 
 std::vector<Vec2> FreezeTime::dashLinePoints;
+bool FreezeTime::chargeUsed = false;
 
 Scene* FreezeTime::createScene(Sprite* rendtexSprite)
 {
@@ -82,7 +83,13 @@ bool FreezeTime::init()
 // Keyboard input
 void FreezeTime::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
-
+    switch (keyCode)
+    {
+    case EventKeyboard::KeyCode::KEY_SHIFT:
+        if (dashLinePoints.empty())
+            freezeTimeDone = true;
+        break;
+    }
 }
 
 void FreezeTime::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
@@ -167,6 +174,11 @@ void FreezeTime::update(float dt)
     if (freezeTimeDone)
     {
         CCDirector::getInstance()->popScene();
+
+        if (dashLinePoints.size() > 1)
+            chargeUsed = true;
+        else
+            chargeUsed = false;
 
         //auto scene = Director::getInstance()->getRunningScene();
         //auto layer = scene->getChildByTag(999);

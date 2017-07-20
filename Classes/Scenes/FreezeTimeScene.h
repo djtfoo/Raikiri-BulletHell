@@ -35,6 +35,7 @@ public:
     virtual void onMouseUp(Event*);
 
     static std::vector<Vec2> dashLinePoints;
+    static bool chargeUsed;
 
     void update(float dt);
     //bool isKeyHeld(EventKeyboard::KeyCode keyCode);

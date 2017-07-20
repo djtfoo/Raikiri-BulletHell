@@ -24,7 +24,7 @@ Scene* HelloWorld::createScene()
 	//scene->addChild(GUILayer,0, 997);
     scene->addChild(layer, 0, 999);
 
-    //scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	//LoadEnemies();
     // return the scene
     return scene;
@@ -155,6 +155,8 @@ bool HelloWorld::init()
     this->addChild(mainPlayer->GetSprite(), 1);
     //this->addChild(spriteNode, 1);
 
+    mainPlayer->GetAttackSystems()->InitialiseLaser(playingSize, spriteNode);
+
 
     proPostProcess = new GLProgram();
     proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/Grayscale.fsh");
@@ -234,6 +236,16 @@ bool HelloWorld::init()
 	return true;
 }
 
+void HelloWorld::ExitScene()
+{
+    waveSpawner->eNode->removeAllChildrenWithCleanup(true);
+    spriteNode->removeAllChildrenWithCleanup(true);
+    Powerup::ClearPowerupPool();
+
+    this->removeAllChildrenWithCleanup(true);
+    this->onExit();
+}
+
 // Keyboard input
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
@@ -286,8 +298,9 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 		{
 			if (entity->_type == Entity::BCONSTRUCT)
 			{
+                mainPlayer->SetWinGame(true);
 				playerGui->initEndScreen(mainPlayer, true);
-			}	
+			}
 			mainPlayer->AddScore();
 			mainPlayer->AddScoreMultiplier(0.2);
 			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
@@ -297,7 +310,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 
 			waveSpawner->DestroyEnemy(bodyA->getNode());
             //bodyA->removeFromWorld();
-			bodyA->getNode()->removeFromParentAndCleanup(true);
+            bodyA->getNode()->removeFromParentAndCleanup(true);
            // delete bodyA->getNode();
 		}
     ///    delete bodyA->getNode();
@@ -307,8 +320,11 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 		bodyB->getNode()->removeFromParentAndCleanup(true);
 
         // increase charge bar
-        mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(5);
-        playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+        if (!mainPlayer->GetAttackSystems()->IsChargeBarMax())
+        {
+            mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(5);
+            playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+        }
 
 		//mainPlayer->
 		return true;
@@ -322,6 +338,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 		{	
 			if (entity->_type == Entity::BCONSTRUCT)
 			{
+                mainPlayer->SetWinGame(true);
 				playerGui->initEndScreen(mainPlayer, true);
 			}
 			mainPlayer->AddScore();
@@ -342,8 +359,11 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
   //      delete bodyA->getNode();
 
         // increase charge bar
-        mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(10);
-        playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+        if (!mainPlayer->GetAttackSystems()->IsChargeBarMax())
+        {
+            mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(10);
+            playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+        }
 
 		return true;
 	}
@@ -393,10 +413,12 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             if (!mainPlayer->GetAttackSystems()->HasDashHitEntity(entity))   // not hit before
             {
                 entity->TakeDamage(500);
+
                 if (entity->IsDead())
                 {
 					if (entity->_type == Entity::BCONSTRUCT)
 					{
+                        mainPlayer->SetWinGame(true);
 						playerGui->initEndScreen(mainPlayer, true);
 						mainPlayer->AddScoreMultiplier(10);
 					}
@@ -422,6 +444,14 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
             sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
             sparkle->setPosition(bodyB->getPosition());
+
+            auto moveEvent = MoveTo::create(1.f, bodyB->getPosition());
+            auto callbackFunc = CallFunc::create([sparkle]() {
+                sparkle->removeFromParentAndCleanup(true);
+            });
+            auto seq = Sequence::create(moveEvent, callbackFunc, nullptr);
+            sparkle->runAction(seq);
+
             spriteNode->addChild(sparkle, 1);
         }
         else
@@ -442,10 +472,12 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             if (!mainPlayer->GetAttackSystems()->HasDashHitEntity(entity))   // not hit before
             {
                 entity->TakeDamage(500);
+
                 if (entity->IsDead())
                 {
 					if (entity->_type == Entity::BCONSTRUCT)
 					{
+                        mainPlayer->SetWinGame(true);
 						playerGui->initEndScreen(mainPlayer, true);
 						mainPlayer->AddScoreMultiplier(10);
 					}
@@ -470,6 +502,14 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             Sprite* sparkle = Sprite::create("Attack/hit_sparkle.png");
             sparkle->setAnchorPoint(Vec2(0.5f, 0.5f));
             sparkle->setPosition(bodyA->getPosition());
+
+            auto moveEvent = MoveTo::create(1.f, bodyB->getPosition());
+            auto callbackFunc = CallFunc::create([sparkle]() {
+                sparkle->removeFromParentAndCleanup(true);
+            });
+            auto seq = Sequence::create(moveEvent, callbackFunc, nullptr);
+            sparkle->runAction(seq);
+
             spriteNode->addChild(sparkle, 1);
         }
         else
@@ -737,7 +777,7 @@ void HelloWorld::ExecuteFreezeTime()
 	}
 }
 
-static float freezeSpeed = 1000.f;
+static float freezeSpeed = 1500.f;
 void HelloWorld::UpdateFreezeAnimation(float dt)
 {
     float deltaChange = freezeSpeed * dt;
@@ -834,6 +874,12 @@ void HelloWorld::UpdateFreezeAttack(float dt)
         freezeAttack = false;
         ExecuteFreezeTime();
         mainPlayer->GetAttackSystems()->ClearDashHitEntities();
+
+        // clear charge bar
+        if (FreezeTime::chargeUsed) {
+            mainPlayer->GetAttackSystems()->ResetChargeBarValue();
+            playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+        }
         return;
     }
 
@@ -861,5 +907,4 @@ void HelloWorld::SetGrayscale()
     heightY = screenMax.y;
 
     rendtexSprite->setTextureRect(Rect(xPos, yPos, widthX, heightY));
-
 }

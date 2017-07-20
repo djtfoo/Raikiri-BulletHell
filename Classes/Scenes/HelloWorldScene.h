@@ -56,6 +56,7 @@ public:
     void SetGrayscale();
 
     virtual bool init();
+    void ExitScene();
     
     // callback functions
 	virtual void onKeyPressed(EventKeyboard::KeyCode keyCode, Event*);

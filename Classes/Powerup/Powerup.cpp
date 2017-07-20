@@ -20,6 +20,12 @@ void Powerup::PopulatePowerupPool()
     }
 }
 
+void Powerup::ClearPowerupPool()
+{
+    activePowerupsList.clear();
+    inactivePowerupsList.clear();
+}
+
 void Powerup::CreateInactivePowerup()
 {
     Powerup* newPowerup = new Powerup();
@@ -48,8 +54,8 @@ void Powerup::CreateInactivePowerup()
     auto scene = Director::getInstance()->getRunningScene();
     auto layer = scene->getChildByTag(999);
     HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-      Node* SpriteNode = helloLayer->getSpriteNode();
-     SpriteNode->addChild(newPowerup->powerupSprite, -1);
+    Node* SpriteNode = helloLayer->getSpriteNode();
+    SpriteNode->addChild(newPowerup->powerupSprite, -1);
 
     inactivePowerupsList.push_back(newPowerup);
 }
@@ -144,7 +150,7 @@ void Powerup::RandomSpawnPowerup()
     int toSpawn = cocos2d::RandomHelper::random_int(0, (int)POWERUPS_TOTAL - 1);
 
     powerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
-    //powerup->InitPowerup(POWERUP_SHIELD, spawnPosition);
+    //powerup->InitPowerup(POWERUP_BULLETS, spawnPosition);
 
     // move to active powerups list
     activePowerupsList.push_back(powerup);
@@ -205,14 +211,28 @@ void Powerup::ApplyPowerupEffect()
         auto scene = Director::getInstance()->getRunningScene();
         auto layer = scene->getChildByTag(999);
         HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-        helloLayer->mainPlayer->setLives(helloLayer->mainPlayer->getLives() + 1);
+
+        int newLives = helloLayer->mainPlayer->getLives() + 1;
+        helloLayer->mainPlayer->setLives(newLives);
+
+        // Update GUI
+        helloLayer->GetGUI()->UpdateLivesLabel(std::to_string(newLives).c_str());
     }
 		break;
 
 	case POWERUP_BULLETS:
+    {
+        auto scene = Director::getInstance()->getRunningScene();
+        auto layer = scene->getChildByTag(999);
+        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+        helloLayer->mainPlayer->Upgrade();
+    }
 		break;
 
 	case POWERUP_MISSILE:
+    {
+
+    }
 		break;
 
 	case POWERUP_SHIELD:
@@ -226,6 +246,12 @@ void Powerup::ApplyPowerupEffect()
 		break;
 
 	case POWERUP_LASER:
+    {
+        auto scene = Director::getInstance()->getRunningScene();
+        auto layer = scene->getChildByTag(999);
+        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+        helloLayer->mainPlayer->GetAttackSystems()->SetLaserMode(true);
+    }
 		break;
 
 	default:

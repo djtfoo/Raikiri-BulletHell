@@ -129,20 +129,16 @@ Sprite* Projectile::InitComplexBullet(string BulletImg, Vec2 SpawnPosition, Vec2
 //{
 //	this->ProjectileSprite = ProjectileSprite;
 //}
-Sprite* Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
+void Projectile::InitLaserBullet(Sprite* laserSprite, Size size, Node* spriteNode)
 {
-    Sprite* Projectile = Sprite::create(LaserImg);
-    Projectile->setAnchorPoint(Vec2::ZERO);
-    Projectile->setPosition(SpawnPosition.x - Projectile->getContentSize().width, SpawnPosition.y - Projectile->getContentSize().height);
-    Projectile->setScaleY(1.f);
-    auto scene = Director::getInstance()->getRunningScene();
-    auto layer = scene->getChildByTag(999);
-    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-    Projectile->setScaleX(helloLayer->playingSize.width /*- Projectile->getPosition().x*/);
+    laserSprite->setAnchorPoint(Vec2::ZERO);
+    //laserSprite->setPosition(SpawnPosition.x - laserSprite->getContentSize().width, SpawnPosition.y - laserSprite->getContentSize().height);
+    laserSprite->setScaleY(1.f);
+    laserSprite->setScaleX(size.width /*- Projectile->getPosition().x*/);
    
     auto physicsBody = PhysicsBody::createBox(
         //Size((Projectile->getScaleX()/2)-Projectile->getPosition().x, Projectile->getContentSize().height),
-        Size(1, Projectile->getContentSize().height),
+        Size(1, laserSprite->getContentSize().height),
         PhysicsMaterial(0.1f, 1.0f, 0.0f));
     physicsBody->setDynamic(false);
     physicsBody->setCategoryBitmask(128);
@@ -150,10 +146,20 @@ Sprite* Projectile::InitLaserBullet(string LaserImg, Vec2 SpawnPosition)
     physicsBody->setContactTestBitmask(4);
     physicsBody->setTag(7);
     physicsBody->setGravityEnable(false);
-    Projectile->addComponent(physicsBody);
+    laserSprite->addComponent(physicsBody);
 
 
-    Node* SpriteNode = helloLayer->getSpriteNode();
-    SpriteNode->addChild(Projectile, -1);
-    return Projectile;
+    spriteNode->addChild(laserSprite, -1);
+
+    // set it to inactive first
+    laserSprite->setVisible(false);
+    laserSprite->getPhysicsBody()->setEnabled(false);
+}
+
+void Projectile::SetLaserBullet(Sprite* laserSprite, Vec2 SpawnPosition)
+{
+    laserSprite->setPosition(SpawnPosition.x - laserSprite->getContentSize().width, SpawnPosition.y - laserSprite->getContentSize().height);
+
+    laserSprite->setVisible(true);
+    laserSprite->getPhysicsBody()->setEnabled(true);
 }

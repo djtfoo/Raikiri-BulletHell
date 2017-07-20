@@ -17,7 +17,8 @@ public:
 	
 	Sprite* InitComplexBullet(string BulletImg, Vec2 SpawnPosition, Vec2 velocity, float BulletSpeed,  bool isEnemy, bool gravity = false, float lifetime = 6);//general usage, takes velocity*speed;
    
-	Sprite* InitLaserBullet(string LaserImg, Vec2 SpawnPosition);
+	void InitLaserBullet(Sprite* laserSprite, Size size, Node* spriteNode);
+    void SetLaserBullet(Sprite* laserSprite, Vec2 SpawnPosition);
 
     Sprite* getProjectileSprite();
     void setProjectileSprite(Sprite* ProjectileSprite);
