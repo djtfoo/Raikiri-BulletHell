@@ -7,7 +7,7 @@
 Attack::Attack() : chargeBarMaxValue(100)
 {
 	InitLaser = false;
-    chargeBarValue = 0.f;
+    chargeBarValue = 0;
 }
 
 Attack::~Attack()

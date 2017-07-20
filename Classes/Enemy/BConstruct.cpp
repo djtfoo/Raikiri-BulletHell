@@ -17,12 +17,12 @@ BConstruct::BConstruct()
 	BossHealthBarRed=Sprite::create("GUI/BossHealthBarRed.png");
 	BossHealthBarGreen=Sprite::create("GUI/BossHealthBarGreen.png");
 
-	/*auto scene = Director::getInstance()->getRunningScene();
+	auto scene = Director::getInstance()->getRunningScene();
 	auto layer = scene->getChildByTag(999);
 	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
 	Node* SpriteNode = helloLayer->getSpriteNode();
 	
-	SpriteNode->addChild(BossHealthBarRed, 1);
+	/*SpriteNode->addChild(BossHealthBarRed, 1);
 	SpriteNode->addChild(BossHealthBarGreen, 1);*/
 	
 	

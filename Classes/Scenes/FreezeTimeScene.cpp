@@ -25,7 +25,7 @@ Scene* FreezeTime::createScene(Sprite* rendtexSprite)
 
     // set background
     Sprite* rendTexture = Sprite::createWithTexture(rendtexSprite->getTexture());
-    rendTexture->setTextureRect(Rect(0, 0, rendTexture->getTexture()->getContentSize().width, rendTexture->getTexture()->getContentSize().height));
+    rendTexture->setTextureRect(Rect(0, 0, rendTexture->getTexture()->getContentSize().width, rendTexture->getTexture()->getContentSize().height + 10.f));
     rendTexture->setAnchorPoint(Point::ZERO);
     rendTexture->setPosition(Point::ZERO);
     rendTexture->setFlippedY(true);

@@ -13,7 +13,7 @@ private:
 public:
 
     Sprite* InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletSpeed, float LifeTime, bool isEnemy);//this is pretty much player exclusive
-    Sprite* InitBasicBullet(string BulletImg, Vec2 SpawnPosition, Vec2 direction, float BulletSpeed,  bool isEnemy,float LifeTime=6);//uses move to, useful for enemies;
+    Sprite* InitBasicBullet(string BulletImg, Vec2 SpawnPosition, Vec2 direction, float BulletSpeed,  bool isEnemy,float LifeTime=8);//uses move to, useful for enemies;
 	
 	Sprite* InitComplexBullet(string BulletImg, Vec2 SpawnPosition, Vec2 velocity, float BulletSpeed,  bool isEnemy, bool gravity = false, float lifetime = 6);//general usage, takes velocity*speed;
    

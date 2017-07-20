@@ -200,7 +200,13 @@ void Powerup::ApplyPowerupEffect()
 	// apply power-up effect here
 	switch (powerupType)
 	{
-	case POWERUP_LIVES:
+    case POWERUP_LIVES:
+    {
+        auto scene = Director::getInstance()->getRunningScene();
+        auto layer = scene->getChildByTag(999);
+        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+        helloLayer->mainPlayer->setLives(helloLayer->mainPlayer->getLives() + 1);
+    }
 		break;
 
 	case POWERUP_BULLETS:

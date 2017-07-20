@@ -24,7 +24,7 @@ public:
 	void initOptions(Player* player);	// generic
     void initSpecialBar();
     void Update(float dt);
-	void initEndScreen(Player* player);
+	void initEndScreen(Player* player, bool win);
 	//virtual bool init();
 
 	void UpdateLivesLabel(const char* _message);

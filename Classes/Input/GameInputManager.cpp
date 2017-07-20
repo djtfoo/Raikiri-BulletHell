@@ -41,7 +41,8 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
         player->SetMoveCharY(-1);
     }
     else if (keyCode == keyControls["Shoot"]) {
-        // player shoot here
+        if (player->b_movement)
+            player->FireBasicBullet();
     }
 	else if (keyCode == keyControls["FireLaser"]) {
 		// player shoot here
@@ -101,8 +102,7 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
         //mainPlayer->setUpOrDown(-1, false);
     }
     else if (keyCode == keyControls["Shoot"]) {
-        if (!player->IsDead())
-		    player->FireBasicBullet();
+
     }
 
 	else if (keyCode == keyControls["FireLaser"]) {
@@ -110,7 +110,8 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
 		player->StopFiringLaser();
 	}
     else if (keyCode == keyControls["ResetScene"]) {
-        SceneManager::GetInstance()->ChangeScene("MainMenu");
+        if (player->getLives() < 0)
+            SceneManager::GetInstance()->ChangeScene("HelloWorld");
     }
     else if (keyCode == keyControls["FreezeTime"]) {
 

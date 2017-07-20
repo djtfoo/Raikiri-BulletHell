@@ -75,7 +75,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	this->intDirX = 0;
 	this->intDirY = 0;
 
-	lives = 100;
+	lives = 1;
 	score = 0;
 	scoreMultiplier = 1;
 	AttackSystems = new Attack();
@@ -109,16 +109,26 @@ int Player::getScore()
 //}
 void Player::Update(float dt)
 {
-    if (Death && lives>=0)
+    if (Death)
     {
         RespawnTempTimer += dt;
         mainSprite->setOpacity(0);
         if (RespawnTempTimer > 2.f)
         {
-            mainSprite->setOpacity(255);
             Death = false;
             //iFrameEnabled = true;
-            Respawn();
+
+            if (lives < 0) {
+
+                auto scene = Director::getInstance()->getRunningScene();
+                auto layer = scene->getChildByTag(999);
+                HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+                    helloLayer->GetGUI()->initEndScreen(this, false);
+            }
+            else {
+                mainSprite->setOpacity(255);
+                Respawn();
+            }
             RespawnTempTimer = 0;
         }
 

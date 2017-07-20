@@ -30,6 +30,8 @@ void SceneManager::ChangeScene(string name)
     //
     //auto scene = it->second;
 
+    CCDirector::getInstance()->pause();
+
     Scene* scene;
     if (name == "MainMenu")
         scene = MainMenu::createScene();
@@ -38,4 +40,6 @@ void SceneManager::ChangeScene(string name)
 
     CCDirector::getInstance()->replaceScene(
         TransitionFade::create(1.f, scene, Color3B(0, 50, 50)));
+
+    CCDirector::getInstance()->resume();
 }

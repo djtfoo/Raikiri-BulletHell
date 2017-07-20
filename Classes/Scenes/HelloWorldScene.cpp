@@ -24,7 +24,7 @@ Scene* HelloWorld::createScene()
 	//scene->addChild(GUILayer,0, 997);
     scene->addChild(layer, 0, 999);
 
-   // scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    //scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	//LoadEnemies();
     // return the scene
     return scene;
@@ -44,9 +44,7 @@ bool HelloWorld::init()
 	
 	//GUI
 	//auto GUIlayer = this->getChildByTag(997);
-	spriteNode = Node::create();
-	spriteNode->setName("spriteNode");
-	this->addChild(spriteNode, 1);
+
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -72,8 +70,8 @@ bool HelloWorld::init()
 	bg_sprite2->setPosition(bg_sprite1->getContentSize().width, -0.45f * playingSize.height);
 	bg_sprite2->setName("bg2");
 
-	nodeItems->addChild(bg_sprite1, 0);
-	nodeItems->addChild(bg_sprite2, 0);
+	nodeItems->addChild(bg_sprite1, -2);
+	nodeItems->addChild(bg_sprite2, -2);
 
 
 	float scrollspeed = 25;
@@ -97,6 +95,11 @@ bool HelloWorld::init()
 
 	nodeItems->setPosition(0, visibleSize.height / 2 - (visibleSize.height / 8));
 	this->addChild(nodeItems, 1);
+
+    // sprite node
+    spriteNode = Node::create();
+    spriteNode->setName("spriteNode");
+    this->addChild(spriteNode, 1);
 
 	// player sprites
 	//auto spriteNode = Node::create();
@@ -224,7 +227,7 @@ bool HelloWorld::init()
     freezeAttackTimer = 0.f;
 
     screenMin.setZero();
-    screenMax.set(visibleSize.width, visibleSize.height);
+    screenMax.set(visibleSize.width, visibleSize.height + 10.f);
     xPos = yPos = 0.f;
     widthX = heightY = 0.f;
 
@@ -283,7 +286,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 		{
 			if (entity->_type == Entity::BCONSTRUCT)
 			{
-				playerGui->initEndScreen(mainPlayer);
+				playerGui->initEndScreen(mainPlayer, true);
 			}	
 			mainPlayer->AddScore();
 			mainPlayer->AddScoreMultiplier(0.2);
@@ -319,7 +322,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 		{	
 			if (entity->_type == Entity::BCONSTRUCT)
 			{
-				playerGui->initEndScreen(mainPlayer);
+				playerGui->initEndScreen(mainPlayer, true);
 			}
 			mainPlayer->AddScore();
 			mainPlayer->AddScoreMultiplier(0.2);
@@ -349,8 +352,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
         if (!freezeAttack)
         {
             mainPlayer->Die();
-			if (mainPlayer->getLives() < 0)
-				playerGui->initEndScreen(mainPlayer);
+			//if (mainPlayer->getLives() < 0)
+			//	playerGui->initEndScreen(mainPlayer);
 			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
 			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyB->getNode()->removeFromParentAndCleanup(true);
@@ -366,8 +369,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             mainPlayer->Die();
             //mainPlayer->SetDeath(true);
             //mainPlayer->setLives(mainPlayer->getLives() - 1);
-			if (mainPlayer->getLives() < 0)
-				playerGui->initEndScreen(mainPlayer);
+			//if (mainPlayer->getLives() < 0)
+			//	playerGui->initEndScreen(mainPlayer);
 			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
 			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyA->getNode()->removeFromParentAndCleanup(true);
@@ -394,7 +397,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 {
 					if (entity->_type == Entity::BCONSTRUCT)
 					{
-						playerGui->initEndScreen(mainPlayer);
+						playerGui->initEndScreen(mainPlayer, true);
 						mainPlayer->AddScoreMultiplier(10);
 					}
 					mainPlayer->AddScoreMultiplier(1.0);
@@ -443,7 +446,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 {
 					if (entity->_type == Entity::BCONSTRUCT)
 					{
-						playerGui->initEndScreen(mainPlayer);
+						playerGui->initEndScreen(mainPlayer, true);
 						mainPlayer->AddScoreMultiplier(10);
 					}
 					mainPlayer->AddScoreMultiplier(1.0);
@@ -664,6 +667,7 @@ void HelloWorld::update(float dt)
     if (freezeAnimationChange) {
         UpdateFreezeAnimation(dt);
     }
+
     rendtex->beginWithClear(.0f, .0f, .0f, .0f);
     this->visit();
     rendtex->end();
@@ -845,4 +849,17 @@ void HelloWorld::UpdateFreezeAttack(float dt)
         // remove first point
         FreezeTime::dashLinePoints.erase(FreezeTime::dashLinePoints.begin());
     }
+}
+
+void HelloWorld::SetGrayscale()
+{
+    timeStopped = true;
+
+    xPos = screenMin.x;
+    yPos = screenMin.y;
+    widthX = screenMax.x;
+    heightY = screenMax.y;
+
+    rendtexSprite->setTextureRect(Rect(xPos, yPos, widthX, heightY));
+
 }

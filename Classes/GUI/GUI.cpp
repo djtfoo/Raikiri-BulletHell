@@ -1,4 +1,5 @@
 #include "GUI\GUI.h"
+#include "../Scenes/HelloWorldScene.h"
 
 GUI* GUI::createPlayerGUI(Player* player)
 {
@@ -66,9 +67,20 @@ void GUI::initOptions(Player* player)
 	labelScoreMultiplier->setPosition(cocos2d::Vec2(0 + 100, cocos2d::Director::getInstance()->getVisibleSize().height - 200));
 
 }
-void  GUI::initEndScreen(Player* player)
+void  GUI::initEndScreen(Player* player, bool win)
 {
-	Label* endScreenLabel = Label::createWithTTF("GAME OVER ", "fonts/Batman.ttf", 70);
+    auto scene = Director::getInstance()->getRunningScene();
+    auto layer = scene->getChildByTag(999);
+    HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+    helloLayer->SetGrayscale();
+
+    Label* endScreenLabel;
+    if (win) {
+        endScreenLabel = Label::createWithTTF("VICTORY! ", "fonts/Batman.ttf", 70);
+    }
+    else {
+        endScreenLabel = Label::createWithTTF("GAME OVER ", "fonts/Batman.ttf", 70);
+    }
 	endScreenLabel->setColor(cocos2d::Color3B(0, 0, 0));
 	Label* endScreenLabel2 = Label::createWithTTF("Press R to restart Level", "fonts/Batman.ttf", 70);
 	endScreenLabel2->setColor(cocos2d::Color3B(0, 0, 0));
@@ -77,9 +89,20 @@ void  GUI::initEndScreen(Player* player)
 	Size playingSize = Size(visibleSize.width, visibleSize.height);
 	endScreenLabel->setPosition(playingSize.width / 2, playingSize.height / 2);
 	endScreenLabel2->setPosition(playingSize.width / 2, playingSize.height / 2-150);
-	labelLives->setPosition(playingSize.width / 2, playingSize.height / 2 - 50);
-	labelScore->setPosition(playingSize.width / 2, playingSize.height / 2 - 100);
-	labelLives->setScale(2);
+
+    if (win) {
+        labelLives->setPosition(playingSize.width / 2, playingSize.height / 2 - 50);
+        labelLives->setScale(2);
+    }
+    else {
+        labelLives->setVisible(false);
+    }
+    if (win) {
+        labelScore->setPosition(playingSize.width / 2, playingSize.height / 2 - 100);
+    }
+    else {
+        labelScore->setPosition(playingSize.width / 2, playingSize.height / 2 - 50);
+    }
 	labelScore->setScale(2);
 	addChild(endScreenLabel);
 	addChild(endScreenLabel2);

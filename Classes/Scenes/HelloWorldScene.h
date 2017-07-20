@@ -53,6 +53,8 @@ public:
         return playerGui;
     }
 
+    void SetGrayscale();
+
     virtual bool init();
     
     // callback functions
