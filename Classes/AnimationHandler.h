@@ -25,6 +25,7 @@ public:
 		SHIP_SPAWN,
 		SHIP_IDLE,
 		SHIP_BACK,
+		SHIP_FUNNEL,
 		
 		//1
 		CAPULE_SPAWN,

@@ -20,6 +20,7 @@ void AnimHandler::Init()
 	addAnimation("ship.plist", "ship_idle%04d.png", 15, SHIP_IDLE);
 	addAnimation("ship_spawn.plist", "ship_spawn%04d.png", 50, SHIP_SPAWN);
 	addAnimation("ship.plist", "ship_back%04d.png", 15, SHIP_BACK);
+	addAnimation("ship_funnel.plist", "ship_funnel%04d.png", 20, SHIP_FUNNEL);
 
 	addAnimation("capule.plist", "capule_spawn%04d.png", 40, CAPULE_SPAWN);
 	addAnimation("capule.plist", "capule_active%04d.png", 15, CAPULE_ACTIVE);
@@ -62,13 +63,14 @@ void AnimHandler::setAnimation(Sprite* sprite, ANIMATION_TYPE  name, bool loop)
 	else
 		sprite->runAction(Animate::create(animList[name]));
 
+	if(sprite->getPhysicsBody()!=NULL)
     sprite->getPhysicsBody()->onAdd();
 }
 
 void AnimHandler::setCCAnimation(Sprite* sprite, ANIMATION_TYPE  name,CallFunc* callback)
 {
 	sprite->runAction(CCSequence::create(Animate::create(animList[name]), callback, NULL));
-
+	if (sprite->getPhysicsBody() != NULL)
     sprite->getPhysicsBody()->onAdd();
 }
 

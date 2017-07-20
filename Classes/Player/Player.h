@@ -6,15 +6,18 @@
 #include "Attack\Attack.h"
 
 #include "LightEffect/LightEffect.h"
+#include "pfunnel.h"
 using namespace cocos2d;
 
 class Player
 {
 private:
 	int lives;
-	int score;
+	int score,upgrade,missiles,powerup_max;
 	double scoreMultiplier;
 
+	pfunnel* funnel_list[4];
+	float funnel_spacing = 20;
 	float iFrameTimer;
 	float iFrameTempTimer;
 	float iFrameRenderTimer;
@@ -57,6 +60,9 @@ public:
 	void FireBasicBullet();
 	void FireLaser();
 	void StopFiringLaser();
+
+	void Upgrade();
+	void UpdateFunnels();
 
 	int getLives();
 	void setLives(int lives);

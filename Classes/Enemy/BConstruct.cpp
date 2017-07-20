@@ -13,7 +13,7 @@ BConstruct::BConstruct()
 	prevt = 0;
 	finished = false;
 	spawntimer = 0;
-	_hp = 1000;
+	_hp = 10000;
 	BossHealthBarRed=Sprite::create("GUI/BossHealthBarRed.png");
 	BossHealthBarGreen=Sprite::create("GUI/BossHealthBarGreen.png");
 
@@ -82,7 +82,7 @@ void BConstruct::DoAttack(float dt)
 		}
 		if (!islooped)
 			ToggleWaypoint();
-		if (_hp < 1800)
+		if (_hp < 7000)
 			phase = 2;
 
 		FirstAttack(dt);
@@ -100,7 +100,7 @@ void BConstruct::DoAttack(float dt)
 		}
 
 			SecondAttack(dt);
-		if (_hp < 1000)
+		if (_hp < 4000)
 			TriggerFinal();
 
 		if (!islooped)

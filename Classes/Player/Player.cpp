@@ -9,6 +9,9 @@
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y, Size playingSize)
 {
 	//remove imagesource for now
+	upgrade = 0;
+	missiles = 0;
+	powerup_max = 4;
     b_movement = true;
 	mainSprite = Sprite::create("ship_test.png");
     //AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
@@ -21,6 +24,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
     mainSprite->setPosition(X, Y);
 
 	mainSprite->setName(playerName);
+	funnel_spacing = 110;
 
 	//mainSprite->setScale(0.5);
 
@@ -155,7 +159,8 @@ void Player::Update(float dt)
 			//Constrain Player
 			if ((destination.x > 0 + ((mainSprite->getContentSize().width*mainSprite->getScaleX()) / 8)&& destination.x < screenWidth -(( mainSprite->getContentSize().width*mainSprite->getScaleX()) / 8)) &&
 				(destination.y >0 + ((mainSprite->getContentSize().height*mainSprite->getScaleY()) / 8 )&& destination.y < screenHeight -( (mainSprite->getContentSize().height*mainSprite->getScaleY()) / 8)))
-			{
+			{//player is not at boundary
+				UpdateFunnels();
 				auto moveEvent = MoveTo::create(0.f, destination);
 				mainSprite->runAction(moveEvent);
 			}
@@ -255,6 +260,7 @@ void Player::FireBasicBullet()
 }
 void Player::FireLaser()
 {
+	Upgrade();
     AttackSystems->FireLaserBullet("Projectiles/Laser.png",
 		mainSprite->getPosition() - Vec2(0, -mainSprite->getContentSize().height*100));
         //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
@@ -390,8 +396,65 @@ void Player::MoveCharByCoord(float X, float Y)
 	//mainSprite->runAction(seq);
 }
 
+void Player::UpdateFunnels()
+{
+	if (upgrade < 1)
+		return;
+	//funnel_list[1];
+	//int count = sizeof(funnel_list) / sizeof(funnel_list[0]);
+	for (int i = 0; i <= upgrade-1; i++)
+	{
+
+
+		Vec2 displacement = funnel_list[i]->_eSprite->getPosition();
+		if (i == 0)
+		{		
+			if (displacement.getDistanceSq(mainSprite->getPosition()) > funnel_spacing*funnel_spacing)
+			{
+				Vec2 destination = (mainSprite->getPosition() - displacement).getNormalized() * 5;
+				auto moveEvent = MoveBy::create(0.2f, destination);
+				funnel_list[i]->_eSprite->runAction(moveEvent);
+			}
+			continue;
+		}
+		else
+		{
+			if (displacement.getDistanceSq(funnel_list[i-1]->_eSprite->getPosition()) > funnel_spacing*funnel_spacing)
+			{
+				Vec2 destination = (funnel_list[i - 1]->_eSprite->getPosition() - displacement).getNormalized() * 5;
+				auto moveEvent = MoveBy::create(0.2f, destination);
+				funnel_list[i]->_eSprite->runAction(moveEvent);
+
+			}
+
+
+		}
+	}
+}
+void Player::Upgrade()
+{
+	if (upgrade >= powerup_max)
+		return;
+
+	pfunnel* funnel = new pfunnel;
+	funnel->_eSprite->setPosition(mainSprite->getPosition());
+	funnel_list[upgrade] = funnel;
+	auto scene = Director::getInstance()->getRunningScene();
+	scene->addChild(funnel->_eSprite);
+	funnel->RunAttack();
+	upgrade++;
+}
 void Player::Respawn()
 {
+	
+	for (int i = 0; i <= upgrade - 1; i++)
+	{
+		funnel_list[i]->_eSprite->stopAllActions();
+		funnel_list[i]->_eSprite->removeFromParentAndCleanup(true);
+		delete funnel_list[i];
+	}
+	upgrade = 0;
+	missiles = 0;
     mainSprite->setPosition(startingPos.x, startingPos.y);
 
     b_movement = false;
