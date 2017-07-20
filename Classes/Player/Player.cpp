@@ -10,10 +10,16 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 {
 	//remove imagesource for now
 	upgrade = 0;
-	missiles = 0;
+	missiles = 2;
 	powerup_max = 4;
     b_movement = true;
     b_winGame = false;
+	bullet_fire = true;
+	missile_fire = true;
+
+	bullet_rtime = 0.15;
+	missile_rtime = 1.2;
+	actionnode = Node::create();
 
 	mainSprite = Sprite::create("ship_test.png");
     //AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
@@ -81,7 +87,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	this->intDirX = 0;
 	this->intDirY = 0;
 
-	lives = 1;
+	lives = 5;
 	score = 0;
 	scoreMultiplier = 1;
 	AttackSystems = new Attack("Projectiles/Laser.png");
@@ -120,6 +126,8 @@ int Player::getScore()
 //}
 void Player::Update(float dt)
 {
+	
+
     if (Death)
     {
         RespawnTempTimer += dt;
@@ -194,19 +202,29 @@ void Player::Update(float dt)
 		}
 
         // Attack Systems
-        if (AttackSystems->IsLaserMode()) {
-            AttackSystems->UpdateLaserTimer(dt);
-            AttackSystems->LaserUpdate(dt, 10.f, mainSprite->getPosition());
-            //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
-            //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
-        }
+        //if (AttackSystems->IsLaserMode()) {
+        //    AttackSystems->UpdateLaserTimer(dt);
+        //    AttackSystems->LaserUpdate(dt, 10.f, mainSprite->getPosition());
+        //    //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
+        //    //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
+        //}
+		if (Input::IsKeyHeld(KEY_SPACE))
+		{
+
+			//laser
+			if (AttackSystems->IsLaserMode()) {
+				AttackSystems->UpdateLaserTimer(dt);
+				AttackSystems->LaserUpdate(dt, 10.f, mainSprite->getPosition());
+				return;
+			}
 
 
-		//GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
-		//this offests the player sprite for some reason
-		//mainSprite->setGLProgram(charEffect);
-		//mainSprite->setGLProgramState(state);
-
+			FireBasicBullet();
+			//GLProgramState* state = GLProgramState::getOrCreateWithGLProgram(charEffect);
+			//this offests the player sprite for some reason
+			//mainSprite->setGLProgram(charEffect);
+			//mainSprite->setGLProgramState(state);
+		}
 
 
 		//state->setUniformVec2("loc", mLoc);
@@ -262,11 +280,49 @@ void Player::AnimatePlayer(KEYCODE key)
 }
 void Player::FireBasicBullet()
 {
-	AttackSystems->FireBasicBullet("Projectiles/ship_bullet.png",
-        mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
-        //mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
-        3000.f,1.5,false);
+	auto scene = Director::getInstance()->getRunningScene();
+
+
+	if (bullet_fire)
+	{
+		AttackSystems->FireBasicBullet("Projectiles/ship_bullet.png",
+			mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
+			//mainSprite->getPosition()+Vec2(mainSprite->getScaleX()*50,0),
+			3000.f, 1.5, false);
+		bullet_fire = false;
+
+		auto cb = CallFunc::create([&]() {
+			bullet_fire = true;
+		});
+		auto delay = DelayTime::create(bullet_rtime);
+		scene->runAction(CCSequence::create(delay, cb, NULL));
+	}
+	FireMissile();
+	
 }
+void Player::FireMissile()
+{
+	if (missile_fire)
+	{
+		auto scene = Director::getInstance()->getRunningScene();
+		for (int i = 1; i <= missiles * 2; i++)
+		{
+			Projectile* missile = new Projectile;
+			int y = cocos2d::RandomHelper::random_int(-40, 40);
+			missile->InitMissile(mainSprite->getPosition(), Vec2(100, y));
+		}
+
+		missile_fire = false;
+
+		auto cb = CallFunc::create([&]() {
+			missile_fire = true;
+		});
+		auto delay = DelayTime::create(missile_rtime);
+		scene->runAction(CCSequence::create(delay, cb, NULL));
+	}
+}
+
+
 void Player::FireLaser()
 {
 	//Upgrade();
@@ -452,6 +508,13 @@ void Player::Upgrade()
 	funnel->RunAttack();
 	upgrade++;
 }
+void Player::UpgradeMissiles()
+{
+	if (missiles > powerup_max)
+		return;
+	missiles++;
+}
+
 void Player::Respawn()
 {
 	

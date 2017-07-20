@@ -24,6 +24,8 @@ void GameInputManager::WhenKeyPressed(KEYCODE keyCode, Player* player)
 
     Input::OnKeyPressed(keyCode);
 
+
+
     if (keyCode == keyControls["MoveRight"]) {
         player->AnimatePlayer(KEY_RIGHT);
         player->SetMoveCharX(1);

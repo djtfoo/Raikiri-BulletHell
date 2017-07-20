@@ -24,6 +24,8 @@ private:
 	float iFrameRenderTempTimer;
 	float RespawnTimer;
 	float RespawnTempTimer;
+	float bullet_rtime, missile_rtime;
+	bool bullet_fire, missile_fire;
 	bool Death;
 	bool iFrameEnabled;
 	//int score;
@@ -37,7 +39,7 @@ private:
     float screenWidth, screenHeight;
 	float fSpeed;
 	Attack* AttackSystems;
-
+	Node* actionnode;
     bool b_winGame;
 
     Vec2 startingPos;
@@ -60,10 +62,12 @@ public:
 	void MoveCharByCoord(float X, float Y);		// mouse
 
 	void FireBasicBullet();
+	void FireMissile();
 	void FireLaser();
 	void StopFiringLaser();
 
 	void Upgrade();
+	void UpgradeMissiles();
 	void UpdateFunnels();
 
 	int getLives();

@@ -24,7 +24,7 @@ Scene* HelloWorld::createScene()
 	//scene->addChild(GUILayer,0, 997);
     scene->addChild(layer, 0, 999);
 
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    //scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	//LoadEnemies();
     // return the scene
     return scene;
@@ -57,7 +57,6 @@ bool HelloWorld::init()
 
 	auto nodeItems = Node::create();
 	nodeItems->setName("nodeItems");
-
 	//bg
 	currbg = 0;
 

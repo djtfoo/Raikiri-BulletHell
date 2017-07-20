@@ -29,7 +29,7 @@ Entity::Entity()
 
 void Entity::TakeDamage(int dmg)
 {
-	if (!TakenDamage)
+ 	if (!TakenDamage)
 	TakenDamage = true;
     _hp -= dmg;
 }

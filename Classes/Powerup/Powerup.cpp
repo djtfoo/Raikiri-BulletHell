@@ -231,7 +231,10 @@ void Powerup::ApplyPowerupEffect()
 
 	case POWERUP_MISSILE:
     {
-
+		auto scene = Director::getInstance()->getRunningScene();
+		auto layer = scene->getChildByTag(999);
+		HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+		helloLayer->mainPlayer->UpgradeMissiles();
     }
 		break;
 

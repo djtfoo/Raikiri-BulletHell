@@ -20,6 +20,7 @@ Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float 
     //physicsBody->setVelocity(Vec2(1.f, 0.f) * ProjectileSpeed);
     physicsBody->setTag(1);
     ProjectileSprite->addComponent(physicsBody);
+	physicsBody->setAngularVelocity(20);
 
     // Get HelloWorld Scene layer
     auto scene = Director::getInstance()->getRunningScene();
@@ -108,6 +109,45 @@ Sprite* Projectile::InitComplexBullet(string BulletImg, Vec2 SpawnPosition, Vec2
 	Node* SpriteNode = helloLayer->getSpriteNode();
 
 	
+	auto callbackFunc = CallFunc::create([this]() {
+		ProjectileSprite->removeFromParentAndCleanup(true);
+
+		// delete this Projectile object
+		delete this;
+	});
+	auto seq = Sequence::create(DelayTime::create(lifetime), callbackFunc, nullptr);
+	ProjectileSprite->runAction(seq);
+
+	SpriteNode->addChild(ProjectileSprite, -1);
+
+	return ProjectileSprite;
+}
+Sprite* Projectile::InitMissile(Vec2 SpawnPosition, Vec2 vel,float lifetime)
+{
+	ProjectileSprite = Sprite::create("Projectiles/missile.png");
+	//Projectile->setPosition(SpawnPosition.x,SpawnPosition.y);
+	//CCLOG("Position : 4.",  Projectile->getContentSize().width);
+	ProjectileSprite->setPosition(SpawnPosition.x - (ProjectileSprite->getContentSize().width*0.3), SpawnPosition.y - (ProjectileSprite->getContentSize().height*0.2));
+	//ProjectileSpeed = BulletSpeed;
+	auto physicsBody = PhysicsBody::createBox(
+		Size(0.5f * ProjectileSprite->getContentSize().width, 0.5f * ProjectileSprite->getContentSize().height),
+		PhysicsMaterial(0.f, 1.0f, 0.0f));
+	physicsBody->setDynamic(true);
+	physicsBody->setCategoryBitmask(2);
+	physicsBody->setCollisionBitmask(4);
+	physicsBody->setContactTestBitmask(4);
+	physicsBody->setTag(1);
+	physicsBody->setVelocity(vel*4);
+	//physicsBody->applyForce(Vec2(200, 300));
+	ProjectileSprite->addComponent(physicsBody);
+
+	// Get HelloWorld Scene layer
+	auto scene = Director::getInstance()->getRunningScene();
+	auto layer = scene->getChildByTag(999);
+	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+	Node* SpriteNode = helloLayer->getSpriteNode();
+
+
 	auto callbackFunc = CallFunc::create([this]() {
 		ProjectileSprite->removeFromParentAndCleanup(true);
 
