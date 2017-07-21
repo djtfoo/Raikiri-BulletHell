@@ -25,6 +25,7 @@ private:
 	bool freezeAnimationChange;
     bool freezeAttack;
     float freezeAttackTimer;
+    float freezeAttackDashDuration; // duration of this dash - based off length of line
 
     Vec2 screenMin, screenMax;
     float xPos, yPos;

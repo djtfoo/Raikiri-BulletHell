@@ -3,6 +3,7 @@
 #include "AnimationHandler.h"
 #include "Audio/AudioManager.h"
 #include "Input\input.h"
+#include "Input\GameInputManager.h"
 
 #define COCOS2D_DEBUG 1
 
@@ -208,8 +209,10 @@ void Player::Update(float dt)
         //    //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
         //    //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
         //}
-		if (Input::IsKeyHeld(KEY_SPACE))
+		if (GameInputManager::GetInstance()->IsKeyHeld("Shoot"))
 		{
+            // fire missile
+            FireMissile();
 
 			//laser
 			if (AttackSystems->IsLaserMode()) {
@@ -297,8 +300,6 @@ void Player::FireBasicBullet()
 		auto delay = DelayTime::create(bullet_rtime);
 		scene->runAction(CCSequence::create(delay, cb, NULL));
 	}
-	FireMissile();
-	
 }
 void Player::FireMissile()
 {
@@ -517,7 +518,6 @@ void Player::UpgradeMissiles()
 
 void Player::Respawn()
 {
-	
 	for (int i = 0; i <= upgrade - 1; i++)
 	{
 		funnel_list[i]->_eSprite->stopAllActions();
@@ -539,14 +539,20 @@ void Player::SetiFrames()
     //Death = true;
     iFrameRenderTimer = 0;
     iFrameEnabled = true;
+
+    // turn on physics body so that Powerups can be picked up
+    mainSprite->getPhysicsBody()->setCollisionBitmask(28);
+    mainSprite->getPhysicsBody()->setContactTestBitmask(28);
+    mainSprite->getPhysicsBody()->setCategoryBitmask(1);
+}
+
+bool Player::GetiFrames()
+{
+    return iFrameEnabled;
 }
 
 void Player::CompleteRespawn()
 {
     AnimHandler::GetInstance()->setAnimation(mainSprite, AnimHandler::SHIP_IDLE, true);
     b_movement = true;
-
-    mainSprite->getPhysicsBody()->setCollisionBitmask(28);
-    mainSprite->getPhysicsBody()->setContactTestBitmask(28);
-    mainSprite->getPhysicsBody()->setCategoryBitmask(1);
 }

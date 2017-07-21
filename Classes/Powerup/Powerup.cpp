@@ -72,6 +72,8 @@ void Powerup::InitPowerup(POWERUP_TYPE type, const Vec2& SpawnPosition)
 
     powerupSprite->getPhysicsBody()->setEnabled(true);
 
+    powerupSprite->stopAllActions();
+
     switch (type)
     {
     case POWERUP_LIVES:
@@ -128,7 +130,7 @@ bool Powerup::CheckSpawnPowerup()
 {
 	// percentage chance of drop: 40%
 	int chance = cocos2d::RandomHelper::random_int(1, 10);
-	if (chance < 4)
+	if (chance < 10)
 		return true;
 
 	return false;
@@ -295,6 +297,7 @@ void Powerup::DestroyPickedups()
 
             // return it to inactive list
             inactivePowerupsList.push_back(powerup);
+            powerup->toBeDestroyed = false;
 
 			toDestroy = false;
 

@@ -133,3 +133,8 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
     }
 
 }
+
+bool GameInputManager::IsKeyHeld(string key)
+{
+    return Input::IsKeyHeld(keyControls[key]);
+}

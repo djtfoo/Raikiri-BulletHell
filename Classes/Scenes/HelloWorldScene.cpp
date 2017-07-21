@@ -206,7 +206,7 @@ bool HelloWorld::init()
 
 	auto collisionListener = EventListenerPhysicsContact::create();
 	collisionListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
-   // collisionListener->onContactSeparate = CC_CALLBACK_1(HelloWorld::onContactSeparate, this);
+    collisionListener->onContactSeparate = CC_CALLBACK_1(HelloWorld::onContactSeparate, this);
 
 	//collisionListener->onContactPreSolve = CC_CALLBACK_1(HelloWorld::onContactPreSolve, this);
 	//collisionListener->onContactPostSolve = CC_CALLBACK_3(HelloWorld::onContactPostSolve, this);
@@ -226,6 +226,7 @@ bool HelloWorld::init()
     freezeAnimationChange = false;
     freezeAttack = false;
     freezeAttackTimer = 0.f;
+    freezeAttackDashDuration = 0.f;
 
     screenMin.setZero();
     screenMax.set(visibleSize.width, visibleSize.height + 10.f);
@@ -240,6 +241,10 @@ void HelloWorld::ExitScene()
     waveSpawner->eNode->removeAllChildrenWithCleanup(true);
     spriteNode->removeAllChildrenWithCleanup(true);
     Powerup::ClearPowerupPool();
+
+    Shield::playerShield = NULL;
+
+    delete mainPlayer;
 
     this->removeAllChildrenWithCleanup(true);
     this->onExit();
@@ -291,84 +296,98 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	if (bodyA->getTag() == ENEMY && bodyB->getTag() == PLAYERPROJ)
 	{
 		Entity* entity = waveSpawner->GetEntity(bodyA->getNode());
-		entity->TakeDamage(30);
-		
-		if (waveSpawner->GetEntity(bodyA->getNode())->IsDead())
-		{
-			if (entity->_type == Entity::BCONSTRUCT)
-			{
-                mainPlayer->SetWinGame(true);
-				playerGui->initEndScreen(mainPlayer, true);
-			}
-			mainPlayer->AddScore();
-			mainPlayer->AddScoreMultiplier(0.2);
-			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
-			playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
-			Powerup::SetToSpawnPowerup(true);
-			Powerup::SetSpawnPos(bodyA->getPosition());
-
-			waveSpawner->DestroyEnemy(bodyA->getNode());
-            //bodyA->removeFromWorld();
-            bodyA->getNode()->removeFromParentAndCleanup(true);
-           // delete bodyA->getNode();
-		}
-    ///    delete bodyA->getNode();
-        //bodyB->removeFromWorld();
-        if (bodyB->getNode() == NULL)
-            return false;
-		bodyB->getNode()->removeFromParentAndCleanup(true);
-
-        // increase charge bar
-        if (!mainPlayer->GetAttackSystems()->IsChargeBarMax())
+        if (entity != NULL)
         {
-            mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(5);
-            playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
-        }
+            entity->TakeDamage(30);
 
-		//mainPlayer->
-		return true;
+            if (waveSpawner->GetEntity(bodyA->getNode())->IsDead())
+            {
+                if (mainPlayer->GetAttackSystems()->IsLaserMode()) {
+                    mainPlayer->GetAttackSystems()->DeleteFromLaserVector(entity);
+                }
+
+                if (entity->_type == Entity::BCONSTRUCT)
+                {
+                    mainPlayer->SetWinGame(true);
+                    playerGui->initEndScreen(mainPlayer, true);
+                }
+                mainPlayer->AddScore();
+                mainPlayer->AddScoreMultiplier(0.2);
+                playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+                playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
+                Powerup::SetToSpawnPowerup(true);
+                Powerup::SetSpawnPos(bodyA->getPosition());
+
+                waveSpawner->DestroyEnemy(bodyA->getNode());
+                //bodyA->removeFromWorld();
+                bodyA->getNode()->removeFromParentAndCleanup(true);
+                // delete bodyA->getNode();
+            }
+            ///    delete bodyA->getNode();
+            //bodyB->removeFromWorld();
+            if (bodyB->getNode() == NULL)
+                return false;
+            bodyB->getNode()->removeFromParentAndCleanup(true);
+
+            // increase charge bar
+            if (!mainPlayer->GetAttackSystems()->IsChargeBarMax())
+            {
+                mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(5);
+                playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+            }
+
+            //mainPlayer->
+            return true;
+        }
 	}
 	else if (bodyB->getTag() == ENEMY &&  bodyA->getTag() == PLAYERPROJ)
 	{
 		Entity* entity = waveSpawner->GetEntity(bodyB->getNode());
-		entity->TakeDamage(30);
-	
-		if (waveSpawner->GetEntity(bodyB->getNode())->IsDead())
-		{	
-			if (entity->_type == Entity::BCONSTRUCT)
-			{
-                mainPlayer->SetWinGame(true);
-				playerGui->initEndScreen(mainPlayer, true);
-			}
-			mainPlayer->AddScore();
-			mainPlayer->AddScoreMultiplier(0.2);
-			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
-			playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
-			Powerup::SetToSpawnPowerup(true);
-			Powerup::SetSpawnPos(bodyB->getPosition());
-
-			waveSpawner->DestroyEnemy(bodyB->getNode());
-            //bodyB->removeFromWorld();
-			bodyB->getNode()->removeFromParentAndCleanup(true);
-		}
-        //bodyA->removeFromWorld();
-        if (bodyA->getNode() == NULL)
-            return false;
-		bodyA->getNode()->removeFromParentAndCleanup(true);
-  //      delete bodyA->getNode();
-
-        // increase charge bar
-        if (!mainPlayer->GetAttackSystems()->IsChargeBarMax())
+        if (entity != NULL)
         {
-            mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(10);
-            playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
-        }
+            entity->TakeDamage(30);
 
-		return true;
+            if (waveSpawner->GetEntity(bodyB->getNode())->IsDead())
+            {
+                if (mainPlayer->GetAttackSystems()->IsLaserMode()) {
+                    mainPlayer->GetAttackSystems()->DeleteFromLaserVector(entity);
+                }
+
+                if (entity->_type == Entity::BCONSTRUCT)
+                {
+                    mainPlayer->SetWinGame(true);
+                    playerGui->initEndScreen(mainPlayer, true);
+                }
+                mainPlayer->AddScore();
+                mainPlayer->AddScoreMultiplier(0.2);
+                playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+                playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
+                Powerup::SetToSpawnPowerup(true);
+                Powerup::SetSpawnPos(bodyB->getPosition());
+
+                waveSpawner->DestroyEnemy(bodyB->getNode());
+                //bodyB->removeFromWorld();
+                bodyB->getNode()->removeFromParentAndCleanup(true);
+            }
+            //bodyA->removeFromWorld();
+            if (bodyA->getNode() == NULL)
+                return false;
+            bodyA->getNode()->removeFromParentAndCleanup(true);
+            //      delete bodyA->getNode();
+
+            // increase charge bar
+            if (!mainPlayer->GetAttackSystems()->IsChargeBarMax())
+            {
+                mainPlayer->GetAttackSystems()->IncreaseChargeBarValue(10);
+                playerGui->UpdateSpecialBarFill(mainPlayer->GetAttackSystems()->GetChargeBarPercentage());
+            }
+
+            return true;
+        }
 	}
 	else if (bodyA->getTag() == PLAYER && bodyB->getTag() == ENEMYPROJ)
 	{
-        if (!freezeAttack)
+        if (!freezeAttack && !mainPlayer->GetiFrames())
         {
             mainPlayer->Die();
 			//if (mainPlayer->getLives() < 0)
@@ -383,7 +402,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	}
 	else if (bodyB->getTag() == PLAYER && bodyA->getTag() == ENEMYPROJ)
 	{
-        if (!freezeAttack)
+        if (!freezeAttack && !mainPlayer->GetiFrames())
         {
             mainPlayer->Die();
             //mainPlayer->SetDeath(true);
@@ -776,7 +795,7 @@ void HelloWorld::ExecuteFreezeTime()
 	}
 }
 
-static float freezeSpeed = 1500.f;
+static float freezeSpeed = 3000.f;
 void HelloWorld::UpdateFreezeAnimation(float dt)
 {
     float deltaChange = freezeSpeed * dt;
@@ -866,6 +885,7 @@ void HelloWorld::SetPlayerDashPoints(const std::vector<Vec2>& points)
     mainPlayer->GetAttackSystems()->SetDashLinePoints(points);
 }
 
+const static float dashSpeed = 20000.f;
 void HelloWorld::UpdateFreezeAttack(float dt)
 {
     if (FreezeTime::dashLinePoints.empty())
@@ -883,13 +903,19 @@ void HelloWorld::UpdateFreezeAttack(float dt)
     }
 
     freezeAttackTimer += dt;
-    if (freezeAttackTimer > 0.05f)
+    if (freezeAttackTimer > freezeAttackDashDuration)
     {
         freezeAttackTimer = 0.f;
 
-        auto moveEvent = MoveTo::create(0.04f, FreezeTime::dashLinePoints[0]);
+        Vec2 distance = FreezeTime::dashLinePoints[0] - mainPlayer->GetSprite()->getPosition();
+        freezeAttackDashDuration = distance.length() / dashSpeed;   // this is the duration of the dash itself
+
+        auto moveEvent = MoveTo::create(freezeAttackDashDuration, FreezeTime::dashLinePoints[0]);
         mainPlayer->GetSprite()->runAction(moveEvent);
         //mainPlayer->GetSprite()->getPhysicsBody()->setVelocity(0.f);
+
+        // increase duration by a buffer time
+        freezeAttackDashDuration += 0.03f;
 
         // remove first point
         FreezeTime::dashLinePoints.erase(FreezeTime::dashLinePoints.begin());

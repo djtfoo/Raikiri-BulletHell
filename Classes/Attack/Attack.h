@@ -7,14 +7,13 @@
 #include "cocos2d.h"
 #include "Projectile.h"
 #include "WaveSpawner\Entity.h"
+
 using std::string;
 using std::map;
 using namespace cocos2d;
 
 class Attack
 {
-
-
 private:
     string BulletImg;
 

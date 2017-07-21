@@ -53,6 +53,7 @@ void WaveSpawner::DestroyEnemy(Node* node)
 			enemy_list.erase(enemy_list.begin()+a);
 
 			delete entity;
+            entity = NULL;
 
 			break;
 		}

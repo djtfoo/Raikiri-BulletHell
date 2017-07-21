@@ -77,6 +77,8 @@ bool FreezeTime::init()
     freezeTimeDone = false;
     drawPointTimer = 0.f;
 
+    maxDashDistance = visibleSize.width * 1.7f; // slightly less than 2x width (2x width would be dash forward, then loop back)
+
     return true;
 }
 
@@ -128,7 +130,7 @@ void FreezeTime::onMouseMove(Event* event)
     if (Input::GetTouchState(TOUCH_MOUSELEFT) == TOUCH_HELD
         && drawPointTimer > 0.1f)
     {
-        if (dashLinePoints.size() < 15)
+        if (dashDistance < maxDashDistance)
         {
             Vec2 point;
             point.setPoint(mouseEvent->getCursorX(), mouseEvent->getCursorY());
@@ -142,6 +144,9 @@ void FreezeTime::onMouseMove(Event* event)
             addChild(draw, 1);
 
             drawPointTimer = 0.f;
+
+            // add to dash distance
+            dashDistance += (*prevPoint - point).length();
         }
     }
 }
@@ -175,7 +180,8 @@ void FreezeTime::update(float dt)
     {
         CCDirector::getInstance()->popScene();
 
-        if (dashLinePoints.size() > 1)
+        //if (dashLinePoints.size() > 1)    // don't use number of points to determine; use distance instead
+        if (dashDistance > 10.f)    // moved certain distance
             chargeUsed = true;
         else
             chargeUsed = false;

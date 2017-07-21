@@ -37,6 +37,8 @@ public:
     // called by keyboard listener
     void WhenKeyPressed(KEYCODE keyCode, Player* player);
     void WhenKeyReleased(KEYCODE keyCode, Player* player);
+
+    bool IsKeyHeld(string key);
 };
 
 #endif

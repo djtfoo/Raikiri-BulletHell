@@ -2,9 +2,10 @@
 #include "Projectile.h"
 #include "../Scenes/HelloWorldScene.h"
 #include "../Audio/AudioManager.h"
+#include "../Input/GameInputManager.h"
 
 #define COCOS2D_DEBUG 1
-Attack::Attack(string LaserImg) : chargeBarMaxValue(100), laserLifetime(10.f)
+Attack::Attack(string LaserImg) : chargeBarMaxValue(100), laserLifetime(3.f)
 {
 	InitLaser = false;
     chargeBarValue = 0;
@@ -75,6 +76,19 @@ void Attack::SetLaserMode(bool laserMode)
         // reset timer
         laserTimer = 0.f;
     }
+    
+    // if shoot key is held down already, set to fire laser
+    if (GameInputManager::GetInstance()->IsKeyHeld("Shoot"))
+    {
+        auto scene = Director::getInstance()->getRunningScene();
+        auto layer = scene->getChildByTag(999);
+        HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+
+        if (laserMode)  // set to fire
+            helloLayer->mainPlayer->FireLaser();
+        else
+            helloLayer->mainPlayer->StopFiringLaser();
+    }
 }
 
 void Attack::UpdateLaserTimer(float dt)
@@ -96,15 +110,16 @@ void Attack::LaserUpdate(float dt, float LaserScaleX,Vec2 PlayerPosition)
     {
         for (map<Entity*, Node*>::iterator it = EntityLaserDamageList.begin(); it != EntityLaserDamageList.end(); it++)
         {
-            if (it->second == NULL) // this Entity was deleted already
+            if (it->first == NULL) // this Entity was deleted already
             {
                 EntityLaserDamageList.erase(it);
                 break;
             }
             else
             {
-                it->first->_hp -= 0.5f;
-                if (it->first->_hp <= 0)    // Entity is killed
+                it->first->_hp -= 5000.f * dt;
+                //if (it->first->_hp <= 0)    // Entity is killed
+                if (it->first->IsDead())
                 {
                     auto scene = Director::getInstance()->getRunningScene();
                     auto layer = scene->getChildByTag(999);
@@ -122,6 +137,12 @@ void Attack::LaserUpdate(float dt, float LaserScaleX,Vec2 PlayerPosition)
                     it->second = NULL;
 
                     EntityLaserDamageList.erase(it);
+
+                    // add to score
+                    helloLayer->mainPlayer->AddScore();
+                    helloLayer->mainPlayer->AddScoreMultiplier(0.2);
+                    helloLayer->GetGUI()->UpdateScoreMultiplierLabel(std::to_string(helloLayer->mainPlayer->GetScoreMultiplier()).c_str());
+
                     break;
                 }
 

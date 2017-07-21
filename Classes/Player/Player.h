@@ -14,7 +14,7 @@ class Player
 private:
 	int lives;
 	int score,upgrade,missiles,powerup_max;
-	double scoreMultiplier;
+	float scoreMultiplier;
 
 	pfunnel* funnel_list[4];
 	float funnel_spacing = 20;
@@ -55,6 +55,7 @@ public:
     void StopAnimation();
     void Respawn();
     void SetiFrames();
+    bool GetiFrames();
 
 	void iFrameUpdate(float dt);
 	void SetMoveCharX(int dirX);	// keyboard

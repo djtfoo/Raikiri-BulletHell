@@ -173,7 +173,7 @@ void Projectile::InitLaserBullet(Sprite* laserSprite, Size size, Node* spriteNod
 {
     laserSprite->setAnchorPoint(Vec2::ZERO);
     //laserSprite->setPosition(SpawnPosition.x - laserSprite->getContentSize().width, SpawnPosition.y - laserSprite->getContentSize().height);
-    laserSprite->setScaleY(1.f);
+    laserSprite->setScaleY(4.f);
     laserSprite->setScaleX(size.width /*- Projectile->getPosition().x*/);
    
     auto physicsBody = PhysicsBody::createBox(

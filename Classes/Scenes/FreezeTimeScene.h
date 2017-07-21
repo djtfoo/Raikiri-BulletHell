@@ -16,7 +16,7 @@ private:
 
     Sprite* rendtexSprite;
 
-    int drawCount;
+    //int drawCount;
 
     bool freezeTimeDone;
 
@@ -24,6 +24,8 @@ private:
 
 public:
     static cocos2d::Scene* createScene(Sprite* rendtexSprite);
+    float dashDistance;
+    float maxDashDistance;
 
     virtual bool init();
 
