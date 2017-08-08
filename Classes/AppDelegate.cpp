@@ -1,7 +1,7 @@
 #include "AppDelegate.h"
-#include "Scenes/SceneManager.h"
-#include "Input/Input.h"
-#include "Audio/AudioManager.h"
+#include "SceneManager.h"
+#include "Input.h"
+#include "AudioManager.h"
 
 USING_NS_CC;
 

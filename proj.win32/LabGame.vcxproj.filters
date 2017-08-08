@@ -22,12 +22,6 @@
     <Filter Include="src\Scenes">
       <UniqueIdentifier>{0320cdd8-26c3-4b0c-ba69-ea8bc5afcf7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\LightEffect">
-      <UniqueIdentifier>{c6a6abb0-1434-4323-a30e-9639fba6eef5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Attack">
-      <UniqueIdentifier>{cffd2af0-5ae2-476e-a865-db5db3f5f13a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\GUI">
       <UniqueIdentifier>{f983c3f4-c87b-4b0b-be5b-41839f12dea2}</UniqueIdentifier>
     </Filter>
@@ -37,8 +31,8 @@
     <Filter Include="src\Enemy">
       <UniqueIdentifier>{a0d7230f-d5f3-47e4-a995-3e4f81ff86e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Powerups">
-      <UniqueIdentifier>{d995da21-dd80-427d-b8fe-1fb6eae1da7a}</UniqueIdentifier>
+    <Filter Include="src\Items">
+      <UniqueIdentifier>{cffd2af0-5ae2-476e-a865-db5db3f5f13a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,77 +42,68 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Input\Input.cpp">
-      <Filter>src\Input</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\AnimationHandler.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\WaveSpawner\WaveSpawner.cpp">
-      <Filter>src\WaveSpawner</Filter>
+    <ClCompile Include="..\Classes\Projectile.cpp">
+      <Filter>src\Items</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Player\Player.cpp">
-      <Filter>src\Player</Filter>
+    <ClCompile Include="..\Classes\Shield.cpp">
+      <Filter>src\Items</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Input\GameInputManager.cpp">
-      <Filter>src\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Scenes\HelloWorldScene.cpp">
-      <Filter>src\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Scenes\MainMenuScene.cpp">
-      <Filter>src\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Scenes\SceneManager.cpp">
-      <Filter>src\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LightEffect\Effect.cpp">
-      <Filter>src\LightEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LightEffect\EffectSprite.cpp">
-      <Filter>src\LightEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LightEffect\LightEffect.cpp">
-      <Filter>src\LightEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\WaveSpawner\Entity.cpp">
-      <Filter>src\WaveSpawner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Attack\Attack.cpp">
-      <Filter>src\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Attack\Projectile.cpp">
-      <Filter>src\Attack</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GUI\GUI.cpp">
-      <Filter>src\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Audio\AudioManager.cpp">
+    <ClCompile Include="..\Classes\AudioManager.cpp">
       <Filter>src\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Enemy\Capule.cpp">
+    <ClCompile Include="..\Classes\BConstruct.cpp">
       <Filter>src\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Enemy\Platonic.cpp">
+    <ClCompile Include="..\Classes\BFunnel.cpp">
       <Filter>src\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Enemy\BConstruct.cpp">
+    <ClCompile Include="..\Classes\Capule.cpp">
       <Filter>src\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Enemy\BFunnel.cpp">
+    <ClCompile Include="..\Classes\Platonic.cpp">
       <Filter>src\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Powerup\Powerup.cpp">
-      <Filter>src\Powerups</Filter>
+    <ClCompile Include="..\Classes\GUI.cpp">
+      <Filter>src\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Attack\Shield.cpp">
-      <Filter>src\Attack</Filter>
+    <ClCompile Include="..\Classes\GameInputManager.cpp">
+      <Filter>src\Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Scenes\FreezeTimeScene.cpp">
+    <ClCompile Include="..\Classes\Input.cpp">
+      <Filter>src\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\pfunnel.cpp">
+      <Filter>src\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Player.cpp">
+      <Filter>src\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Attack.cpp">
+      <Filter>src\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Powerup.cpp">
+      <Filter>src\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\FreezeTimeScene.cpp">
       <Filter>src\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Player\pfunnel.cpp">
-      <Filter>src\Player</Filter>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MainMenuScene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\SceneManager.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity.cpp">
+      <Filter>src\WaveSpawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\WaveSpawner.cpp">
+      <Filter>src\WaveSpawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,80 +113,71 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Input\Input.h">
-      <Filter>src\Input</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\AnimationHandler.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\WaveSpawner\EnemyData.h">
-      <Filter>src\WaveSpawner</Filter>
+    <ClInclude Include="..\Classes\Projectile.h">
+      <Filter>src\Items</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\WaveSpawner\WaveSpawner.h">
-      <Filter>src\WaveSpawner</Filter>
+    <ClInclude Include="..\Classes\Shield.h">
+      <Filter>src\Items</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Player\Player.h">
-      <Filter>src\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Input\GameInputManager.h">
-      <Filter>src\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Scenes\HelloWorldScene.h">
-      <Filter>src\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Scenes\MainMenuScene.h">
-      <Filter>src\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Scenes\SceneManager.h">
-      <Filter>src\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LightEffect\Effect.h">
-      <Filter>src\LightEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LightEffect\EffectSprite.h">
-      <Filter>src\LightEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\LightEffect\LightEffect.h">
-      <Filter>src\LightEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\WaveSpawner\Entity.h">
-      <Filter>src\WaveSpawner</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Attack\Attack.h">
-      <Filter>src\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Attack\Projectile.h">
-      <Filter>src\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GUI\GUI.h">
-      <Filter>src\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Audio\AudioManager.h">
+    <ClInclude Include="..\Classes\AudioManager.h">
       <Filter>src\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Enemy\Capule.h">
+    <ClInclude Include="..\Classes\BConstruct.h">
       <Filter>src\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Enemy\Platonic.h">
+    <ClInclude Include="..\Classes\BFunnel.h">
       <Filter>src\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Enemy\BConstruct.h">
+    <ClInclude Include="..\Classes\Capule.h">
       <Filter>src\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Enemy\BFunnel.h">
+    <ClInclude Include="..\Classes\Platonic.h">
       <Filter>src\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Powerup\Powerup.h">
-      <Filter>src\Powerups</Filter>
+    <ClInclude Include="..\Classes\GUI.h">
+      <Filter>src\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Attack\Shield.h">
-      <Filter>src\Attack</Filter>
+    <ClInclude Include="..\Classes\GameInputManager.h">
+      <Filter>src\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Scenes\FreezeTimeScene.h">
+    <ClInclude Include="..\Classes\Input.h">
+      <Filter>src\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\pfunnel.h">
+      <Filter>src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Player.h">
+      <Filter>src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Attack.h">
+      <Filter>src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Powerup.h">
+      <Filter>src\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\FreezeTimeScene.h">
       <Filter>src\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Player\pfunnel.h">
-      <Filter>src\Player</Filter>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MainMenuScene.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\SceneManager.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EnemyData.h">
+      <Filter>src\WaveSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity.h">
+      <Filter>src\WaveSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\WaveSpawner.h">
+      <Filter>src\WaveSpawner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
