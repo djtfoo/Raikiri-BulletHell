@@ -141,7 +141,7 @@ void Attack::LaserUpdate(float dt, float LaserScaleX,Vec2 PlayerPosition)
                     // add to score
                     helloLayer->mainPlayer->AddScore();
                     helloLayer->mainPlayer->AddScoreMultiplier(0.2);
-                    helloLayer->GetGUI()->UpdateScoreMultiplierLabel(std::to_string(helloLayer->mainPlayer->GetScoreMultiplier()).c_str());
+                    helloLayer->GetGUI()->UpdateScoreMultiplierLabel(helloLayer->mainPlayer->GetScoreMultiplier());
 
                     break;
                 }

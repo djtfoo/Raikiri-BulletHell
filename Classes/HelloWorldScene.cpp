@@ -351,8 +351,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 }
                 mainPlayer->AddScore();
                 mainPlayer->AddScoreMultiplier(0.2);
-                playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
-                playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
+                playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
+                playerGui->UpdateScoreLabel(mainPlayer->getScore());
                 Powerup::SetToSpawnPowerup(true);
                 Powerup::SetSpawnPos(bodyA->getPosition());
 
@@ -400,8 +400,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 }
                 mainPlayer->AddScore();
                 mainPlayer->AddScoreMultiplier(0.2);
-                playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
-                playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
+                playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
+                playerGui->UpdateScoreLabel(mainPlayer->getScore());
                 Powerup::SetToSpawnPowerup(true);
                 Powerup::SetSpawnPos(bodyB->getPosition());
 
@@ -432,7 +432,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             mainPlayer->Die();
 			//if (mainPlayer->getLives() < 0)
 			//	playerGui->initEndScreen(mainPlayer);
-			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+			playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
 			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyB->getNode()->removeFromParentAndCleanup(true);
 
@@ -449,7 +449,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
             //mainPlayer->setLives(mainPlayer->getLives() - 1);
 			//if (mainPlayer->getLives() < 0)
 			//	playerGui->initEndScreen(mainPlayer);
-			playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
+			playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
 			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyA->getNode()->removeFromParentAndCleanup(true);
 
@@ -483,8 +483,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 					mainPlayer->AddScoreMultiplier(1.0);
 					mainPlayer->AddScore();
 				//	mainPlayer->AddScoreMultiplier(0.2);
-					playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
-					playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
+					playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
+					playerGui->UpdateScoreLabel(mainPlayer->getScore());
                     Powerup::SetToSpawnPowerup(true);
                     Powerup::SetSpawnPos(bodyB->getPosition());
 
@@ -541,8 +541,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 					}
 					mainPlayer->AddScoreMultiplier(1.0);
 					mainPlayer->AddScore();
-					playerGui->UpdateScoreMultiplierLabel(std::to_string(mainPlayer->GetScoreMultiplier()).c_str());
-					playerGui->UpdateScoreLabel(std::to_string(mainPlayer->getScore()).c_str());
+					playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
+					playerGui->UpdateScoreLabel(mainPlayer->getScore());
                     Powerup::SetToSpawnPowerup(true);
                     Powerup::SetSpawnPos(bodyA->getPosition());
 

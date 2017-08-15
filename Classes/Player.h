@@ -46,6 +46,8 @@ private:
     bool b_winGame;
 
     Vec2 startingPos;
+
+	ParticleFireworks* TrailParticles;
 	//GUI* playerGUI;
 public:
     // Touch Movement
@@ -57,6 +59,12 @@ public:
     {
         return touchBegan;
     }
+	ParticleFireworks* GetTrailParticleSystem()
+	{
+		return TrailParticles;
+	}
+	
+	
     Vec2 prevTouchPosition;
 
     void SetMovementConstrain(Vec2& destination);
@@ -105,7 +113,7 @@ public:
 	{
 		scoreMultiplier += multipler;
 	}
-	double GetScoreMultiplier()
+	float GetScoreMultiplier()
 	{
 		return scoreMultiplier;
 	}

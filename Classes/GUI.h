@@ -15,7 +15,13 @@ private:
 	Label* labelScoreMultiplier;
     Sprite* specialBarBackground;
     Sprite* specialBarFill;
+	Sprite* ShipSprite;
+	Sprite* GreenRectShip;
+	//Sprite* GreenRectLives;
+	Sprite* BlueRectScore;
+	Sprite* BlueRectScoreMultiplier;
 
+	Vec2 PlayingSize;
 public:
 	//GUI();
 	//~GUI();
@@ -28,10 +34,30 @@ public:
 	//virtual bool init();
 
 	void UpdateLivesLabel(const char* _message);
-	void UpdateScoreLabel(const char* _message);
-	void UpdateScoreMultiplierLabel(const char* _message);
+	void UpdateScoreLabel(int score);
+	void UpdateScoreMultiplierLabel(float scoreMultiplier);
     void UpdateSpecialBarFill(float ratio);
-
+	string ConvertScoreMultiplier(float scoreMultiplier);
+	string ConvertScoreString(int score)
+	{
+		string scoreString = std::to_string(score);
+		string temp;
+		int numberOfChar = 6 - scoreString.size();
+		for (int a = 0; a < numberOfChar; a++)
+		{
+			temp += "0";
+		}
+		temp += scoreString;
+		return temp;
+	}
+	float GetScreenHeightPercentage(float percentage)
+	{
+		return PlayingSize.y *(percentage / 100);
+	}
+	float  GetScreenWidthPercentage(float percentage)
+	{
+		return PlayingSize.x *(percentage / 100);
+	}
 	//virtual void draw(cocos2d::Renderer * renderer, const cocos2d::Mat4 & transform, bool transformUpdated);
 
 	//inline virtual cocos2d::Label* getMessageLabel() { return _messageLabel; };

@@ -9,7 +9,28 @@
 
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y, Size playingSize)
 {
-    // touch movement
+	//Particles
+   
+	Image* ParticleImageFile = new Image();
+	ParticleImageFile->initWithImageFile("Particles/ParticleSparkle2.png");
+	Texture2D* ParticleSprite = new Texture2D();
+	ParticleSprite->initWithImage(ParticleImageFile);
+
+
+	TrailParticles = CCParticleFireworks::create();
+	
+	TrailParticles->setTexture(ParticleSprite);
+	TrailParticles->setStartSize(20);
+	TrailParticles->setGravity(Vec2(-90, 0));
+	TrailParticles->setSpeed(0.1f);
+	TrailParticles->setLife(1.f);
+	TrailParticles->setPosition(Vec2(X*1.15f, Y*0.85f)); 
+	TrailParticles->setStartColorVar(Color4F(0,0, 0, 0.5f));
+	TrailParticles->setStartColor(Color4F(1, 1, 0, 0.5f));
+	TrailParticles->setEndColor(Color4F( 0, 1, 1, 0.5f));
+	TrailParticles->setEndColorVar(Color4F(0,0, 0, 0.5f));
+	
+	// touch movement
     touchBegan = false;
     prevTouchPosition = Vec2::ZERO;
 
@@ -62,7 +83,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 
 	iFrameTimer = 2.f;
 	iFrameTempTimer = 0;
-	iFrameRenderTimer = 0.1f;
+	iFrameRenderTimer = 0.5f;
 	iFrameRenderTempTimer = 0;
 	RespawnTempTimer = 0.0f;
 	RespawnTimer = 2.0f;
@@ -102,6 +123,8 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
     screenHeight = playingSize.height;
 
     //mainSprite->getPhysicsBody()->onAdd();
+
+	mainSprite->addChild(TrailParticles,1);
 }
 
 void Player::Die()
@@ -147,6 +170,8 @@ void Player::Update(float dt)
     {
         RespawnTempTimer += dt;
         mainSprite->setOpacity(0);
+		TrailParticles->stopSystem();
+		TrailParticles->setVisible(false);
         if (RespawnTempTimer > 2.f)
         {
             Death = false;
@@ -161,6 +186,8 @@ void Player::Update(float dt)
             else {
                 mainSprite->setOpacity(255);
                 Respawn();
+				TrailParticles->start();
+				//TrailParticles->setVisible(true);
             }
             RespawnTempTimer = 0;
         }
@@ -175,6 +202,18 @@ void Player::Update(float dt)
     }
     else
 	{
+		/*if(missile_fire)
+		{
+			TrailParticles->setEndColor(Color4F(0.8, 0, 0.8, 0.5f));
+		}
+		if (AttackSystems->IsLaserMode()) {
+			TrailParticles->setEndColor(Color4F(1, 0, 0, 0.5f));
+		}
+		else
+		{
+			TrailParticles->setEndColor(Color4F(1, 1, 0, 0.5f));
+		}
+*/
 		if (intDirX != 0 || intDirY != 0) {
 			Vec2 playerPos = mainSprite->getPosition();
 			Vec2 destination = playerPos + intDirX * Vec2(1.f, 0.f) * fSpeed * dt + intDirY * Vec2(0.f, 1.f) * fSpeed * dt;
@@ -228,6 +267,7 @@ void Player::Update(float dt)
         //    //mainSprite->getPosition() + Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f));
         //    //    mainSprite->getPosition() + (Vec2(mainSprite->getScaleX(),0) * 50));
         //}
+		
 		if (GameInputManager::GetInstance()->IsKeyHeld("Shoot") || touchBegan)
 		{
             // fire missile
@@ -418,13 +458,15 @@ void Player::iFrameUpdate(float dt)
 		if (iFrameRenderTempTimer > iFrameRenderTimer)
 		{
 
-			if (mainSprite->getOpacity() == 0)
+			if (mainSprite->getOpacity() == 100)
 			{
+				TrailParticles->setVisible(true);
 				mainSprite->setOpacity(255);
 				iFrameRenderTempTimer = 0;
 			}
 			else
 			{
+				TrailParticles->setVisible(false);
 				mainSprite->setOpacity(100);
 				iFrameRenderTempTimer = 0;
 			}
@@ -433,6 +475,7 @@ void Player::iFrameUpdate(float dt)
 	}
 	else
 	{
+		TrailParticles->setVisible(true);
 		mainSprite->setOpacity(255);
 		mainSprite->getPhysicsBody()->setCollisionBitmask(28);
 		mainSprite->getPhysicsBody()->setContactTestBitmask(28);
@@ -546,7 +589,7 @@ void Player::Respawn()
 	upgrade = 0;
 	missiles = 0;
     mainSprite->setPosition(startingPos.x, startingPos.y);
-
+	//TrailParticles->setVisible(true);
     mainSprite->stopAllActions();
     AnimHandler::GetInstance()->setCCAnimation(mainSprite, AnimHandler::SHIP_SPAWN, CallFunc::create(CC_CALLBACK_0(Player::SetiFrames/*Player::CompleteRespawn*/, this)));
 }
