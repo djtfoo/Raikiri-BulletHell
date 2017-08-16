@@ -11,9 +11,11 @@ class WaveSpawner
 	std::vector<EnemyData> waveData;
 	std::vector<Entity*> enemy_list;//need to implement recycling for this
 
-private:
-	float screen_height, screen_width,screen_scaling,default_scale;
 
+
+private:
+	float screen_height, screen_width;
+	Vec2 screen_scaling, default_scale;
 
 public:
 	WaveSpawner();
@@ -31,7 +33,7 @@ public:
 	void Run(float dt);
 	void DestroyEnemy(Node* node);
 	void SetScreenBoundaries(float h, float w);
-
+	void ClearEnemies();
 	void Init();
 	bool LoadFile(const char* filepath);
 

@@ -53,7 +53,9 @@ public:
 		POWERUP_MISSILE,
 		POWERUP_SHIELD,
 
-
+		//explosion
+		EXPLOSION_CLEAR,
+		EXPLOSION,
 
 		NUM_ANIM,
 

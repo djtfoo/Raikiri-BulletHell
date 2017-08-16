@@ -13,7 +13,7 @@ BConstruct::BConstruct()
 	prevt = 0;
 	finished = false;
 	spawntimer = 0;
-	_hp = 10000;
+	_hp = 14000;
 	BossHealthBarRed=Sprite::create("GUI/BossHealthBarRed.png");
 	BossHealthBarGreen=Sprite::create("GUI/BossHealthBarGreen.png");
 
@@ -21,11 +21,12 @@ BConstruct::BConstruct()
 	auto layer = scene->getChildByTag(999);
 	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
 	Node* SpriteNode = helloLayer->getSpriteNode();
+	player = helloLayer->mainPlayer->GetSprite();
 	
 	/*SpriteNode->addChild(BossHealthBarRed, 1);
 	SpriteNode->addChild(BossHealthBarGreen, 1);*/
-	
-	
+
+
 	BossHealthBarGreen->setPosition(Vec2(300,400));
 	BossHealthBarRed->setPosition(Vec2(300, 400));
 	BossHealthBarGreen->setAnchorPoint(Vec2::ZERO);
@@ -82,7 +83,7 @@ void BConstruct::DoAttack(float dt)
 		}
 		if (!islooped)
 			ToggleWaypoint();
-		if (_hp < 7000)
+		if (_hp < 10000)
 			phase = 2;
 
 		FirstAttack(dt);
@@ -100,7 +101,7 @@ void BConstruct::DoAttack(float dt)
 		}
 
 			SecondAttack(dt);
-		if (_hp < 4000)
+		if (_hp < 5000)
 			TriggerFinal();
 
 		if (!islooped)
@@ -110,12 +111,14 @@ void BConstruct::DoAttack(float dt)
 
 	case(3) :// beserk
 		timer += dt;
+		FinalAttack(dt);
 		if (timer > 2)
 		{
-			SpawnFunnels();
+			//SpawnFunnels();
 			timer = 0;
+			prevt = 0;
+			finished = false;
 		}
-
 		break;
 	}
 
@@ -240,10 +243,36 @@ void BConstruct::SecondAttack(float dt)
 			counter = 1;
 	}
 }
+void BConstruct::FinalAttack(float dt)
+{
+	if (timer - prevt > 0.008 && !finished)
+	{
+		prevt = timer;
+		float deg = counter * 10;
+		deg = CC_DEGREES_TO_RADIANS(deg);
+
+		Vec2 pos(cos(deg), sin(deg));
+		pos = this->GetSprite()->getPosition() + (pos.getNormalized()*200);
+		Vec2 dir = player->getPosition() - pos;
+		Projectile* projectile = new Projectile();
+		projectile->InitBasicBullet("Projectiles/enemy_bullet.png", pos, dir.getNormalized(), 3200, true, 5);
+		counter++;
+		if (counter > 36)
+		{
+			counter = 0;
+			finished = true;
+		}
+	}
+
+
+}
 
 void BConstruct::TriggerFinal()
 {
+	counter = 0;
+	prevt = 0;
 	islooped = true;
+	finished = false;
 	//AnimHandler::GetInstance()->setAnimation(_eSprite, AnimHandler::CONSTRUCT_ACTIVEP2, true);
 	_eSprite->stopAllActions();
 	auto anim1 = Animate::create(AnimHandler::GetInstance()->getAnimAction(AnimHandler::CONSTRUCT_TPHASE));
@@ -259,10 +288,6 @@ void BConstruct::P3Loop()
 	}
 
 	islooped = false;
-	auto scene = Director::getInstance()->getRunningScene();
-	auto layer = scene->getChildByTag(999);
-	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-	Sprite* player = helloLayer->mainPlayer->GetSprite();
 	auto moveTo = MoveTo::create(2, player->getPosition());
 	_eSprite->runAction(CCSequence::create(moveTo,CallFunc::create(CC_CALLBACK_0(BConstruct::P3Loop, this)), NULL));
 }

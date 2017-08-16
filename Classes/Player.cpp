@@ -4,7 +4,7 @@
 #include "input.h"
 #include "GameInputManager.h"
 #include "AudioManager.h"
-
+#include "Explosion.h"
 #define COCOS2D_DEBUG 1
 
 void Player::Init(const char* imgSource, const char* playerName, float X, float Y, Size playingSize)
@@ -63,9 +63,9 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	//mainSprite->setScale(0.5);
 
     auto physicsBody = PhysicsBody::createBox(
-        Size(0.3f * mainSprite->getContentSize().width, 0.3f * mainSprite->getContentSize().height),
-       // Size(200, 100),
+        Size(40.f,40.f),
 		PhysicsMaterial(0.1f, 0.0f, 0.0f));
+
 
     //auto physicsBody = PhysicsBody::createCircle(0.5f * mainSprite->getContentSize().height, PhysicsMaterial(0.1f, 0.0f, 0.0f));
     //CCLOG("SIZE : %4.2f ", mainSprite->getContentSize().height);
@@ -75,6 +75,7 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	physicsBody->setTag(0);
 	physicsBody->setDynamic(false);
 	physicsBody->setGravityEnable(false);
+	physicsBody->setPositionOffset(Vec2(50, 0));
 	//physicsBody->setPositionOffset(Vec2(0, 0.3f * mainSprite->getContentSize().height));
     //CCLOG("SIZE OFFSET : %4.2f ", mainSprite->getContentSize().height);
     physicsBody->setVelocityLimit(0.f);
@@ -119,9 +120,15 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	AttackSystems = new Attack("Projectiles/Laser.png");
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
+	auto scene = Director::getInstance()->getRunningScene();
+	auto layer = scene->getChildByTag(999);
+	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
     screenWidth = playingSize.width;
     screenHeight = playingSize.height;
 
+	_emitter = ParticleSystemQuad::create("lightning.plist");
+	_emitter->setTextureWithRect(Director::getInstance()->getTextureCache()->addImage("lightning.png"), Rect(0, 0, 32, 32));
+	_emitter->setScale(0.2);
     //mainSprite->getPhysicsBody()->onAdd();
 
 	mainSprite->addChild(TrailParticles,1);
@@ -140,6 +147,24 @@ void Player::Die()
     AttackSystems->SetLaserMode(false);
     StopFiringLaser();
     
+	auto scene = Director::getInstance()->getRunningScene();
+	auto layer = scene->getChildByTag(999);
+	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+	Node* SpriteNode = helloLayer->getSpriteNode();
+	helloLayer->waveSpawner->ClearEnemies();
+	//SpriteNode->pauseSchedulerAndActions();
+	SpriteNode->removeAllChildren();//clears screen
+	Explosion* ex = new Explosion;
+	ex->GenerateExplosion(mainSprite->getPosition(), Explosion::EX_CLEAR);
+	//for (const auto& child : SpriteNode->getChildren())
+	//{
+	//	if (child->getTag() == 1)
+	//	{
+	//		child->stopAllActions();
+	//		
+	//	}
+	//	child->removeFromParentAndCleanup(true);
+	//}
 
     b_movement = false;
     SetDeath(true);
@@ -250,7 +275,7 @@ void Player::Update(float dt)
         }
 
         mainSprite->getPhysicsBody()->onAdd();
-
+		_emitter->setPosition(mainSprite->getPhysicsBody()->getPosition()+mainSprite->getPhysicsBody()->getPositionOffset());
         //mainSprite->getPhysicsBody()->setVelocity(Vec2(intDirX, intDirY));
         //CCLOG("Position: %4.2f, %4.2f", mainSprite->getPosition().x, mainSprite->getPosition().y);
         //CCLOG("Veloctity: %4.2f, %4.2f", mainSprite->getPhysicsBody()->getVelocity().x, mainSprite->getPhysicsBody()->getVelocity().y);

@@ -51,6 +51,7 @@ private:
 	//GUI* playerGUI;
 public:
     // Touch Movement
+	ParticleSystemQuad* _emitter;
     void SetTouchBegan(bool touch)
     {
         touchBegan = touch;

@@ -39,6 +39,8 @@ void AnimHandler::Init()
 	addAnimation("powerup.plist", "powerup_lives%04d.png", 15, POWERUP_LIVES);
 	addAnimation("powerup.plist", "powerup_missile%04d.png", 15, POWERUP_MISSILE);
 	addAnimation("powerup.plist", "powerup_shield%04d.png", 15, POWERUP_SHIELD);
+	addAnimation("explosion_clear.plist", "explosion_clear%04d.png", 59, EXPLOSION_CLEAR);
+	addAnimation("explosion.plist", "explosion%04d.png", 14, EXPLOSION);
 }
 
 void AnimHandler::Update(float dt)

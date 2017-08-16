@@ -11,9 +11,9 @@ public:
 	~Platonic();
 
 protected:
-	float timer;
+	float timer,timer2;
 	void DoAttack(float deltaatime);
-
+	bool stream;
 
 };
 

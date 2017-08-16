@@ -18,6 +18,7 @@ public:
 	WaveSpawner* spawner;
 	Sprite* BossHealthBarRed;
 	Sprite* BossHealthBarGreen;
+	Sprite* player;
 	Label* BossHealthNumber;
 
 
@@ -31,6 +32,7 @@ protected:
 	void ToggleWaypoint();
 	void FirstAttack(float dt);
 	void SecondAttack(float dt);
+	void FinalAttack(float dt);
 	void TriggerFinal();
 	void P3Loop();
 	

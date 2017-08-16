@@ -11,9 +11,11 @@ public:
 	~Capule();
 
 protected:
+	Vec2 target;
 	float timer;
+	int count, countmax;
 	void DoAttack(float deltaatime);
-
+	bool lock;
 
 };
 

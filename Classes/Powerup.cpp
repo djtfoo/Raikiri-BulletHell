@@ -54,9 +54,9 @@ void Powerup::CreateInactivePowerup()
     auto scene = Director::getInstance()->getRunningScene();
     auto layer = scene->getChildByTag(999);
     HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
-    Node* SpriteNode = helloLayer->getSpriteNode();
-    SpriteNode->addChild(newPowerup->powerupSprite, -1);
-
+    Node* pwNode = helloLayer->pwNode;
+    pwNode->addChild(newPowerup->powerupSprite, -1);
+	//spriteNode->addChild(newPowerup->powerupSprite, -1);
     inactivePowerupsList.push_back(newPowerup);
 }
 
@@ -152,10 +152,10 @@ void Powerup::RandomSpawnPowerup()
     int toSpawn = cocos2d::RandomHelper::random_int(0, (int)POWERUPS_TOTAL - 1);
 
     powerup->InitPowerup(static_cast<POWERUP_TYPE>(toSpawn), spawnPosition);
-    //powerup->InitPowerup(POWERUP_BULLETS, spawnPosition);
+   // powerup->InitPowerup(POWERUP_BULLETS, spawnPosition);
 
     // move to active powerups list
-    activePowerupsList.push_back(powerup);
+   activePowerupsList.push_back(powerup);
 }
 
 void Powerup::FindAndBeginPickup(Node* node, const Vec2& pos)

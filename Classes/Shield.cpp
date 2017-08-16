@@ -24,7 +24,6 @@ void Shield::InitShield(Sprite* userSprite)
 
     this->userSprite = userSprite;
     shieldSprite->setPosition(userSprite->getPosition().x, userSprite->getPosition().y);
-
     auto physicsBody = PhysicsBody::createBox(
         Size(spriteSize.x, spriteSize.y),
         PhysicsMaterial(0.f, 0.0f, 0.0f));
@@ -32,6 +31,7 @@ void Shield::InitShield(Sprite* userSprite)
     physicsBody->setCategoryBitmask(32);
     physicsBody->setContactTestBitmask(8);
 	physicsBody->setCollisionBitmask(8);
+	physicsBody->setPositionOffset(Vec2(40, 0));
     if (isSpawnUserPlayer)
         physicsBody->setTag(5); // Player Shield
     else
@@ -39,7 +39,7 @@ void Shield::InitShield(Sprite* userSprite)
 
     physicsBody->setGravityEnable(false);
     shieldSprite->addComponent(physicsBody);
-
+	
     auto scene = Director::getInstance()->getRunningScene();
     auto layer = scene->getChildByTag(999);
     HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);

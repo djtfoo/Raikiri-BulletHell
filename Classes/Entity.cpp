@@ -120,6 +120,8 @@ void Entity::SettoAttack()
 void Entity::SettoDespawn()
 {
 	auto moveTo = MoveTo::create(2, _exitDestination);
+	if (_active == false)
+		return;
 
 	_eSprite->runAction(moveTo);//simple moveto
 	_active = false;

@@ -15,7 +15,8 @@ private:
     RenderTexture* rendtex;
     Sprite* rendtexSprite;
 	Node* spriteNode;
-    Node* projectieNode;
+	ParticleSystemQuad* _emitter;
+   // Node* projectieNode;
 
 	GUI* playerGui;
 
@@ -24,7 +25,7 @@ private:
     bool freezeAttack;
     float freezeAttackTimer;
     float freezeAttackDashDuration; // duration of this dash - based off length of line
-
+	float default_scale;
     Vec2 screenMin, screenMax;
     float xPos, yPos;
     float widthX, heightY;
@@ -34,6 +35,7 @@ private:
     void UpdateFreezeAttack(float dt);
 
 public:
+	Node* pwNode;
 	enum GO_TYPE
 	{
 		PLAYER=0,
@@ -72,7 +74,8 @@ public:
     void onTouchMoved(Touch* touch, Event * event);
     void onTouchEnded(Touch* touch ,Event * event);
     void menuCloseCallback(cocos2d::Ref* pSender);
-    
+	Vec2 ScreenToWorld(Vec2 pos);
+
 	void update(float dt);
 
     // For Special Attack

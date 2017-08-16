@@ -152,6 +152,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\BFunnel.cpp" />
     <ClCompile Include="..\Classes\Capule.cpp" />
     <ClCompile Include="..\Classes\Entity.cpp" />
+    <ClCompile Include="..\Classes\Explosion.cpp" />
     <ClCompile Include="..\Classes\FreezeTimeScene.cpp" />
     <ClCompile Include="..\Classes\GameInputManager.cpp" />
     <ClCompile Include="..\Classes\GUI.cpp" />
@@ -178,6 +179,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Capule.h" />
     <ClInclude Include="..\Classes\EnemyData.h" />
     <ClInclude Include="..\Classes\Entity.h" />
+    <ClInclude Include="..\Classes\Explosion.h" />
     <ClInclude Include="..\Classes\FreezeTimeScene.h" />
     <ClInclude Include="..\Classes\GameInputManager.h" />
     <ClInclude Include="..\Classes\GUI.h" />

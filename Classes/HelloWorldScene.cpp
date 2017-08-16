@@ -8,7 +8,7 @@
 #include "BConstruct.h"
 #include "Powerup.h"
 #include "Shield.h"
-
+#include "Explosion.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -45,7 +45,7 @@ bool HelloWorld::init()
 	//GUI
 	//auto GUIlayer = this->getChildByTag(997);
 
-
+	default_scale = 1600;
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 	playingSize = Size(visibleSize.width, visibleSize.height);
@@ -60,17 +60,25 @@ bool HelloWorld::init()
 	//bg
 	currbg = 0;
 
-	bg_sprite1 = Sprite::create("moon_b_1.png");
-	bg_sprite1->setPosition(0, -0.45f * playingSize.height);
+	//bg_sprite1 = Sprite::create("moon_b_1.png");
+	bg_sprite1 = Sprite::create("moonnight_b_1.png");
+	bg_sprite1->setScale(1.3);
 	bg_sprite1->setAnchorPoint(Vec2::ZERO);
+	
+	bg_sprite1->setPosition(0, 0);
 	bg_sprite1->setName("bg1");
-	bg_sprite2 = Sprite::create("moon_b_1.png");
+	
+
+	bg_sprite2 = Sprite::create("moonnight_b_1.png");
+	bg_sprite2->setScale(1.3);
 	bg_sprite2->setAnchorPoint(Vec2::ZERO);
-	bg_sprite2->setPosition(bg_sprite1->getContentSize().width, -0.45f * playingSize.height);
+	
+	bg_sprite2->setPosition(0, 0);
 	bg_sprite2->setName("bg2");
 
-	nodeItems->addChild(bg_sprite1, -2);
-	nodeItems->addChild(bg_sprite2, -2);
+
+ 	this->addChild(bg_sprite1, -2);
+	this->addChild(bg_sprite2, -2);
 
 
 	float scrollspeed = 25;
@@ -100,6 +108,9 @@ bool HelloWorld::init()
     spriteNode->setName("spriteNode");
     this->addChild(spriteNode, 1);
 
+	pwNode = Node::create();
+	pwNode->setName("powerNode");
+	this->addChild(pwNode, 2);
 	// player sprites
 	//auto spriteNode = Node::create();
 	
@@ -144,9 +155,11 @@ bool HelloWorld::init()
     mainPlayer->Init("Blue_Front1.png", "Player", 300, 300, playingSize);
 	//AnimHandler::getInstance()->setAnimation(mainPlayer->GetSprite(), AnimHandler::SHIP_IDLE, true);
     this->addChild(mainPlayer->GetSprite(), 1);
+	this->addChild(mainPlayer->_emitter,-1);
     //this->addChild(spriteNode, 1);
 
     mainPlayer->GetAttackSystems()->InitialiseLaser(playingSize, spriteNode);
+
 
 
     proPostProcess = new GLProgram();
@@ -349,6 +362,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                     mainPlayer->SetWinGame(true);
                     playerGui->initEndScreen(mainPlayer, true);
                 }
+				Explosion* ex = new Explosion;
+				ex->GenerateExplosion(entity->_eSprite->getPosition());
                 mainPlayer->AddScore();
                 mainPlayer->AddScoreMultiplier(0.2);
                 playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
@@ -359,7 +374,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 waveSpawner->DestroyEnemy(bodyA->getNode());
                 //bodyA->removeFromWorld();
                 bodyA->getNode()->removeFromParentAndCleanup(true);
-                // delete bodyA->getNode();
+			
             }
             ///    delete bodyA->getNode();
             //bodyB->removeFromWorld();
@@ -392,7 +407,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
                 }
 
                 AudioManager::GetInstance()->PlaySoundEffect("Destruction");
-
+				Explosion* ex = new Explosion;
+				ex->GenerateExplosion(entity->_eSprite->getPosition());
                 if (entity->_type == Entity::BCONSTRUCT)
                 {
                     mainPlayer->SetWinGame(true);
@@ -429,13 +445,13 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{
         if (!freezeAttack && !mainPlayer->GetiFrames())
         {
-            mainPlayer->Die();
+           
 			//if (mainPlayer->getLives() < 0)
 			//	playerGui->initEndScreen(mainPlayer);
 			playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
 			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyB->getNode()->removeFromParentAndCleanup(true);
-
+			mainPlayer->Die();
             return true;
         }
         return false;
@@ -444,7 +460,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{
         if (!freezeAttack && !mainPlayer->GetiFrames())
         {
-            mainPlayer->Die();
+           
             //mainPlayer->SetDeath(true);
             //mainPlayer->setLives(mainPlayer->getLives() - 1);
 			//if (mainPlayer->getLives() < 0)
@@ -452,7 +468,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 			playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
 			playerGui->UpdateLivesLabel(std::to_string(mainPlayer->getLives()).c_str());
             bodyA->getNode()->removeFromParentAndCleanup(true);
-
+			mainPlayer->Die();
             return true;
         }
         return false;
@@ -474,6 +490,8 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 
                 if (entity->IsDead())
                 {
+					Explosion* ex = new Explosion;
+					ex->GenerateExplosion(entity->_eSprite->getPosition());
 					if (entity->_type == Entity::BCONSTRUCT)
 					{
                         mainPlayer->SetWinGame(true);
@@ -701,16 +719,16 @@ void HelloWorld::update(float dt)
     //======================
     // Scrolling Background
     //======================
-	if (bg_sprite1->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==0)
+	if (bg_sprite1->getPositionX() <= ((-bg_sprite1->getContentSize().width*1.3) + playingSize.width+3) && currbg ==0)
 	{
 		currbg = 1;
-		bg_sprite2->setPosition(playingSize.width, -0.45f * playingSize.height);
+		bg_sprite2->setPosition(playingSize.width, 0);
 		//bg_sprite1->setPosition(playingSize.width, -playingSize.height);
 	}
-	if (bg_sprite2->getPositionX() <= (-bg_sprite1->getContentSize().width) + playingSize.width+3 && currbg ==1)
+	if (bg_sprite2->getPositionX() <= ((-bg_sprite1->getContentSize().width*1.3) + playingSize.width+3 )&& currbg ==1)
 	{
 		//bg_sprite2->setPosition(playingSize.width, -playingSize.height);
-		bg_sprite1->setPosition(playingSize.width, -0.45f * playingSize.height);
+		bg_sprite1->setPosition(playingSize.width, 0);
 		currbg = 0;
 	}
 
@@ -795,7 +813,13 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
 }
+Vec2 HelloWorld::ScreenToWorld(Vec2 pos)
+{
+	float screen_scaling = (playingSize.width / default_scale);
+	Vec2 result = pos*screen_scaling;
+	return result;
 
+}
 
 Vector<cocos2d::SpriteFrame*> HelloWorld::getAnimation(const char *format, int count)
 {
@@ -915,10 +939,10 @@ void HelloWorld::UpdateFreezeAnimation(float dt)
         }
     }
 }
-Node* HelloWorld::getProjectileNode()
-{
-    return projectieNode;
-}
+//Node* HelloWorld::getProjectileNode()
+//{
+//    return projectieNode;
+//}
 
 void HelloWorld::SetPlayerDashPoints(const std::vector<Vec2>& points)
 {

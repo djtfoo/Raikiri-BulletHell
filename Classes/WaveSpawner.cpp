@@ -65,8 +65,7 @@ void WaveSpawner::Init()
 {
 	screen_height = 0;
 	screen_width = 0;
-	screen_scaling = 0;
-	default_scale = 1600;
+	default_scale = Vec2(1600, 900);
 	wavetimer = 0;
 	currentwave = 1;
 	wavetimer = 0;
@@ -158,10 +157,11 @@ void WaveSpawner::Run(float dt)
 		for (std::vector<Entity>::size_type i = 0; i < size; ++i)
 		{
 			Entity*e = enemy_list[i];
-				if (e->_waveNum == currentwave && e->_active)
-					e->DoAttack(dt);
-			          else
-			              e->_eSprite->getPhysicsBody()->onAdd();
+			if (e->_waveNum == currentwave && e->_active)
+			{
+				e->DoAttack(dt);
+					
+			}e->_eSprite->getPhysicsBody()->onAdd();
 		}
 		//for (Entity* e : enemy_list)
 		//{
@@ -182,10 +182,11 @@ void WaveSpawner::Run(float dt)
 		for (std::vector<Entity>::size_type i = 0; i < size; ++i)
 		{
 			Entity*e = enemy_list[i];
-            if (e->_active)
-                e->DoAttack(dt);
-            else
-                e->_eSprite->getPhysicsBody()->onAdd();
+			if (e->_active)
+			{
+				e->DoAttack(dt);
+				
+			}e->_eSprite->getPhysicsBody()->onAdd();
         }
 	}
 
@@ -252,17 +253,38 @@ Vec2 StrToVec2(std::string data)
 
 Vec2 WaveSpawner::ScreenToWorld(Vec2 pos)
 {
-	Vec2 result = pos*screen_scaling;
+	Vec2 result = Vec2(pos.x*screen_scaling.x, pos.y*screen_scaling.y);
 	return result;
-
 }
 
+void WaveSpawner::ClearEnemies()
+{
+	//for (Entity* e : enemy_list)
+	//{
+	//	
+	//		continue;
+
+	//	e->_active = false;
+	//	e->GetSprite()->removeFromParent();
+	//}
+
+	for (int i = enemy_list.size() - 1; i >= 0; i--)
+	{
+		if (enemy_list.at(i)->_type == Entity::BCONSTRUCT)
+			continue;
+		enemy_list.at(i)->GetSprite()->removeFromParent();
+		enemy_list.erase(enemy_list.begin()+i);
+	}
+
+}
 
 void WaveSpawner::SetScreenBoundaries(float h, float w)
 {
 	screen_height = h;
 	screen_width = w;
-	screen_scaling = (w/default_scale);
+
+	screen_scaling = Vec2((w/default_scale.x), (h / default_scale.y));
+
 }
 
 bool WaveSpawner::LoadFile(const char* file_path)
@@ -331,7 +353,7 @@ bool WaveSpawner::LoadFile(const char* file_path)
 
 		// fourth content is first destination
 		std::getline(dataStream, data, ',');
-		thisEnemyData._destination = StrToVec2(data);
+		thisEnemyData._destination = ScreenToWorld(StrToVec2(data));
 
 		// fifth content is exit destination to leave the screen
 		std::getline(dataStream, data, ',');
@@ -351,7 +373,7 @@ void WaveSpawner::SpawnBoss()
 	isboss = true;
 	BConstruct* boss = new BConstruct;
 	boss->spawner = this;
- 	boss->SetData(screen_scaling);
+ 	boss->SetData(screen_scaling.x);
  	boss->SettoSpawn();
 	enemy_list.push_back(boss);
 	eNode->addChild(boss->_eSprite, 1);

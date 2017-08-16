@@ -8,7 +8,7 @@ Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float 
 	ProjectileSprite->setScale(0.8);
     ProjectileSpeed = BulletSpeed;
     ProjectileSprite->setPosition(SpawnPosition.x , SpawnPosition.y);
-
+	ProjectileSprite->setTag(1);
     //Projectile->setAnchorPoint(Vec2::ZERO);
     auto physicsBody = PhysicsBody::createBox(
         Size(ProjectileSprite->getContentSize().width, ProjectileSprite->getContentSize().height),
@@ -33,7 +33,6 @@ Sprite* Projectile::InitBasicBullet(string BulletImg, Vec2 SpawnPosition, float 
 
     auto callbackFunc = CallFunc::create([this]() {
         ProjectileSprite->removeFromParentAndCleanup(true);
-
         // delete this Projectile object
         delete this;
     });

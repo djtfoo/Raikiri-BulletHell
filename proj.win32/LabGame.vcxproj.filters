@@ -105,6 +105,9 @@
     <ClCompile Include="..\Classes\WaveSpawner.cpp">
       <Filter>src\WaveSpawner</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Explosion.cpp">
+      <Filter>src\Items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\WaveSpawner.h">
       <Filter>src\WaveSpawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Explosion.h">
+      <Filter>src\Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
