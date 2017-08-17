@@ -18,8 +18,11 @@ private:
 	ParticleSystemQuad* _emitter;
    // Node* projectieNode;
 
+	Sprite* PauseButton;
+	Sprite* SpecialAttackButton;
 	GUI* playerGui;
 
+	bool SpecialButtonPressed;
     bool timeStopped;
 	bool freezeAnimationChange;
     bool freezeAttack;
@@ -33,7 +36,8 @@ private:
 
     void UpdateFreezeAnimation(float dt);
     void UpdateFreezeAttack(float dt);
-
+	 float currentWidth = 1920;
+	 float currentHeight = 1080;
 public:
 	Node* pwNode;
 	enum GO_TYPE
@@ -95,10 +99,25 @@ public:
     Node* getProjectileNode();
     // Enemy stuff
     WaveSpawner* waveSpawner;
-
+	
 	Sprite *bg_sprite1, *bg_sprite2;
 	bool currbg;
-  
+	float GetScreenHeightPercentage(float percentage)
+	{
+		return playingSize.height *(percentage / 100);
+	}
+	float  GetScreenWidthPercentage(float percentage)
+	{
+		return playingSize.width *(percentage / 100);
+	}
+	float ScaleWithScreen()
+	{
+		return (Director::getInstance()->getWinSizeInPixels().height / currentHeight);
+	}
+	Sprite* GetSpecialAttackButton()
+	{
+		return SpecialAttackButton;
+	}
 	// implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 

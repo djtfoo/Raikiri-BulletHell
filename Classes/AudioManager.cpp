@@ -102,6 +102,17 @@ void AudioManager::StopBackgroundMusic()
         audioEngine->stopBackgroundMusic();
 }
 
+void AudioManager::StopAllSounds()
+{
+	map<string, int>::iterator it = loopSFXID.begin();
+	for (it; it != loopSFXID.end(); ++it)
+	{
+		audioEngine->stopEffect(it->second);
+	}
+
+	loopSFXID.clear();
+}
+
 void AudioManager::StopSoundEffect(string soundName)
 {
     map<string, int>::iterator it = loopSFXID.find(soundName);

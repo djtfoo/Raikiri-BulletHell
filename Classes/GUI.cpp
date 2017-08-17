@@ -26,7 +26,7 @@ void GUI::Update(float dt)
  
 void GUI::UpdateLivesLabel(const char* _message)
 {
-	string text = "Lives Left: ";
+	string text = "x";
 	text += _message;	
 	labelLives->setString(text);
 }
@@ -48,43 +48,49 @@ void GUI::initOptions(Player* player)
 {
 	PlayingSize =  Vec2(cocos2d::Director::getInstance()->getVisibleSize().width, cocos2d::Director::getInstance()->getVisibleSize().height);
 	// Lives
-	labelLives = Label::createWithTTF("Lives Left: " + std::to_string(player->getLives()), "fonts/Batman.ttf", 24);
+	labelLives = Label::createWithTTF("x" + std::to_string(player->getLives()), "fonts/Batman.ttf", 40 * ScaleWithScreen());
 	labelLives->setColor(cocos2d::Color3B(0, 0, 0));
+	labelLives->setPosition(cocos2d::Vec2(GetScreenWidthPercentage(15), GetScreenHeightPercentage(96)));
+	addChild(labelLives, -1);
 
-	addChild(labelLives, 1);
-
-	labelLives->setPosition(cocos2d::Vec2(0 + 110, PlayingSize.y - 100));
 
 	// Score
-	labelScore = Label::createWithTTF("" + ConvertScoreString(player->getScore()), "fonts/Batman.ttf", 40);
-	labelScore->setTextColor(Color4B(0, 0, 0 ,255));
+	labelScore = Label::createWithTTF("" + ConvertScoreString(player->getScore()), "fonts/Batman.ttf", 40 * ScaleWithScreen());
+	labelScore->setTextColor(Color4B(32, 32, 32 ,255));
 
-	addChild(labelScore, 1);
+	addChild(labelScore, -1);
 
 	labelScore->setPosition(Vec2(GetScreenWidthPercentage(50), GetScreenHeightPercentage(95.75)));
 
-	labelScoreMultiplier = Label::createWithTTF(ConvertScoreMultiplier(player->GetScoreMultiplier()), "fonts/Batman.ttf", 40);
-	labelScoreMultiplier->setColor(cocos2d::Color3B(0, 0, 0));
+	labelScoreMultiplier = Label::createWithTTF(ConvertScoreMultiplier(player->GetScoreMultiplier()), "fonts/Batman.ttf", 32 * ScaleWithScreen());
+	labelScoreMultiplier->setTextColor(Color4B(32, 32, 32, 255));
 
-	addChild(labelScoreMultiplier, 1);
+	addChild(labelScoreMultiplier, -1);
 
 	labelScoreMultiplier->setPosition(cocos2d::Vec2(GetScreenWidthPercentage(65), GetScreenHeightPercentage(96)));
 	 
 	GreenRectShip= Sprite::create("GUI/GreenRect.png");
 	GreenRectShip->setPosition(cocos2d::Vec2(GetScreenWidthPercentage(11), GetScreenHeightPercentage(96)));
-	GreenRectShip->setScale(2, 1.2f);
+	GreenRectShip->setScale(2*ScaleWithScreen(), 1.2f*ScaleWithScreen());
 
 	BlueRectScore= Sprite::create("GUI/BlueRect.png");
 	BlueRectScore->setPosition(GetScreenWidthPercentage(50), GetScreenHeightPercentage(96));
-	BlueRectScore->setScale(2.4, 1.2f);
+	BlueRectScore->setScale(2.4*ScaleWithScreen(), 1.2f*ScaleWithScreen());
 
 	BlueRectScoreMultiplier= Sprite::create("GUI/BlueRect.png");
 	BlueRectScoreMultiplier->setPosition(cocos2d::Vec2(GetScreenWidthPercentage(65), GetScreenHeightPercentage(96)));
-	BlueRectScoreMultiplier->setScale(0.9, 1.2f);
+	BlueRectScoreMultiplier->setScale(0.9*ScaleWithScreen(), 1.2f*ScaleWithScreen());
+		
 
-	addChild(GreenRectShip, -1);
-	addChild(BlueRectScore, -1);
-	addChild(BlueRectScoreMultiplier, -1);
+	ShipSprite = Sprite::create("GUI/ship_icon.png");
+	ShipSprite->setPosition(cocos2d::Vec2(GetScreenWidthPercentage(8), GetScreenHeightPercentage(97)));
+	ShipSprite->setScale(0.7*ScaleWithScreen(), 0.7*ScaleWithScreen());
+
+	addChild(ShipSprite, -1);
+//	addChild(PauseButton);
+	//addChild(GreenRectShip, -1);
+	addChild(BlueRectScore, -2);
+	addChild(BlueRectScoreMultiplier, -2);
 
 }
 string GUI::ConvertScoreMultiplier(float scoreMultiplier)
@@ -125,7 +131,7 @@ void  GUI::initEndScreen(Player* player, bool win)
 
     if (win) {
         labelLives->setPosition(PlayingSize.x / 2, PlayingSize.y / 2 - 50);
-        labelLives->setScale(2);
+        labelLives->setScale(2* ScaleWithScreen());
     }
     else {
         labelLives->setVisible(false);
@@ -136,7 +142,7 @@ void  GUI::initEndScreen(Player* player, bool win)
     else {
         labelScore->setPosition(PlayingSize.x / 2, PlayingSize.y/ 2 - 50);
     }
-	labelScore->setScale(2);
+	labelScore->setScale(2* ScaleWithScreen());
 	addChild(endScreenLabel);
 	addChild(endScreenLabel2);
 }
@@ -152,22 +158,34 @@ void GUI::initSpecialBar()
     // scale according to screen res?
     //shieldSprite->setScale(spriteSize.x / imageSize.x, spriteSize.y / imageSize.y);
 
-    specialBarBackground->setPosition(50.f, 120.f);
+    specialBarBackground->setPosition(GetScreenWidthPercentage(5), GetScreenHeightPercentage(26 * ScaleWithScreenWithHeight()));
+	specialBarBackground->setScale(ScaleWithScreen());
     addChild(specialBarBackground, 1);
 
     // fill
     specialBarFill = Sprite::create("GUI/specialbar_fill.png");
-    specialBarFill->setPosition(31.f, 26.f);
-    specialBarFill->setAnchorPoint(Vec2::ZERO);
+    specialBarFill->setPosition(GetScreenWidthPercentage(4), GetScreenHeightPercentage(17.3 * ScaleWithScreenWithHeight()));
+	specialBarFill->setScaleX(ScaleWithScreen());
     specialBarFill->setScaleY(0.f);
     addChild(specialBarFill, 1);
 }
 
 void GUI::UpdateSpecialBarFill(float ratio)
 {
-    specialBarFill->setScaleY(ratio);
-    if (ratio > 0.99f)
-        AudioManager::GetInstance()->PlaySoundEffect("ChargeMax");
+	specialBarFill->setAnchorPoint(Vec2::ZERO);
+	specialBarFill->setScaleY(ratio * ScaleWithScreen());
+
+	auto scene = Director::getInstance()->getRunningScene();
+	auto layer = scene->getChildByTag(999);
+	HelloWorld* helloLayer = dynamic_cast<HelloWorld*>(layer);
+
+	if (ratio > 0.99f) {	// max
+		AudioManager::GetInstance()->PlaySoundEffect("ChargeMax");
+		helloLayer->GetSpecialAttackButton()->setOpacity(255);
+	}
+	else {
+		helloLayer->GetSpecialAttackButton()->setOpacity(100);
+	}
 }
 
 

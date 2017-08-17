@@ -1,29 +1,33 @@
-#ifndef __MAINMENU_SCENE_H__
-#define __MAINMENU_SCENE_H__
+#ifndef __OptionsPage_SCENE_H__
+#define __OptionsPage_SCENE_H__
 
 #include "cocos2d.h"
 
 using namespace cocos2d;
 
-class MainMenu : public cocos2d::Layer
+class OptionsPage : public cocos2d::Layer
 {
 private:
     GLProgram* proPostProcess;
     RenderTexture* rendtex;
     Sprite* rendtexSprite;
 
-	Label* StartText;
-	Label* OptionsText;
+	Label* MusicText;
+	Label* SFXText;
 	Label* ExitText;
 
-	Sprite* StartButton;
-	Sprite* OptionsButton;
+	Sprite* GreenTickForMusic;
+	Sprite* MusicToggleBox;
+
+	Sprite* GreenTickForSFX;
+	Sprite* SFXToggleBox;
+
 	Sprite* ExitButton;
 
-    bool touchBegan;
-	bool startGame;
-	bool OptionSelected;
-	
+  
+	bool MenuSelected;
+
+	UserDefault* PlayerPref;
 public:
     static cocos2d::Scene* createScene();
 
@@ -65,7 +69,7 @@ public:
 	//float
     Sprite *bg_sprite;
     // implement the "static create()" method manually
-    CREATE_FUNC(MainMenu);
+    CREATE_FUNC(OptionsPage);
 };
 
-#endif // __MAINMENU_SCENE_H__
+#endif // __OptionsPage_SCENE_H__

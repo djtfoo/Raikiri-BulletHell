@@ -19,7 +19,7 @@ void Explosion::GenerateExplosion(Vec2 pos, EXPLODE_TYPE type)
 	Node* SpriteNode = helloLayer->pwNode;
 	switch (type)
 	{
-	case(EX_CLEAR):
+	case(EX_CLEAR):	// clear the screen
 	{
 		_eSprite = Sprite::create("shield.png");
 		_eSprite->setScale(0.02);

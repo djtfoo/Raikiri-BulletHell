@@ -15,6 +15,8 @@ using namespace cocos2d;
 class Attack
 {
 private:
+
+	string LaserImgFile;
     string BulletImg;
 
     map<Entity*, Node*> EntityLaserDamageList;

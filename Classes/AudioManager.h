@@ -20,6 +20,8 @@ private:
 
     std::map<string, int> loopSFXID;  // return ID for playing SFX (used for stopping SFX loops) - key is name of SFX
 
+	bool b_sfxActive;	// whether to play SFX or not -- this bool is stored as UserDefault
+
 public:
     ~AudioManager(){}
 
@@ -36,7 +38,8 @@ public:
     //void PauseBackgroundMusic();
     //void ResumeBackgroundMusic();
     void StopBackgroundMusic();
-    void StopSoundEffect(string soundName);
+	void StopSoundEffect(string soundName);
+	void StopAllSounds();
 
     void ApplicationDidEnterBackground();
     void ApplicationWillEnterForeground();

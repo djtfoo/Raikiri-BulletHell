@@ -3,7 +3,7 @@
 // Scenes
 #include "MainMenuScene.h"
 #include "HelloWorldScene.h"
-
+#include "OptionsPageScene.h"
 void SceneManager::Init()
 {
     auto director = Director::getInstance();
@@ -33,13 +33,24 @@ void SceneManager::ChangeScene(string name)
     CCDirector::getInstance()->pause();
 
     Scene* scene;
-    if (name == "MainMenu")
-        scene = MainMenu::createScene();
-    else if (name == "HelloWorld")
-        scene = HelloWorld::createScene();
+	if (name == "MainMenu") {
+		scene = MainMenu::createScene();
 
-    CCDirector::getInstance()->replaceScene(
-        TransitionFade::create(1.f, scene, Color3B(0, 50, 50)));
+		CCDirector::getInstance()->replaceScene(
+			TransitionFade::create(0.f, scene, Color3B(0, 50, 50)));
+	}
+	else if (name == "HelloWorld") {
+		scene = HelloWorld::createScene();
 
+		CCDirector::getInstance()->replaceScene(
+			TransitionFade::create(1.f, scene, Color3B(0, 50, 50)));
+	}
+	else if (name == "OptionsPage") {
+		scene = OptionsPage::createScene();
+
+		CCDirector::getInstance()->replaceScene(
+			TransitionFade::create(0.f, scene, Color3B(0, 50, 50)));
+	}
+    
     CCDirector::getInstance()->resume();
 }

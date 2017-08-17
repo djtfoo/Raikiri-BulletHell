@@ -5,7 +5,7 @@
 #include "GameInputManager.h"
 
 #define COCOS2D_DEBUG 1
-Attack::Attack(string LaserImg) : chargeBarMaxValue(100), laserLifetime(3.f)
+Attack::Attack(string LaserImg) : chargeBarMaxValue(100), laserLifetime(3.f), LaserImgFile(LaserImg)
 {
 	InitLaser = false;
     chargeBarValue = 0;
@@ -31,6 +31,13 @@ void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletS
 }
 void  Attack::FireLaserBullet(Vec2 SpawnPosition)
 {
+	if (LaserSprite == NULL)
+	{
+		// create laser projectile
+		LaserSprite = Sprite::create(LaserImgFile);
+
+	}
+
 	if (!InitLaser)
 	{
         //Projectile* projectile = new Projectile();

@@ -17,6 +17,7 @@ private:
     Sprite* specialBarFill;
 	Sprite* ShipSprite;
 	Sprite* GreenRectShip;
+//	Sprite* PauseButton;
 	//Sprite* GreenRectLives;
 	Sprite* BlueRectScore;
 	Sprite* BlueRectScoreMultiplier;
@@ -32,7 +33,7 @@ public:
     void Update(float dt);
 	void initEndScreen(Player* player, bool win);
 	//virtual bool init();
-
+	
 	void UpdateLivesLabel(const char* _message);
 	void UpdateScoreLabel(int score);
 	void UpdateScoreMultiplierLabel(float scoreMultiplier);
@@ -57,6 +58,16 @@ public:
 	float  GetScreenWidthPercentage(float percentage)
 	{
 		return PlayingSize.x *(percentage / 100);
+	}
+	const float currentWidth = 1920;
+	const float currentHeight = 1080;
+	float ScaleWithScreen()
+	{
+		return (Director::getInstance()->getWinSizeInPixels().width / currentWidth);
+	}
+	float ScaleWithScreenWithHeight()
+	{
+		return (Director::getInstance()->getWinSizeInPixels().height / currentHeight);
 	}
 	//virtual void draw(cocos2d::Renderer * renderer, const cocos2d::Mat4 & transform, bool transformUpdated);
 

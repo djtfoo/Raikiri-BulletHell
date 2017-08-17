@@ -1,7 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "FreezeTimeScene.h"
-
+#include "PauseScene.h"
 #include "GameInputManager.h"
 #include "AudioManager.h"
 #include "AnimationHandler.h"
@@ -33,6 +33,7 @@ Scene* HelloWorld::createScene()
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
+	//getScene()->getPhysicsWorld()->setSpeed(0);
 	//////////////////////////////
 	// 1. super init first
 	if (!Layer::init())
@@ -101,11 +102,13 @@ bool HelloWorld::init()
 	//}
 
 	nodeItems->setPosition(0, visibleSize.height / 2 - (visibleSize.height / 8));
-	this->addChild(nodeItems, 1);
+	this->addChild(nodeItems, -2);
+	//Node test[] = getChildren();
 
     // sprite node
     spriteNode = Node::create();
     spriteNode->setName("spriteNode");
+	
     this->addChild(spriteNode, 1);
 
 	pwNode = Node::create();
@@ -195,8 +198,16 @@ bool HelloWorld::init()
 
 	// enemy sprites
 	LoadEnemies();
+	PauseButton = Sprite::create("GUI/Pause.png");
+	PauseButton->setPosition(Vec2(GetScreenWidthPercentage(95), GetScreenHeightPercentage(96)));
+	PauseButton->setScale(0.1*ScaleWithScreen(), 0.1*ScaleWithScreen());
+	this->addChild(PauseButton, 0);
+	SpecialAttackButton = Sprite::create("GUI/SpecialAttack.png");
+	SpecialAttackButton->setPosition(Vec2(GetScreenWidthPercentage(5), GetScreenHeightPercentage(10)));
+	SpecialAttackButton->setScale(0.3*ScaleWithScreen(), 0.3*ScaleWithScreen());
+	this->addChild(SpecialAttackButton,0);
 
-	
+	//spriteNode->pause();
 	// cannot use same event variable for multiple objects; use CloneBy
 
     // Listeners
@@ -227,15 +238,19 @@ bool HelloWorld::init()
     // GUI
 	playerGui = GUI::createPlayerGUI(mainPlayer);
 	//mainPlayer->SetPlayerGUI(playerGui);
-	this->addChild(playerGui, 2);
+	this->addChild(playerGui,0);
 
     // Audio
-    AudioManager::GetInstance()->PlayBackgroundMusic("Game");
+	if (UserDefault::getInstance()->getStringForKey("Music") == "1")
+	{
+		AudioManager::GetInstance()->PlayBackgroundMusic("Game");
+	}
 
     // Freeze Time Post-Processing
     timeStopped = false;
     freezeAnimationChange = false;
     freezeAttack = false;
+	SpecialButtonPressed = false;
     freezeAttackTimer = 0.f;
     freezeAttackDashDuration = 0.f;
 
@@ -249,6 +264,10 @@ bool HelloWorld::init()
 
 void HelloWorld::ExitScene()
 {
+	// stop all sounds
+	AudioManager::GetInstance()->StopBackgroundMusic();
+	AudioManager::GetInstance()->StopAllSounds();
+
     waveSpawner->eNode->removeAllChildrenWithCleanup(true);
     spriteNode->removeAllChildrenWithCleanup(true);
     Powerup::ClearPowerupPool();
@@ -262,15 +281,28 @@ void HelloWorld::ExitScene()
 }
 bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 {
-    /*EventMouse* mouseEvent = (EventMouse*)event;
-    TOUCH_TYPE mousetype;*/
-
+	/*EventMouse* mouseEvent = (EventMouse*)event;
+	TOUCH_TYPE mousetype;*/
+	if (SpecialAttackButton->getBoundingBox().containsPoint(touch->getLocation())
+		&& mainPlayer->b_movement && mainPlayer->GetAttackSystems()->IsChargeBarMax())
+	{
+		SpecialAttackButton->setOpacity(100);
+		SpecialButtonPressed = true;
+	}
     //EventTouch* touchEvent = (EventTouch*)event;
-    
-    Vec2 touchLocation = touch->getLocation();
-    mainPlayer->prevTouchPosition = touchLocation;
-    mainPlayer->SetTouchBegan(true);
-
+	else if (PauseButton->getBoundingBox().containsPoint(touch->getLocation()))
+	{
+		Scene* scene = PauseScene::createScene(rendtexSprite);
+		scene->init();
+		CCDirector::getInstance()->pushScene(scene);
+		mainPlayer->SetTouchBegan(false);
+		GameInputManager::GetInstance()->WhenKeyReleased(KEY_SPACE, mainPlayer);	// stop shooting
+	}
+	else {
+		Vec2 touchLocation = touch->getLocation();
+		mainPlayer->prevTouchPosition = touchLocation;
+		mainPlayer->SetTouchBegan(true);
+	}
     return true;
 }
 void  HelloWorld::onTouchMoved(Touch* touch, Event * event)
@@ -290,14 +322,20 @@ void  HelloWorld::onTouchMoved(Touch* touch, Event * event)
         auto moveEvent = MoveTo::create(0.f, destination);
         mainPlayer->mainSprite->runAction(moveEvent);
     }
-
+	
     mainPlayer->prevTouchPosition = touchLocation;  // set this position for the next frame
 }
 void  HelloWorld::onTouchEnded(Touch* touch, Event * event)
 {
     //Vec2 touchLocation = touch->getLocation();
     mainPlayer->SetTouchBegan(false);
-
+	if (SpecialAttackButton->getBoundingBox().containsPoint(touch->getLocation()) && SpecialButtonPressed)
+	{
+		ExecuteFreezeTime();
+		SpecialButtonPressed = false;
+		//SpecialAttackButton->setOpacity(255);
+	}
+	
 }
 // Keyboard input
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
