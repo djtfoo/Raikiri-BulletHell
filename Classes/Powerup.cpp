@@ -130,7 +130,7 @@ bool Powerup::CheckSpawnPowerup()
 {
 	// percentage chance of drop: 40%
 	int chance = cocos2d::RandomHelper::random_int(1, 10);
-	if (chance < 10)
+	if (chance < 8)
 		return true;
 
 	return false;

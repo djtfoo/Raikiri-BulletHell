@@ -9,6 +9,9 @@
 #include "Powerup.h"
 #include "Shield.h"
 #include "Explosion.h"
+
+#include "SceneManager.h"
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -114,6 +117,10 @@ bool HelloWorld::init()
 	pwNode = Node::create();
 	pwNode->setName("powerNode");
 	this->addChild(pwNode, 2);
+
+    laserNode = Node::create();
+    pwNode->setName("laserNode");
+    this->addChild(laserNode, 1);
 	// player sprites
 	//auto spriteNode = Node::create();
 	
@@ -161,8 +168,7 @@ bool HelloWorld::init()
 	this->addChild(mainPlayer->_emitter,-1);
     //this->addChild(spriteNode, 1);
 
-    mainPlayer->GetAttackSystems()->InitialiseLaser(playingSize, spriteNode);
-
+    mainPlayer->GetAttackSystems()->InitialiseLaser(playingSize, laserNode); //spriteNode);
 
 
     proPostProcess = new GLProgram();
@@ -270,6 +276,7 @@ void HelloWorld::ExitScene()
 
     waveSpawner->eNode->removeAllChildrenWithCleanup(true);
     spriteNode->removeAllChildrenWithCleanup(true);
+    laserNode->removeAllChildrenWithCleanup(true);
     Powerup::ClearPowerupPool();
 
     Shield::playerShield = NULL;
@@ -281,15 +288,18 @@ void HelloWorld::ExitScene()
 }
 bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 {
-	/*EventMouse* mouseEvent = (EventMouse*)event;
+	/*EventMouse* mouseEvent = (EventMouse*)event
 	TOUCH_TYPE mousetype;*/
-	if (SpecialAttackButton->getBoundingBox().containsPoint(touch->getLocation())
+	if (mainPlayer->getLives() < 0 || mainPlayer->IsGameWon()) {
+        ExitScene();
+        SceneManager::GetInstance()->ChangeScene("FacebookScene");
+    }
+	else if (SpecialAttackButton->getBoundingBox().containsPoint(touch->getLocation())
 		&& mainPlayer->b_movement && mainPlayer->GetAttackSystems()->IsChargeBarMax())
 	{
 		SpecialAttackButton->setOpacity(100);
 		SpecialButtonPressed = true;
 	}
-    //EventTouch* touchEvent = (EventTouch*)event;
 	else if (PauseButton->getBoundingBox().containsPoint(touch->getLocation()))
 	{
 		Scene* scene = PauseScene::createScene(rendtexSprite);
@@ -298,11 +308,12 @@ bool HelloWorld::onTouchBegan(Touch* touch, Event* event)
 		mainPlayer->SetTouchBegan(false);
 		GameInputManager::GetInstance()->WhenKeyReleased(KEY_SPACE, mainPlayer);	// stop shooting
 	}
-	else {
-		Vec2 touchLocation = touch->getLocation();
-		mainPlayer->prevTouchPosition = touchLocation;
-		mainPlayer->SetTouchBegan(true);
-	}
+    else {
+        Vec2 touchLocation = touch->getLocation();
+        mainPlayer->prevTouchPosition = touchLocation;
+        mainPlayer->SetTouchBegan(true);
+    }
+
     return true;
 }
 void  HelloWorld::onTouchMoved(Touch* touch, Event * event)
@@ -483,7 +494,6 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{
         if (!freezeAttack && !mainPlayer->GetiFrames())
         {
-           
 			//if (mainPlayer->getLives() < 0)
 			//	playerGui->initEndScreen(mainPlayer);
 			playerGui->UpdateScoreMultiplierLabel(mainPlayer->GetScoreMultiplier());
@@ -498,7 +508,6 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	{
         if (!freezeAttack && !mainPlayer->GetiFrames())
         {
-           
             //mainPlayer->SetDeath(true);
             //mainPlayer->setLives(mainPlayer->getLives() - 1);
 			//if (mainPlayer->getLives() < 0)
@@ -822,9 +831,13 @@ void HelloWorld::update(float dt)
         UpdateFreezeAnimation(dt);
     }
 
+    //rendtex->begin();
+    //this->visit();
+    //rendtex->end();
+
+    // Old post-processing version
     rendtex->beginWithClear(.0f, .0f, .0f, .0f);
     this->visit();
-    rendtex->end();
     rendtexSprite->setTexture(rendtex->getSprite()->getTexture());
     rendtexSprite->setPosition(xPos, yPos);
     if (timeStopped) {
@@ -834,6 +847,7 @@ void HelloWorld::update(float dt)
     else {
         rendtexSprite->setPosition(0.f, 0.f);
     }
+    rendtex->end();
 }
 
 

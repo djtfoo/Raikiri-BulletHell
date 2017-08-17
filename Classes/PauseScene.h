@@ -29,6 +29,7 @@ private:
 
 	///float drawPointTimer;
 	
+    void ExitToMainMenu();
 	
 public:
 	static cocos2d::Scene* createScene(Sprite* rendtexSprite);

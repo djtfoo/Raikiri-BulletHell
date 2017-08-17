@@ -11,7 +11,6 @@ using namespace cocos2d;
 class Player
 {
 private:
-
     // for touch movement
     bool touchBegan = false;
 
@@ -47,8 +46,11 @@ private:
 
     Vec2 startingPos;
 
-	ParticleFireworks* TrailParticles;
+	//ParticleFireworks* TrailParticles;
 	//GUI* playerGUI;
+
+    void DeleteFunnels();   // delete all funnels (when player dies)
+
 public:
     // Touch Movement
 	ParticleSystemQuad* _emitter;
@@ -60,10 +62,10 @@ public:
     {
         return touchBegan;
     }
-	ParticleFireworks* GetTrailParticleSystem()
-	{
-		return TrailParticles;
-	}
+	//ParticleFireworks* GetTrailParticleSystem()
+	//{
+	//	return TrailParticles;
+	//}
 	
 	
     Vec2 prevTouchPosition;

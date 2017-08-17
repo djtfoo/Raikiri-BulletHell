@@ -40,6 +40,8 @@ private:
 	 float currentHeight = 1080;
 public:
 	Node* pwNode;
+    Node* laserNode;    // node for laser sprite
+
 	enum GO_TYPE
 	{
 		PLAYER=0,

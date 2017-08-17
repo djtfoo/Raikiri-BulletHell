@@ -4,6 +4,8 @@
 #include "MainMenuScene.h"
 #include "HelloWorldScene.h"
 #include "OptionsPageScene.h"
+#include "FacebookScene.h"
+
 void SceneManager::Init()
 {
     auto director = Director::getInstance();
@@ -51,6 +53,12 @@ void SceneManager::ChangeScene(string name)
 		CCDirector::getInstance()->replaceScene(
 			TransitionFade::create(0.f, scene, Color3B(0, 50, 50)));
 	}
-    
+    else if (name == "FacebookScene") {
+        scene = FacebookScene::createScene();
+
+        CCDirector::getInstance()->replaceScene(
+			TransitionFade::create(0.f, scene, Color3B(0, 50, 50)));
+    }
+
     CCDirector::getInstance()->resume();
 }

@@ -59,9 +59,9 @@ public:
 	{
 		return PlayingSize.x *(percentage / 100);
 	}
-	const float currentWidth = 1920;
-	const float currentHeight = 1080;
-	float ScaleWithScreen()
+	const static float currentWidth;
+	const static float currentHeight;
+	static float ScaleWithScreen()
 	{
 		return (Director::getInstance()->getWinSizeInPixels().width / currentWidth);
 	}

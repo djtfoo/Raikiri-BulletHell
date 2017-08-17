@@ -1,9 +1,12 @@
 #include "PauseScene.h"
 
-
 #include "SceneManager.h"
 #include "AudioManager.h"
 #include "Input.h"
+
+#include "Powerup.h"
+#include "Shield.h"
+
 //#include "AnimationHandler.h"
 
 using namespace cocos2d;
@@ -265,14 +268,22 @@ Input::SetMousePos(mousetype, Vec2(mouseEvent->getCursorX(), mouseEvent->getCurs
 PauseSceneDone = true;
 }*/
 
+void PauseScene::ExitToMainMenu()
+{
+    // stop all sounds
+    AudioManager::GetInstance()->StopBackgroundMusic();
+    AudioManager::GetInstance()->StopAllSounds();
+
+    Powerup::ClearPowerupPool();
+
+    Shield::playerShield = NULL;
+}
+
 void PauseScene::update(float dt)
 {
 	if (ExitSelected && ExitText->getString()=="Loading")
 	{
-		// stop all sounds
-		AudioManager::GetInstance()->StopBackgroundMusic();
-		AudioManager::GetInstance()->StopAllSounds();
-
+        ExitToMainMenu();   // delete game variables
 		SceneManager::GetInstance()->ChangeScene("MainMenu");
 		ExitSelected = false;
 	}

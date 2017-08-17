@@ -1,4 +1,6 @@
 #include "AudioManager.h"
+#include "cocos2d.h"
+
 #include <fstream>
 #include <sstream>
 
@@ -66,6 +68,9 @@ void AudioManager::PreloadAudio(int fileType, string audioName, string fileName)
 
 void AudioManager::PlaySoundEffect(string soundName, bool loop)
 {
+    if (cocos2d::UserDefault::getInstance()->getStringForKey("SFX") == "-1")
+        return;
+
     map<string, string>::iterator it = SFXList.find(soundName);
     if (it != SFXList.end())
     {

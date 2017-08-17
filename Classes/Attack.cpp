@@ -31,13 +31,6 @@ void Attack::FireBasicBullet(string BulletImg, Vec2 SpawnPosition, float BulletS
 }
 void  Attack::FireLaserBullet(Vec2 SpawnPosition)
 {
-	if (LaserSprite == NULL)
-	{
-		// create laser projectile
-		LaserSprite = Sprite::create(LaserImgFile);
-
-	}
-
 	if (!InitLaser)
 	{
         //Projectile* projectile = new Projectile();

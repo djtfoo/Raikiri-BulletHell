@@ -129,7 +129,7 @@ void GameInputManager::WhenKeyReleased(KEYCODE keyCode, Player* player)
 
             helloLayer->ExitScene();
 
-            SceneManager::GetInstance()->ChangeScene("HelloWorld");
+            SceneManager::GetInstance()->ChangeScene("FacebookScene");
         }
     }
     else if (keyCode == keyControls["FreezeTime"]) {

@@ -6,7 +6,6 @@
 
 using namespace cocos2d;
 
-
 class Explosion
 {
 private:
@@ -18,7 +17,6 @@ public:
 		EX_SMALL,
 		EX_NULL
 	};
-
 
 	EXPLODE_TYPE _type;
 	float DamagedRenderTimer;

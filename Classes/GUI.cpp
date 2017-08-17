@@ -3,9 +3,12 @@
 #include "AudioManager.h"
 #include <sstream>
 #include <iomanip>
+
+const float GUI::currentWidth = 1920;
+const float GUI::currentHeight = 1080;
+
 GUI* GUI::createPlayerGUI(Player* player)
 {
-
 	GUI* gui = new GUI();
 	gui->create();
 	gui->setColor(cocos2d::Color3B(0, 0, 0));
@@ -52,7 +55,6 @@ void GUI::initOptions(Player* player)
 	labelLives->setColor(cocos2d::Color3B(0, 0, 0));
 	labelLives->setPosition(cocos2d::Vec2(GetScreenWidthPercentage(15), GetScreenHeightPercentage(96)));
 	addChild(labelLives, -1);
-
 
 	// Score
 	labelScore = Label::createWithTTF("" + ConvertScoreString(player->getScore()), "fonts/Batman.ttf", 40 * ScaleWithScreen());
@@ -158,13 +160,15 @@ void GUI::initSpecialBar()
     // scale according to screen res?
     //shieldSprite->setScale(spriteSize.x / imageSize.x, spriteSize.y / imageSize.y);
 
-    specialBarBackground->setPosition(GetScreenWidthPercentage(5), GetScreenHeightPercentage(26 * ScaleWithScreenWithHeight()));
+    specialBarBackground->setPosition(GetScreenWidthPercentage(5), GetScreenHeightPercentage(17.3 * ScaleWithScreenWithHeight()));
+    specialBarBackground->setAnchorPoint(Vec2(0.5f, 0.f));
 	specialBarBackground->setScale(ScaleWithScreen());
     addChild(specialBarBackground, 1);
 
     // fill
     specialBarFill = Sprite::create("GUI/specialbar_fill.png");
-    specialBarFill->setPosition(GetScreenWidthPercentage(4), GetScreenHeightPercentage(17.3 * ScaleWithScreenWithHeight()));
+    specialBarFill->setAnchorPoint(Vec2(0.5f, 0.f));
+    specialBarFill->setPosition(GetScreenWidthPercentage(5), GetScreenHeightPercentage(17.9 * ScaleWithScreenWithHeight()));
 	specialBarFill->setScaleX(ScaleWithScreen());
     specialBarFill->setScaleY(0.f);
     addChild(specialBarFill, 1);
@@ -172,7 +176,6 @@ void GUI::initSpecialBar()
 
 void GUI::UpdateSpecialBarFill(float ratio)
 {
-	specialBarFill->setAnchorPoint(Vec2::ZERO);
 	specialBarFill->setScaleY(ratio * ScaleWithScreen());
 
 	auto scene = Director::getInstance()->getRunningScene();

@@ -41,6 +41,10 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+#ifdef SDKBOX_ENABLED
+    sdkbox::PluginFacebook::init();
+#endif
+
     // initialize director
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();

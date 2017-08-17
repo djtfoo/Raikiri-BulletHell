@@ -225,8 +225,6 @@ bool MainMenu::onTouchBegan(Touch* touch, Event* event)
 	{
 		OptionsButton->setOpacity(100);
 	}
-    // For now, just transit scene as long as screen is tapped
-   //
 
     return true;
 }
@@ -244,9 +242,6 @@ void MainMenu::onTouchEnded(Touch* touch, Event * event)
 		OptionSelected = true;
 	}
 	OptionsButton->setOpacity(255);
-
-
-	
 }
 
 void MainMenu::update(float dt)
@@ -272,7 +267,11 @@ void MainMenu::update(float dt)
 		OptionsText->setString("Loading");
 	}
 
-    // post processing shader
+    //rendtex->begin();
+    //this->visit();
+    //rendtex->end();
+
+    //// post processing shader ver1
     //rendtex->beginWithClear(.0f, .0f, .0f, .0f);
     //this->visit();
     //rendtex->end();

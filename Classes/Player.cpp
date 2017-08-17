@@ -11,24 +11,24 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 {
 	//Particles
    
-	Image* ParticleImageFile = new Image();
-	ParticleImageFile->initWithImageFile("Particles/ParticleSparkle2.png");
-	Texture2D* ParticleSprite = new Texture2D();
-	ParticleSprite->initWithImage(ParticleImageFile);
+	//Image* ParticleImageFile = new Image();
+	//ParticleImageFile->initWithImageFile("Particles/ParticleSparkle2.png");
+	//Texture2D* ParticleSprite = new Texture2D();
+	//ParticleSprite->initWithImage(ParticleImageFile);
 
 
-	TrailParticles = CCParticleFireworks::create();
-	
-	TrailParticles->setTexture(ParticleSprite);
-	TrailParticles->setStartSize(20);
-	TrailParticles->setGravity(Vec2(-90, 0));
-	TrailParticles->setSpeed(0.1f);
-	TrailParticles->setLife(1.f);
-	TrailParticles->setPosition(Vec2(X*1.15f, Y*0.85f)); 
-	TrailParticles->setStartColorVar(Color4F(0,0, 0, 0.5f));
-	TrailParticles->setStartColor(Color4F(1, 1, 0, 0.5f));
-	TrailParticles->setEndColor(Color4F( 0, 1, 1, 0.5f));
-	TrailParticles->setEndColorVar(Color4F(0,0, 0, 0.5f));
+	//TrailParticles = CCParticleFireworks::create();
+	//
+	//TrailParticles->setTexture(ParticleSprite);
+	//TrailParticles->setStartSize(20);
+	//TrailParticles->setGravity(Vec2(-90, 0));
+	//TrailParticles->setSpeed(0.1f);
+	//TrailParticles->setLife(1.f);
+	//TrailParticles->setPosition(Vec2(X*1.15f, Y*0.85f)); 
+	//TrailParticles->setStartColorVar(Color4F(0,0, 0, 0.5f));
+	//TrailParticles->setStartColor(Color4F(1, 1, 0, 0.5f));
+	//TrailParticles->setEndColor(Color4F( 0, 1, 1, 0.5f));
+	//TrailParticles->setEndColorVar(Color4F(0,0, 0, 0.5f));
 	
 	// touch movement
     touchBegan = false;
@@ -131,13 +131,14 @@ void Player::Init(const char* imgSource, const char* playerName, float X, float 
 	_emitter->setScale(0.2);
     //mainSprite->getPhysicsBody()->onAdd();
 
-	mainSprite->addChild(TrailParticles,1);
+	//mainSprite->addChild(TrailParticles,1);
 }
 
 void Player::Die()
 {
     AudioManager::GetInstance()->PlaySoundEffect("Destruction");
 
+    // cannot collide with anything
     mainSprite->getPhysicsBody()->setCollisionBitmask(0);
     mainSprite->getPhysicsBody()->setContactTestBitmask(0);
     mainSprite->getPhysicsBody()->setCategoryBitmask(0);
@@ -146,6 +147,9 @@ void Player::Die()
     // reset laser
     AttackSystems->SetLaserMode(false);
     StopFiringLaser();
+
+    // destroy funnels
+    DeleteFunnels();
     
 	auto scene = Director::getInstance()->getRunningScene();
 	auto layer = scene->getChildByTag(999);
@@ -195,8 +199,8 @@ void Player::Update(float dt)
     {
         RespawnTempTimer += dt;
         mainSprite->setOpacity(0);
-		TrailParticles->stopSystem();
-		TrailParticles->setVisible(false);
+		//TrailParticles->stopSystem();
+		//TrailParticles->setVisible(false);
         if (RespawnTempTimer > 2.f)
         {
             Death = false;
@@ -211,7 +215,7 @@ void Player::Update(float dt)
             else {
                 mainSprite->setOpacity(255);
                 Respawn();
-				TrailParticles->start();
+				//TrailParticles->start();
 				//TrailParticles->setVisible(true);
             }
             RespawnTempTimer = 0;
@@ -301,7 +305,7 @@ void Player::Update(float dt)
 			//laser
 			if (AttackSystems->IsLaserMode()) {
 				AttackSystems->UpdateLaserTimer(dt);
-				AttackSystems->LaserUpdate(dt, 10.f, mainSprite->getPosition());
+				AttackSystems->LaserUpdate(dt, 10.f, mainSprite->getPosition() - Vec2(0, 20 * GUI::ScaleWithScreen()));
 				return;
 			}
 
@@ -370,7 +374,7 @@ void Player::FireBasicBullet()
 	auto scene = Director::getInstance()->getRunningScene();
 
 
-	if (bullet_fire)
+	if (bullet_fire && b_movement)
 	{
 		AttackSystems->FireBasicBullet("Projectiles/ship_bullet.png",
 			mainSprite->getPosition() /*+ Vec2(mainSprite->getContentSize().width * 0.5f * 0.6f, mainSprite->getContentSize().height * 0.5f * 0.6f*/,
@@ -473,9 +477,9 @@ void Player::setLives(int lives)
 }
 void Player::iFrameUpdate(float dt)
 {
-    mainSprite->getPhysicsBody()->setCollisionBitmask(0);
-    mainSprite->getPhysicsBody()->setContactTestBitmask(0);
-    mainSprite->getPhysicsBody()->setCategoryBitmask(0);
+    //mainSprite->getPhysicsBody()->setCollisionBitmask(0);
+    //mainSprite->getPhysicsBody()->setContactTestBitmask(0);
+    //mainSprite->getPhysicsBody()->setCategoryBitmask(0);
 	iFrameTempTimer += dt;
 	if (iFrameTempTimer <= iFrameTimer)
 	{
@@ -485,13 +489,13 @@ void Player::iFrameUpdate(float dt)
 
 			if (mainSprite->getOpacity() == 100)
 			{
-				TrailParticles->setVisible(true);
+				//TrailParticles->setVisible(true);
 				mainSprite->setOpacity(255);
 				iFrameRenderTempTimer = 0;
 			}
 			else
 			{
-				TrailParticles->setVisible(false);
+				//TrailParticles->setVisible(false);
 				mainSprite->setOpacity(100);
 				iFrameRenderTempTimer = 0;
 			}
@@ -500,11 +504,11 @@ void Player::iFrameUpdate(float dt)
 	}
 	else
 	{
-		TrailParticles->setVisible(true);
+		//TrailParticles->setVisible(true);
 		mainSprite->setOpacity(255);
-		mainSprite->getPhysicsBody()->setCollisionBitmask(28);
-		mainSprite->getPhysicsBody()->setContactTestBitmask(28);
-		mainSprite->getPhysicsBody()->setCategoryBitmask(1);
+		//mainSprite->getPhysicsBody()->setCollisionBitmask(28);
+		//mainSprite->getPhysicsBody()->setContactTestBitmask(28);
+		//mainSprite->getPhysicsBody()->setCategoryBitmask(1);
 		iFrameTempTimer = 0;
 		iFrameRenderTempTimer = 0;
 		iFrameEnabled = false;
@@ -603,14 +607,18 @@ void Player::UpgradeMissiles()
 	missiles++;
 }
 
+void Player::DeleteFunnels()
+{
+    for (int i = 0; i <= upgrade - 1; i++)
+    {
+        funnel_list[i]->_eSprite->stopAllActions();
+        funnel_list[i]->_eSprite->removeFromParentAndCleanup(true);
+        delete funnel_list[i];
+    }
+}
+
 void Player::Respawn()
 {
-	for (int i = 0; i <= upgrade - 1; i++)
-	{
-		funnel_list[i]->_eSprite->stopAllActions();
-		funnel_list[i]->_eSprite->removeFromParentAndCleanup(true);
-		delete funnel_list[i];
-	}
 	upgrade = 0;
 	missiles = 0;
     mainSprite->setPosition(startingPos.x, startingPos.y);
