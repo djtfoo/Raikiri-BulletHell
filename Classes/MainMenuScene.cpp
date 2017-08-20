@@ -83,13 +83,13 @@ bool MainMenu::init()
     //this->addChild(label2, 1);
 
     // add "HelloWorld" splash screen"
-  //  auto sprite = Sprite::create("HelloWorld.png");
+	auto sprite = Sprite::create("splash.png");
 
     // position the sprite on the center of the screen
-    //sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+    sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
     // add the sprite as a child to this layer
-  //  this->addChild(sprite, 0);
+    this->addChild(sprite, -1);
 
     proPostProcess = new GLProgram();
     proPostProcess->GLProgram::initWithFilenames("Shaders/Basic.vsh", "Shaders/ColorTransition.fsh");
